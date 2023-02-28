@@ -1,10 +1,6 @@
 import sys, os
 from utils import read_json_file
 
-TCPREPLAY_EDIT_PATH = "/usr/bin/tcpreplay-edit"
-TCPREPLAY_EDIT_PATH_IS_VERIFIED = False
-PYTHON_PATH = "/usr/bin/python"
-PYTHON_PATH_IS_VERIFIED = False
 ATTACK_DATA_PATH = os.path.join(sys.path[0], "attacks.json")
 
 

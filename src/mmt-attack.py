@@ -1,9 +1,9 @@
-import os
 import sys
 from attacks import find_attack_by_id, PCAP_ATTACK, SCRIPT_ATTACK
 from utils import exec_command, get_application_path, check_if_interface_exist
 
 TCPREPLAY_APP_NAME = 'tcpreplay-edit'
+MMT_ATTACKER_VERSION = "0.1.0"
 
 
 def startAttack(attackID, iface, targetIP, targetPort=None):
