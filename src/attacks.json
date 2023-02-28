@@ -1,0 +1,19 @@
+[
+  {
+    "attackId":"pcap-attack-71",
+    "attackName":"HTTP version is not correct",
+    "description":"Detect a request which has a HTTP version is not normal",
+    "attackType": "pcap",
+    "fileName":  "71.http_version.pcap",
+    "destIP": "192.168.56.1",
+    "destPort": 80
+  },
+  {
+    "attackId":"script-attack-01",
+    "attackName":"SSH BruteForce Attack",
+    "description":"SSH BruteForce Attack",
+    "attackType": "script",
+    "fileName":  "ssh-brute-force.py",
+    "exeApp": "python3.10"
+  }
+]
