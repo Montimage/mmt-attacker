@@ -1,0 +1,4 @@
+1 OR 1 = 1
+; DROP TABLE USERS
+UNION SELECT Username, Password FROM Users;
+; DELETE FROM items; --

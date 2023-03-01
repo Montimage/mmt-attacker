@@ -1,6 +1,6 @@
 [
   {
-    "attackId":"pcap-attack-71",
+    "attackId":"http-version-not-correct",
     "attackName":"HTTP version is not correct",
     "description":"Detect a request which has a HTTP version is not normal",
     "attackType": "pcap",
@@ -9,11 +9,19 @@
     "destPort": 80
   },
   {
-    "attackId":"script-attack-01",
+    "attackId":"ssh-bruteforce-attack",
     "attackName":"SSH BruteForce Attack",
     "description":"SSH BruteForce Attack",
     "attackType": "script",
     "fileName":  "ssh-brute-force.py",
+    "exeApp": "python3.10"
+  },
+  {
+    "attackId":"sql-injection-attack",
+    "attackName":"SQL Injection Attack",
+    "description":"SQL Injection Attack",
+    "attackType": "script",
+    "fileName":  "sql-injection.py",
     "exeApp": "python3.10"
   }
 ]

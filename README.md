@@ -4,6 +4,12 @@ Generate the attack traffic from a pcap file or by executing a script
 
 # Install
 
+Install some dependencies
+
+```sh
+sudo apt-get install python3.9-dev
+```
+
 ```sh
 pip install -r requirements.txt
 ```
@@ -14,14 +20,20 @@ pip install -r requirements.txt
 cd mmt-attacker/
 python  src/mmt-attack.py <attack_id> <interface> <target_ip> [target_port]
 ```
-Example
 
+# Example
+
+## SSH brute force attack
 ```sh
-python3.10  src/mmt-attack.py script-attack-01 enp0s1 192.168.64.5 22
+python3.10  src/mmt_attack.py ssh-bruteforce-attack 192.168.64.5 22
 ```
 
 ```sh
-python3.10  src/mmt-attack.py pcap-attack-71 enp0s1 192.168.64.5
+python3.10  src/mmt_attack.py sql-injection-attack 192.168.64.5 80
+```
+
+```sh
+python3.10  src/mmt_attack.py http-version-not-correct 192.168.64.5
 ```
 
 # Add a new attack
@@ -54,4 +66,3 @@ For a script based attack
 # References
 
 [PCAP FROM WEB SERVER WITH LOG4J ATTEMPTS & LOTS OF OTHER PROBING/SCANNING](https://www.malware-traffic-analysis.net/2021/12/14/index.html)
-

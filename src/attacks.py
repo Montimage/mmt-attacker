@@ -45,7 +45,7 @@ class ScriptAttack(MAttack):
   def __init__(self, attackId, attackName, description, attackType,fileName, exeApp):
     super().__init__(attackId, attackName, description, attackType,fileName)
     self.exeApp = exeApp
-  def attack_command(self, appPath, iface, targetIP, targetPort = None):
+  def attack_command(self, appPath, targetIP, targetPort = None):
     """Generate the attack command to be executed in shell
 
     Args:
@@ -57,7 +57,7 @@ class ScriptAttack(MAttack):
     Returns:
         String: a command to be executed in shell
     """
-    return f"{appPath} {self.fileName} {iface} {targetIP} {targetPort}"
+    return f"{appPath} {self.fileName} {targetIP} {targetPort}"
 
 def load_attacks_file(attacksFilePath):
   if len(allAttacks) > 0:
