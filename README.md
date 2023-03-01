@@ -33,7 +33,7 @@ python3.10  src/mmt_attack.py ssh-bruteforce-attack 192.168.64.5 22 montimage "m
 
 ```sh
 python3.10  src/mmt_attack.py sql-injection-attack https://www.montimage.com/contact data[name]
-python3.10  src/mmt_attack.py sql-injection-attack https://www.montimage.com/contact data[name] \"1 OR 1 = 1\"
+python3.10  src/mmt_attack.py sql-injection-attack https://www.montimage.com/contact data[name] \"\; DROP TABLE USERS\"
 ```
 
 ```sh
