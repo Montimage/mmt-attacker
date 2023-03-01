@@ -21,7 +21,7 @@ pip3.10 install mechanize
 
 ```sh
 cd mmt-attacker/
-python  src/mmt-attack.py <attack_id> <target_ip> [target_port]
+python  src/mmt-attack.py <attack_id> <argument-01> <argument-02> <argument-03>
 ```
 
 # Example
@@ -31,18 +31,21 @@ python  src/mmt-attack.py <attack_id> <target_ip> [target_port]
 python3.10  src/mmt_attack.py ssh-bruteforce-attack 192.168.64.5 22 montimage "mmtbox","mmt2nm","montimage"
 ```
 
+## SQL Injection attack
+
 ```sh
 python3.10  src/mmt_attack.py sql-injection-attack https://www.montimage.com/contact data[name]
 python3.10  src/mmt_attack.py sql-injection-attack https://www.montimage.com/contact data[name] \"\; DROP TABLE USERS\"
 ```
 
+## HTTP Version is not correct
 ```sh
 python3.10  src/mmt_attack.py http-version-not-correct 192.168.64.5
 ```
 
 # Add a new attack
 
-Open and modify the `src/attacks.json` file with the required informations:
+Open and modify the [`src/attacks.json`](src/attacks.json) file with the required informations:
 For a pcap based attack
 ```jsonc
   {
@@ -68,6 +71,8 @@ For a script based attack
     "extraParametersHelper": "<targetIP> <targetPort> <username> <password1[,password2,password3]>" # the helper to show to guide user how to use this attack
   }
 ```
-# References
+# License
 
-[PCAP FROM WEB SERVER WITH LOG4J ATTEMPTS & LOTS OF OTHER PROBING/SCANNING](https://www.malware-traffic-analysis.net/2021/12/14/index.html)
+Montimage License
+
+contact@montimage.com
