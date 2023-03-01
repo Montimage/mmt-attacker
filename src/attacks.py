@@ -11,19 +11,19 @@ SCRIPT_ATTACK = "script"
 allAttacks = []
 
 class MAttack:
-  def __init__(self, attackId, attackName, description, attackType, fileName):
+  def __init__(self, attackId, attackName, description, attackType):
     self.attackName = attackName# Name of the attack - to show on the list
     self.attackId = attackId# ID of the attack
     self.description = description# Explain everything about the attack
     self.attackType = attackType# pcap -> attack by replaying a pcap file, script -> attack by executing a script
-    self.fileName = fileName# the name of the file to be use for the attack, a pcap file or a script file
 
 class PcapAttack(MAttack):
-  def __init__(self, attackId, attackName, description, attackType,fileName, destIP, destPort=None):
-    super().__init__(attackId, attackName, description, attackType,fileName)
+  def __init__(self, attackId, attackName, description, attackType, pcapFileName, destIP, destPort=None):
+    super().__init__(attackId, attackName, description, attackType)
+    self.pcapFileName = pcapFileName
     self.destPort = destPort
     self.destIP = destIP
-  def attack_command(self, appPath, iface, targetIP, targetPort = None):
+  def attack_command(self, appPath, iface, arguments):
     """Generate the attack command to be executed in shell
 
     Args:
@@ -35,29 +35,37 @@ class PcapAttack(MAttack):
     Returns:
         String: a command to be executed in shell
     """
+    if len(arguments) < 1:
+      print(f"ERROR: Missing input")
+      return False
+    targetIP = arguments[0]
     cmd = f"{appPath} -i {iface} -tK --loop 1 -D {self.destIP}:{targetIP} -S {self.destIP}:{targetIP}"
-    if targetPort != None:
+    if len(arguments) == 2:
+      targetPort = arguments[1]
       cmd = f"{cmd} -r {self.destPort}:{targetPort}"
-    cmd = f"{cmd} {self.fileName}"
+    cmd = f"{cmd} {self.pcapFileName}"
     return cmd
 
 class ScriptAttack(MAttack):
-  def __init__(self, attackId, attackName, description, attackType,fileName, exeApp):
-    super().__init__(attackId, attackName, description, attackType,fileName)
+  def __init__(self, attackId, attackName, description, attackType, scriptFileName, exeApp, extraParametersHelper):
+    super().__init__(attackId, attackName, description, attackType)
+    self.scriptFileName = scriptFileName
     self.exeApp = exeApp
-  def attack_command(self, appPath, targetIP, targetPort = None):
+    self.extraParametersHelper = extraParametersHelper
+
+  def attack_command(self, appPath, arguments):
     """Generate the attack command to be executed in shell
 
     Args:
         appPath (String): The path to the script application, for example: /usr/bin/python, /usr/bin/python3.9, /usr/bin/node,
-        iface (String): The interface will be send the traffic to
-        targetIP (String): The target IP address
-        targetPort (String, optional): The target port number. Defaults to None.
+        arguments (String, optional): The input arguments of the attack script. Defaults to None - means execute the script without any parameter.
 
-    Returns:
+    Returns: con
         String: a command to be executed in shell
     """
-    return f"{appPath} {self.fileName} {targetIP} {targetPort}"
+    inputParameter = ' '.join(arguments)
+    print(f"Arguments: {inputParameter}")
+    return f"{appPath} {self.scriptFileName} {inputParameter}"
 
 def load_attacks_file(attacksFilePath):
   if len(allAttacks) > 0:
@@ -72,22 +80,23 @@ def load_attacks_file(attacksFilePath):
         exeApp = attack['exeApp']
         if exeApp == None:
           # auto detect the exeApp by extension of the script
-          if str(attack['fileName']).endswith('.py'):
+          if str(attack['scriptFileName']).endswith('.py'):
             exeApp = "python"
-          elif str(attack['fileName']).endswith('.js'):
+          elif str(attack['scriptFileName']).endswith('.js'):
             exeApp = "node"
-          elif str(attack['fileName']).endswith('.sh'):
+          elif str(attack['scriptFileName']).endswith('.sh'):
             exeApp = "sh"
           else:
-            print(f"ERROR: Cannot find the executable application for the script: {attack['fileName']}")
+            print(f"ERROR: Cannot find the executable application for the script: {attack['scriptFileName']}")
             continue
-        allAttacks.append(ScriptAttack(attack['attackId'], attack['attackName'], attack['description'], SCRIPT_ATTACK, os.path.join(SCRIPTS_PATH, attack['fileName']), exeApp))
+        allAttacks.append(ScriptAttack(attack['attackId'], attack['attackName'], attack['description'], SCRIPT_ATTACK, os.path.join(SCRIPTS_PATH, attack['scriptFileName']), exeApp, attack['extraParametersHelper']))
       elif attack['attackType'] == PCAP_ATTACK:
-        allAttacks.append(PcapAttack(attack['attackId'], attack['attackName'], attack['description'], PCAP_ATTACK, os.path.join(PCAPS_PATH, attack['fileName']), attack['destIP'], attack['destPort']))
+        allAttacks.append(PcapAttack(attack['attackId'], attack['attackName'], attack['description'], PCAP_ATTACK, os.path.join(PCAPS_PATH, attack['pcapFileName']), attack['destIP'], attack['destPort']))
       else:
         print(f"ERROR: Unsupported attack type: {attack['attackType']}")
         continue
     print(f"Total number of available attacks: {len(allAttacks)}")
+    print(allAttacks)
 
 def get_all_attacks():
   """Get all available attacks

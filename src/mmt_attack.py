@@ -7,7 +7,7 @@ TCPREPLAY_APP_NAME = 'tcpreplay-edit'
 MMT_ATTACKER_VERSION = "0.2.0"
 
 
-def startAttack(attackID, targetIP, targetPort=None):
+def startAttack(attackID, arguments):
   """Start an attack
 
   Args:
@@ -34,13 +34,13 @@ def startAttack(attackID, targetIP, targetPort=None):
         print(f"Cannot get an online interface")
         return False
       print(f"Attack will be done on interface: {iface}")
-      attackCMD = attack.attack_command( tcpreplay_edit_path, iface, targetIP, targetPort)
+      attackCMD = attack.attack_command( tcpreplay_edit_path, iface, arguments)
     elif attack.attackType == SCRIPT_ATTACK:
       script_path = get_application_path(attack.exeApp)
       if script_path == None:
         print(f"Need to install {attack.exeApp}")
         return False
-      attackCMD = attack.attack_command(script_path, targetIP, targetPort)
+      attackCMD = attack.attack_command(script_path, arguments)
     else:
       print(f"Unsupported attack type: {attack.attackType}")
       return False
@@ -60,10 +60,9 @@ if __name__ == '__main__':
   argv_len = len(sys.argv)
   if  argv_len < 3:
     print("Invalid input arguments")
-    print("python mmt-attack.py <attackID> <targetIP> [targetPort]")
-  elif argv_len == 3:
-    ret = startAttack(sys.argv[1],sys.argv[2])
-    print(f"Attack result: {ret}")
+    print("python mmt-attack.py <attackID> <arguments>")
   else:
-    ret = startAttack(sys.argv[1],sys.argv[2],sys.argv[3])
+    attackId = sys.argv[1].strip()
+    arguments = sys.argv[2:]
+    ret = startAttack(attackId, arguments)
     print(f"Attack result: {ret}")

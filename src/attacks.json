@@ -4,7 +4,7 @@
     "attackName":"HTTP version is not correct",
     "description":"Detect a request which has a HTTP version is not normal",
     "attackType": "pcap",
-    "fileName":  "71.http_version.pcap",
+    "pcapFileName":  "71.http_version.pcap",
     "destIP": "192.168.56.1",
     "destPort": 80
   },
@@ -13,15 +13,17 @@
     "attackName":"SSH BruteForce Attack",
     "description":"SSH BruteForce Attack",
     "attackType": "script",
-    "fileName":  "ssh-brute-force.py",
-    "exeApp": "python3.10"
+    "scriptFileName":  "ssh_brute_force.py",
+    "exeApp": "python3.10",
+    "extraParametersHelper": "<targetIP> <targetPort> <username> <password1[,password2,password3]>"
   },
   {
     "attackId":"sql-injection-attack",
     "attackName":"SQL Injection Attack",
     "description":"SQL Injection Attack. Require to have at least one form in the home page of the victime: http://ip_address:port_number",
     "attackType": "script",
-    "fileName":  "sql-injection.py",
-    "exeApp": "python3.10"
+    "scriptFileName":  "sql_injection.py",
+    "exeApp": "python3.10",
+    "extraParametersHelper": "<targetURL> <control_name> <attackString1[,attackString2,attackString3]>"
   }
 ]
