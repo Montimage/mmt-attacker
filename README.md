@@ -1,8 +1,8 @@
-mmt-attacker
+# mmt-attacker
 
-Generate the attack traffic from a pcap file or by executing a script
+Generate attack traffics from a pcap file or by executing a script to a specific target
 
-# Install
+## Install
 
 Install some dependencies
 
@@ -17,33 +17,33 @@ pip3.10 install paramiko
 pip3.10 install mechanize
 ```
 
-# Commands
+## Commands
 
 ```sh
 cd mmt-attacker/
 python  src/mmt-attack.py <attack_id> <argument-01> <argument-02> <argument-03>
 ```
 
-# Example
+## Examples
 
-## SSH brute force attack
+### SSH brute force attack
 ```sh
 python3.10  src/mmt_attack.py ssh-bruteforce-attack 192.168.64.5 22 montimage "mmtbox","mmt2nm","montimage"
 ```
 
-## SQL Injection attack
+### SQL Injection attack
 
 ```sh
 python3.10  src/mmt_attack.py sql-injection-attack https://www.montimage.com/contact data[name]
 python3.10  src/mmt_attack.py sql-injection-attack https://www.montimage.com/contact data[name] \"\; DROP TABLE USERS\"
 ```
 
-## HTTP Version is not correct
+### HTTP Version is not correct
 ```sh
 python3.10  src/mmt_attack.py http-version-not-correct 192.168.64.5
 ```
 
-# Add a new attack
+## Add a new attack
 
 Open and modify the [`src/attacks.json`](src/attacks.json) file with the required informations:
 For a pcap based attack
@@ -71,7 +71,7 @@ For a script based attack
     "extraParametersHelper": "<targetIP> <targetPort> <username> <password1[,password2,password3]>" # the helper to show to guide user how to use this attack
   }
 ```
-# License
+## License
 
 Montimage License
 
