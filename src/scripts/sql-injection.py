@@ -3,6 +3,7 @@ import sys, os, mechanize
 request = mechanize.Browser()
 
 def execute_attack(url, sql_attack_str):
+    print(f"Attack on {url} with vector {sql_attack_str}")
     request.open(url)
     request.select_form(nr=0)
     request["id"] = sql_attack_str
@@ -13,7 +14,7 @@ def execute_attack(url, sql_attack_str):
 def start_attack(url, filePath):
   with open(filePath) as f:
     for line in f:
-      execute_attack
+      execute_attack(url, line)
 
 if __name__ == '__main__':
   filePath = os.path.join(sys.path[0], "sql-inection-vectors.txt")

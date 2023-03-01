@@ -7,18 +7,21 @@ Generate the attack traffic from a pcap file or by executing a script
 Install some dependencies
 
 ```sh
-sudo apt-get install python3.9-dev
+sudo apt-get install build-essential python-dev
 ```
 
 ```sh
-pip install -r requirements.txt
+pip3.10 install -r requirements.txt
+pip3.10 install netifaces
+pip3.10 install paramiko
+pip3.10 install mechanize
 ```
 
 # Commands
 
 ```sh
 cd mmt-attacker/
-python  src/mmt-attack.py <attack_id> <interface> <target_ip> [target_port]
+python  src/mmt-attack.py <attack_id> <target_ip> [target_port]
 ```
 
 # Example

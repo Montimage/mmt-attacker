@@ -19,7 +19,7 @@
   {
     "attackId":"sql-injection-attack",
     "attackName":"SQL Injection Attack",
-    "description":"SQL Injection Attack",
+    "description":"SQL Injection Attack. Require to have at least one form in the home page of the victime: http://ip_address:port_number",
     "attackType": "script",
     "fileName":  "sql-injection.py",
     "exeApp": "python3.10"
