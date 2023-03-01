@@ -1,12 +1,13 @@
 import sys
 from attacks import find_attack_by_id, PCAP_ATTACK, SCRIPT_ATTACK
-from utils import exec_command, get_application_path, check_if_interface_exist
+from utils import exec_command, get_application_path
+from network_utils import get_online_interface
 
 TCPREPLAY_APP_NAME = 'tcpreplay-edit'
-MMT_ATTACKER_VERSION = "0.1.0"
+MMT_ATTACKER_VERSION = "0.2.0"
 
 
-def startAttack(attackID, iface, targetIP, targetPort=None):
+def startAttack(attackID, targetIP, targetPort=None):
   """Start an attack
 
   Args:
@@ -28,16 +29,18 @@ def startAttack(attackID, iface, targetIP, targetPort=None):
       if tcpreplay_edit_path == None:
         print(f"Need to install {TCPREPLAY_APP_NAME}")
         return False
-      if not check_if_interface_exist(iface):
-        print(f"Interface does not exist {iface}")
+      iface = get_online_interface()
+      if iface == None:
+        print(f"Cannot get an online interface")
         return False
+      print(f"Attack will be done on interface: {iface}")
       attackCMD = attack.attack_command( tcpreplay_edit_path, iface, targetIP, targetPort)
     elif attack.attackType == SCRIPT_ATTACK:
       script_path = get_application_path(attack.exeApp)
       if script_path == None:
         print(f"Need to install {attack.exeApp}")
         return False
-      attackCMD = attack.attack_command(script_path, iface, targetIP, targetPort)
+      attackCMD = attack.attack_command(script_path, targetIP, targetPort)
     else:
       print(f"Unsupported attack type: {attack.attackType}")
       return False
@@ -55,12 +58,12 @@ def startAttack(attackID, iface, targetIP, targetPort=None):
 if __name__ == '__main__':
   # attackID, iface, targetIP, targetPort=None
   argv_len = len(sys.argv)
-  if  argv_len < 4:
+  if  argv_len < 3:
     print("Invalid input arguments")
-    print("python mmt-attack.py <attackID> <iface> <targetIP> [targetPort]")
-  elif argv_len == 4:
-    ret = startAttack(sys.argv[1],sys.argv[2],sys.argv[3])
+    print("python mmt-attack.py <attackID> <targetIP> [targetPort]")
+  elif argv_len == 3:
+    ret = startAttack(sys.argv[1],sys.argv[2])
     print(f"Attack result: {ret}")
   else:
-    ret = startAttack(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4])
+    ret = startAttack(sys.argv[1],sys.argv[2],sys.argv[3])
     print(f"Attack result: {ret}")

@@ -1,6 +1,5 @@
-import subprocess, socket, json
+import subprocess, json
 
-allNetworkInterfaces = []
 def exec_command(cmd):
     """Execute a command in shell and return the output
 
@@ -30,43 +29,6 @@ def get_application_path(appName):
     """
     cmd = "which " + appName
     return exec_command(cmd)
-
-def get_all_interfaces():
-    """Get all available interfaces
-
-    Returns:
-        List: List of available interface
-        None: if there is no interface
-    """
-    if len(allNetworkInterfaces) == 0:
-        for iface in socket.if_nameindex():
-            allNetworkInterfaces.append(iface[1])
-    return allNetworkInterfaces
-
-def check_if_interface_exist(iface):
-    """Check if a given interface exist in the machine
-
-    Args:
-        iface (String): Interface for testing
-
-    Returns:
-        Boolean: True - if the interface exist
-                False - otherwise
-    """
-    get_all_interfaces()
-    if iface in allNetworkInterfaces:
-        return True
-    return False
-
-def get_ip_address():
-    """Get IP address of the current machine by its hostname
-
-    Returns:
-        String: The IP address
-    """
-    hostname = socket.gethostname()
-    ipAddress = socket.gethostbyname(hostname)
-    return ipAddress
 
 def read_json_file(filePath):
     """Read a json file and return JSON object(s)

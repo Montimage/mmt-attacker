@@ -44,12 +44,12 @@ if __name__ == '__main__':
   password_file = os.path.join(sys.path[0], "passwords.txt")
   # attackID, iface, targetIP, targetPort=None
   argv_len = len(sys.argv)
-  if  argv_len < 3:
+  if  argv_len < 2:
     print("Invalid input arguments")
-    print("python ssh-brute.py <iface> <targetIP> [targetPort]")
-  elif argv_len == 3:
-    ret = start_ssh_brute_force_attack(username,sys.argv[2], 22, password_file)
+    print("python ssh-brute.py <targetIP> [targetPort]")
+  elif argv_len == 2:
+    ret = start_ssh_brute_force_attack(username,sys.argv[1], 22, password_file)
     print(f"Attack result: {ret}")
   else:
-    ret = start_ssh_brute_force_attack(username,sys.argv[2],sys.argv[3], password_file)
+    ret = start_ssh_brute_force_attack(username,sys.argv[1],sys.argv[2], password_file)
     print(f"Attack result: {ret}")
