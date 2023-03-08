@@ -25,5 +25,14 @@
     "scriptFileName":  "sql_injection.py",
     "exeApp": "python3.10",
     "extraParametersHelper": "<targetURL> <control_name> <attackString1[,attackString2,attackString3]>"
+  },
+  {
+    "attackId":"slowloris",
+    "attackName":"Slowloris attack",
+    "description":"Slowloris is basically an HTTP Denial of Service attack that affects threaded servers",
+    "attackType": "script",
+    "scriptFileName":  "slowloris/slowloris.py",
+    "exeApp": "python3.10",
+    "extraParametersHelper": "<host> [-p <port> -s <number_of_sockets>] --https"
   }
 ]
