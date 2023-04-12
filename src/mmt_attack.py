@@ -4,7 +4,7 @@ from utils import exec_command, get_application_path
 from network_utils import get_online_interface
 
 TCPREPLAY_APP_NAME = 'tcpreplay-edit'
-MMT_ATTACKER_VERSION = "0.3.0"
+MMT_ATTACKER_VERSION = "0.3.1"
 
 
 def startAttack(attackID, arguments):
