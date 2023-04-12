@@ -7,7 +7,7 @@ Generate attack traffics from a pcap file or by executing a script to a specific
 Install some dependencies
 
 ```sh
-sudo apt-get install build-essential python-dev
+sudo apt-get install build-essential python-dev tcpreplay
 ```
 
 ```sh
@@ -15,6 +15,13 @@ pip3.10 install -r requirements.txt
 pip3.10 install netifaces
 pip3.10 install paramiko
 pip3.10 install mechanize
+```
+
+## Config
+Set permission for tcpreplay to access to the interface:
+
+```sh
+sudo setcap cap_net_raw=eip /usr/bin/tcprelay-edit
 ```
 
 ## Commands
@@ -28,7 +35,7 @@ python  src/mmt-attack.py <attack_id> <argument-01> <argument-02> <argument-03>
 
 ### SSH brute force attack
 ```sh
-python3.10  src/mmt_attack.py ssh-bruteforce-attack 192.168.64.5 22 montimage "mmtbox","mmt2nm","montimage"
+python3.8  src/mmt_attack.py ssh-bruteforce-attack 212.101.173.11 22 montimage "mmtbox","mmt2nm","montimage"
 ```
 
 ### SQL Injection attack
@@ -36,6 +43,12 @@ python3.10  src/mmt_attack.py ssh-bruteforce-attack 192.168.64.5 22 montimage "m
 ```sh
 python3.10  src/mmt_attack.py sql-injection-attack https://www.montimage.com/contact data[name]
 python3.10  src/mmt_attack.py sql-injection-attack https://www.montimage.com/contact data[name] \"\; DROP TABLE USERS\"
+```
+
+### Slowloris attack
+
+```sh
+python3.10 src/mmt_attack.py slowloris 217.70.184.55 -p 80 -s 100
 ```
 
 ### HTTP Version is not correct
@@ -71,6 +84,7 @@ For a script based attack
     "extraParametersHelper": "<targetIP> <targetPort> <username> <password1[,password2,password3]>" # the helper to show to guide user how to use this attack
   }
 ```
+
 ## License
 
 Montimage License

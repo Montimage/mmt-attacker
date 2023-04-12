@@ -1,5 +1,5 @@
 import sys
-from attacks import find_attack_by_id, PCAP_ATTACK, SCRIPT_ATTACK
+from attacks import find_attack_by_id, PCAP_ATTACK, SCRIPT_ATTACK, get_all_attack_ides
 from utils import exec_command, get_application_path
 from network_utils import get_online_interface
 
@@ -61,6 +61,8 @@ if __name__ == '__main__':
   if  argv_len < 3:
     print("Invalid input arguments")
     print("python mmt-attack.py <attackID> <arguments>")
+    print("Available attacks:")
+    print(get_all_attack_ides())
   else:
     attackId = sys.argv[1].strip()
     arguments = sys.argv[2:]

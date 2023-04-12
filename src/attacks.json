@@ -1,12 +1,67 @@
 [
   {
-    "attackId":"http-version-not-correct",
-    "attackName":"HTTP version is not correct",
-    "description":"Detect a request which has a HTTP version is not normal",
+    "attackId":"51-ping-of-death",
+    "attackName":"Ping of Death",
+    "description":"Send a DEATH Ping message",
     "attackType": "pcap",
-    "pcapFileName":  "71.http_version.pcap",
-    "destIP": "192.168.56.1",
-    "destPort": 80
+    "pcapFileName":  "51.ping_of_death.pcap",
+    "destIP": "142.250.179.110"
+  },
+  {
+    "attackId":"20-icmp-redirect-flood",
+    "attackName":"ICMP Redirect Flood",
+    "description":"ICMP Redirect Flood attack",
+    "attackType": "pcap",
+    "pcapFileName":  "20.icmp_redirect_flood.pcap",
+    "destIP": "142.250.179.110"
+  },
+  {
+    "attackId":"23-ip-frag-opverlapping",
+    "attackName":"IP Fragmentation Overlapping",
+    "description":"IP Fragmentation Overlapping attack",
+    "attackType": "pcap",
+    "pcapFileName":  "23.ip_frag_overlapping.pcap",
+    "destIP": "142.250.179.110"
+  },
+  {
+    "attackId":"45-tcp-maimon-scan",
+    "attackName":"TCP MAIMON Scan",
+    "description":"TCP MAIMON Scan attack",
+    "attackType": "pcap",
+    "pcapFileName":  "45.TCP_Maimon_scan.pcap",
+    "destIP": "142.250.179.110"
+  },
+  {
+    "attackId":"27-udp-scan",
+    "attackName":"UDP Scan",
+    "description":"UDP Scan attack",
+    "attackType": "pcap",
+    "pcapFileName":  "27.udp_scan.pcap",
+    "destIP": "142.250.179.110"
+  },
+  {
+    "attackId":"28-xmas-scan",
+    "attackName":"Xmas Scan",
+    "description":"Xmas Scan attack",
+    "attackType": "pcap",
+    "pcapFileName":  "28.xmas_scan.pcap",
+    "destIP": "142.250.179.110"
+  },
+  {
+    "attackId":"33-trojan",
+    "attackName":"Trojan",
+    "description":"Trojan attack",
+    "attackType": "pcap",
+    "pcapFileName":  "33.trojan.pcap",
+    "destIP": "142.250.179.110"
+  },
+  {
+    "attackId":"38-wanna-cry",
+    "attackName":"Wanna Cry",
+    "description":"Wanna Cry attack",
+    "attackType": "pcap",
+    "pcapFileName":  "38.WannaCry.pcap",
+    "destIP": "142.250.179.110"
   },
   {
     "attackId":"ssh-bruteforce-attack",
