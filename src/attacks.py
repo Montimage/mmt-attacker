@@ -91,12 +91,15 @@ def load_attacks_file(attacksFilePath):
             continue
         allAttacks.append(ScriptAttack(attack['attackId'], attack['attackName'], attack['description'], SCRIPT_ATTACK, os.path.join(SCRIPTS_PATH, attack['scriptFileName']), exeApp, attack['extraParametersHelper']))
       elif attack['attackType'] == PCAP_ATTACK:
-        allAttacks.append(PcapAttack(attack['attackId'], attack['attackName'], attack['description'], PCAP_ATTACK, os.path.join(PCAPS_PATH, attack['pcapFileName']), attack['destIP'], attack['destPort']))
+        if hasattr(attack, 'destPort'):
+          allAttacks.append(PcapAttack(attack['attackId'], attack['attackName'], attack['description'], PCAP_ATTACK, os.path.join(PCAPS_PATH, attack['pcapFileName']), attack['destIP'], attack['destPort']))
+        else:
+          allAttacks.append(PcapAttack(attack['attackId'], attack['attackName'], attack['description'], PCAP_ATTACK, os.path.join(PCAPS_PATH, attack['pcapFileName']), attack['destIP'], None))
       else:
         print(f"ERROR: Unsupported attack type: {attack['attackType']}")
         continue
     print(f"Total number of available attacks: {len(allAttacks)}")
-    print(allAttacks)
+    # print(allAttacks)
 
 def get_all_attacks():
   """Get all available attacks
