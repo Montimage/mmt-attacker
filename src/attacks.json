@@ -5,7 +5,7 @@
     "description":"Send a DEATH Ping message",
     "attackType": "pcap",
     "pcapFileName":  "51.ping_of_death.pcap",
-    "destIP": "142.250.179.110"
+    "destIP": "192.168.0.55"
   },
   {
     "attackId":"20-icmp-redirect-flood",
@@ -13,7 +13,7 @@
     "description":"ICMP Redirect Flood attack",
     "attackType": "pcap",
     "pcapFileName":  "20.icmp_redirect_flood.pcap",
-    "destIP": "142.250.179.110"
+    "destIP": "217.70.184.38"
   },
   {
     "attackId":"23-ip-frag-opverlapping",
@@ -21,7 +21,7 @@
     "description":"IP Fragmentation Overlapping attack",
     "attackType": "pcap",
     "pcapFileName":  "23.ip_frag_overlapping.pcap",
-    "destIP": "142.250.179.110"
+    "destIP": "192.168.0.101"
   },
   {
     "attackId":"45-tcp-maimon-scan",
@@ -29,7 +29,7 @@
     "description":"TCP MAIMON Scan attack",
     "attackType": "pcap",
     "pcapFileName":  "45.TCP_Maimon_scan.pcap",
-    "destIP": "142.250.179.110"
+    "destIP": "192.168.0.101"
   },
   {
     "attackId":"27-udp-scan",
@@ -37,7 +37,7 @@
     "description":"UDP Scan attack",
     "attackType": "pcap",
     "pcapFileName":  "27.udp_scan.pcap",
-    "destIP": "142.250.179.110"
+    "destIP": "192.168.0.194"
   },
   {
     "attackId":"28-xmas-scan",
@@ -45,7 +45,7 @@
     "description":"Xmas Scan attack",
     "attackType": "pcap",
     "pcapFileName":  "28.xmas_scan.pcap",
-    "destIP": "142.250.179.110"
+    "destIP": "192.168.0.194"
   },
   {
     "attackId":"33-trojan",
@@ -53,7 +53,7 @@
     "description":"Trojan attack",
     "attackType": "pcap",
     "pcapFileName":  "33.trojan.pcap",
-    "destIP": "142.250.179.110"
+    "destIP": "192.168.0.101"
   },
   {
     "attackId":"38-wanna-cry",
@@ -61,7 +61,7 @@
     "description":"Wanna Cry attack",
     "attackType": "pcap",
     "pcapFileName":  "38.WannaCry.pcap",
-    "destIP": "142.250.179.110"
+    "destIP": "192.168.0.199"
   },
   {
     "attackId":"ping-of-death",
