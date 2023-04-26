@@ -68,7 +68,7 @@
     "attackName":"Ping of Death",
     "description":"Send a DEATH Ping message",
     "attackType": "script",
-    "scriptFileName":  "ping_of_dead.py",
+    "scriptFileName":  "ping_of_death.py",
     "exeApp": "python3.10",
     "extraParametersHelper": "<targetURL>"
   },
