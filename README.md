@@ -1,111 +1,202 @@
-# mmt-attacker
+# MMT-Attacker
 
-Generate attack traffics from a pcap file or by executing a script to a specific target
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
 
-## Install
+MMT-Attacker is a powerful and flexible network attack simulation toolkit designed for security testing and network resilience assessment. It provides a comprehensive set of attack modules and PCAP replay capabilities to help security professionals evaluate network security measures in controlled environments.
 
-Install some dependencies
+## Features
 
-```sh
-sudo apt-get install build-essential python-dev tcpreplay
+- **Multiple Attack Vectors**: Support for various network and application-layer attacks
+- **PCAP Replay**: Advanced packet replay functionality with customization options
+- **Modular Design**: Easy to extend with new attack types
+- **Detailed Logging**: Comprehensive logging and monitoring capabilities
+- **Validation**: Input validation and safety checks built-in
+- **Configuration**: Flexible configuration options for each attack type
+
+### Supported Attacks
+
+- ARP Spoofing
+- SYN Flood
+- DNS Amplification
+- HTTP DoS
+- Slowloris
+- SSH Brute Force
+- SQL Injection
+- PCAP Replay
+- Ping of Death
+- Credential Harvesting
+
+## Quick Start
+
+### Prerequisites
+
+- Python 3.7 or higher
+- Root/sudo privileges (for certain attacks)
+- Network interface in promiscuous mode (for packet capture/injection)
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/montimage/mmt-attacker.git
+cd mmt-attacker
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Verify installation
+python src/cli.py --help
 ```
 
-```sh
-pip3.10 install -r requirements.txt
-pip3.10 install netifaces
-pip3.10 install paramiko
-pip3.10 install mechanize
+### Basic Usage
+
+```bash
+# List available attacks
+python src/cli.py --list
+
+# Get help for a specific attack
+python src/cli.py <attack-type> --help
+
+# Run an attack (example: HTTP DoS)
+python src/cli.py http-dos --target http://example.com --threads 10
 ```
 
-## Config
-Set permission for tcpreplay to access to the interface:
+## Documentation
 
-```sh
-sudo setcap cap_net_raw=eip /usr/bin/tcprelay-edit
+- [Detailed Playbook](docs/PLAYBOOK.md): Comprehensive guide with examples
+- [Attack Modules](docs/): Documentation for each attack type
+- [Configuration Guide](docs/): Detailed configuration options
+- [API Reference](docs/): API documentation for developers
+
+## Examples
+
+### PCAP Replay
+```bash
+python src/cli.py pcap-replay \
+    --input-file capture.pcap \
+    --interface eth0 \
+    --loop 3 \
+    --speed 2.0
 ```
 
-## Commands
-
-```sh
-cd mmt-attacker/
-python  src/mmt-attack.py <attack_id> <argument-01> <argument-02> <argument-03>
+### ARP Spoofing
+```bash
+python src/cli.py arp-spoof \
+    --target 192.168.1.100 \
+    --gateway 192.168.1.1 \
+    --interface eth0 \
+    --bidirectional
 ```
 
-## Execute a real attack
-
-### SSH brute force attack
-```sh
-python3.8  src/mmt_attack.py ssh-bruteforce-attack 212.101.173.11 22 montimage "mmtbox","mmt2nm","montimage"
+### HTTP DoS
+```bash
+python src/cli.py http-dos \
+    --target http://example.com \
+    --method POST \
+    --threads 10 \
+    --verify-success
 ```
 
-### SQL Injection attack
+## Development
 
-```sh
-python3.10  src/mmt_attack.py sql-injection-attack https://www.montimage.com/contact data[name]
-python3.10  src/mmt_attack.py sql-injection-attack https://www.montimage.com/contact data[name] \"\; DROP TABLE USERS\"
-```
-
-### Slowloris attack
-
-```sh
-python3.10 src/mmt_attack.py slowloris 217.70.184.55 -p 80 -s 100
-```
-
-## Simulate an attack based on a pcap file
-```sh
-python3.10  src/mmt_attack.py [attack_id] [target_ip_or_hostname]
-```
-
-List available attack-ids:
+### Project Structure
 
 ```
-51-ping-of-death
-20-icmp-redirect-flood
-23-ip-frag-opverlapping
-45-tcp-maimon-scan
-27-udp-scan
-28-xmas-scan
-33-trojan
-38-wanna-cry
+mmt-attacker/
+├── src/
+│   ├── cli.py              # Command-line interface
+│   ├── attacks/            # Attack implementations
+│   │   ├── __init__.py
+│   │   ├── base.py        # Base attack class
+│   │   ├── arp_spoof.py
+│   │   ├── syn_flood.py
+│   │   └── ...
+│   └── utils/             # Utility functions
+├── docs/                  # Documentation
+├── tests/                # Unit tests
+├── examples/             # Example scripts
+├── requirements.txt      # Python dependencies
+└── README.md            # This file
 ```
 
-For example, to execute the Ping of Dead attack:
+### Adding New Attacks
 
-```
-python3.10 src/mmt_attack.py 51-ping-of-death 8.8.8.8
+1. Create a new attack module in `src/attacks/`
+2. Inherit from `AttackBase` class
+3. Implement required methods:
+   - `add_arguments()`
+   - `validate()`
+   - `run()`
+4. Register the attack in `src/attacks/__init__.py`
+
+Example:
+```python
+from .base import AttackBase
+
+class NewAttack(AttackBase):
+    name = "new-attack"
+    description = "Description of the new attack"
+
+    def add_arguments(self, parser):
+        parser.add_argument('--target', required=True, help='Target')
+        # Add more arguments
+
+    def validate(self, args):
+        # Implement validation
+        return True
+
+    def run(self, args):
+        # Implement attack logic
+        pass
 ```
 
-## Add a new attack
+## Contributing
 
-Open and modify the [`src/attacks.json`](src/attacks.json) file with the required informations:
-For a pcap based attack
-```jsonc
-  {
-    "attackId":"pcap-attack-71", # Unique ID to identify the attack
-    "attackName":"HTTP version is not correct", # Name of the attack - can be use to show on a dropdown menu
-    "description":"Detect a request which has a HTTP version is not normal", # Description of the attack - describe what is the attack about, etc...
-    "attackType": "pcap", # Type of the attack - support: pcap - attack based on a pcap file, script - attack by executing a script
-    "pcapFileName":  "71.http_version.pcap", # pcap file name which contains the attack -> the pcap file must be placed in location: src/pcaps/
-    "destIP": "192.168.56.1", # The destination of the attack (target IP) in the original pcap file (can be found by using Wireshark - or MMT security)
-    "destPort": 80 # The target port of original pcap file
-  }
-```
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
-For a script based attack
-```jsonc
-{
-    "attackId":"script-attack-01",
-    "attackName":"SSH BruteForce Attack",
-    "description":"SSH BruteForce Attack",
-    "attackType": "script",
-    "scriptFileName":  "ssh-brute-force.py", # The script that will be execute to generate the attack - must be placed in location: src/scripts/
-    "exeApp": "python3.10" # The execute application to launch the attack, depends on the script: python, node, or sh (shell),
-    "extraParametersHelper": "<targetIP> <targetPort> <username> <password1[,password2,password3]>" # the helper to show to guide user how to use this attack
-  }
-```
+Please ensure your code:
+- Follows PEP 8 style guide
+- Includes appropriate tests
+- Updates documentation as needed
+- Maintains backward compatibility
+
+## Security Considerations
+
+⚠️ **WARNING**: This tool is for educational and testing purposes only.
+
+- Always obtain proper authorization before testing
+- Use in controlled environments only
+- Follow responsible disclosure practices
+- Comply with all applicable laws and regulations
 
 ## License
 
-Montimage License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-contact@montimage.com
+## Acknowledgments
+
+- Montimage Research Team
+- Open Source Community
+- Security Research Community
+
+## Support
+
+For support, please:
+1. Check the [documentation](docs/)
+2. Search [existing issues](https://github.com/montimage/mmt-attacker/issues)
+3. Create a new issue if needed
+
+## Roadmap
+
+- [ ] Additional attack vectors
+- [ ] Enhanced reporting capabilities
+- [ ] GUI interface
+- [ ] Docker containerization
+- [ ] CI/CD pipeline
+- [ ] API integration
+- [ ] Cloud deployment support

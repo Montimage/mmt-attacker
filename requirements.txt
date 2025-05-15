@@ -1,4 +1,10 @@
-scapy
+beautifulsoup4>=4.9.3
+cryptography>=3.4.7
+ipaddress>=1.0.23
+mechanize>=0.4.5
 netifaces
-paramiko
-mechanize
+paramiko>=2.7.2
+PySocks>=1.7.1
+requests>=2.25.1
+scapy>=2.4.5
+urllib3>=1.26.5
