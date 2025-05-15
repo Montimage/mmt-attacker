@@ -28,6 +28,7 @@ MMT-Attacker is a powerful and flexible network attack simulation toolkit design
 - [Credential Harvester](docs/PLAYBOOK.md#credential-harvester-attack): Phishing and credential theft simulation
 
 ## Quick Start
+Looking for the Playbook? Check out the [PLAYBOOK](docs/PLAYBOOK.md).
 
 ### Prerequisites
 
@@ -61,10 +62,6 @@ python src/cli.py <attack-type> --help
 # Run an attack (example: HTTP DoS)
 python src/cli.py http-dos --target http://example.com --threads 10
 ```
-
-## Documentation
-
-- [Detailed Playbook](docs/PLAYBOOK.md): Comprehensive guide with examples
 
 ## Examples
 
