@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Layout from './components/layout/Layout'
 import Home from './pages/Home'
+import AttackPageTemplate from './pages/attacks/AttackPageTemplate'
 
 function App() {
   return (
@@ -8,7 +9,7 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
-          {/* Attack pages will be added here */}
+          <Route path="/attacks/:attackId" element={<AttackPageTemplate />} />
         </Routes>
       </Layout>
     </Router>
