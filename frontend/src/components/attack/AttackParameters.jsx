@@ -24,7 +24,6 @@ function AttackParameters({ parameters, values, onChange, errors = {} }) {
 
   const renderParameter = (param) => {
     const commonProps = {
-      key: param.name,
       label: param.label,
       value: values[param.name] || param.defaultValue || '',
       onChange: (e) => handleChange(param.name, e.target.value),
@@ -39,6 +38,7 @@ function AttackParameters({ parameters, values, onChange, errors = {} }) {
       case 'select':
         return (
           <Select
+            key={param.name}
             {...commonProps}
             options={param.options || []}
           />
@@ -84,6 +84,7 @@ function AttackParameters({ parameters, values, onChange, errors = {} }) {
       case 'number':
         return (
           <Input
+            key={param.name}
             {...commonProps}
             type="number"
             min={param.min}
@@ -92,7 +93,7 @@ function AttackParameters({ parameters, values, onChange, errors = {} }) {
         )
 
       default:
-        return <Input {...commonProps} type={param.type || 'text'} />
+        return <Input key={param.name} {...commonProps} type={param.type || 'text'} />
     }
   }
 
