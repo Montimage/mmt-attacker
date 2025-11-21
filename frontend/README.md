@@ -1,5 +1,9 @@
 # MMT-Attacker Web Interface
 
+<p align="center">
+  <img src="public/logo.svg" alt="MMT-Attacker Logo" width="200"/>
+</p>
+
 Interactive web interface for demonstrating cybersecurity attacks from the MMT-Attacker playbook. Built with React, Vite, and Tailwind CSS.
 
 ## 🚀 Features

@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Shield, Menu, X, Home, Github, Search, Grid } from 'lucide-react'
+import { Menu, X, Home, Github, Search, Grid } from 'lucide-react'
 import { useState } from 'react'
 
 function Header() {
@@ -30,7 +30,11 @@ function Header() {
             className="flex items-center space-x-3 group"
           >
             <div className="relative p-2 bg-white border-2 border-gray-400 rounded-lg shadow-custom-md group-hover:shadow-custom-lg group-hover:-translate-y-0.5 group-hover:border-black transition-all duration-200">
-              <Shield className="w-7 h-7 text-black" />
+              <img
+                src="/logo.svg"
+                alt="MMT-Attacker Logo"
+                className="w-7 h-7 object-contain"
+              />
             </div>
             <div className="flex flex-col">
               <span className="text-xl font-bold text-black group-hover:text-gray-900 transition-colors">
