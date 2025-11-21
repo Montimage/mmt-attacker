@@ -1346,6 +1346,458 @@ export const attacksData = {
       'Monitor system resources',
       'Keep replay logs for analysis'
     ]
+  },
+
+  'udp-flood': {
+    id: 'udp-flood',
+    name: 'UDP Flood',
+    category: 'Network-Layer',
+    description: 'UDP Flood overwhelms target systems with high-volume UDP packets.',
+    theory: {
+      description: 'UDP Flood attacks overwhelm target systems by sending numerous UDP packets to random or specific ports, consuming bandwidth and processing resources.',
+      mechanism: 'The attack exploits UDP\'s stateless nature to flood targets with packets requiring processing. Each packet forces the target to check for listening services and potentially generate ICMP unreachable responses.',
+      impact: 'Exhausts bandwidth, CPU resources, and can completely saturate network links or overwhelm target systems.'
+    },
+    keyFeatures: ['Random/specific port targeting', 'IP spoofing capability', 'Variable payload sizes', 'Rate control'],
+    mermaidDiagram: `sequenceDiagram
+    A->>T: UDP Packet (Random Port)
+    T->>A: ICMP Port Unreachable
+    Note over T: Repeat at high rate`,
+    scenarios: [{
+      id: 'basic-udp-flood',
+      name: 'Basic UDP Flood',
+      description: 'Flood target with UDP packets',
+      parameters: [
+        {name: 'target', label: 'Target IP', type: 'text', required: true, validation: 'ipv4', placeholder: '192.168.1.10'},
+        {name: 'port', label: 'Port', type: 'number', placeholder: '53'},
+        {name: 'count', label: 'Packet Count', type: 'number', defaultValue: 1000},
+        {name: 'rate', label: 'Packets/sec', type: 'number', defaultValue: 100}
+      ]
+    }],
+    safetyConsiderations: ['Monitor bandwidth', 'Start with low rates', 'Verify target capacity']
+  },
+
+  'icmp-flood': {
+    id: 'icmp-flood',
+    name: 'ICMP Flood',
+    category: 'Network-Layer',
+    description: 'ICMP Flood overwhelms targets with ICMP Echo Request packets.',
+    theory: {
+      description: 'ICMP Flood (Ping Flood) overwhelms targets with ICMP Echo Request packets, consuming bandwidth and resources.',
+      mechanism: 'Sends massive volumes of ICMP Echo Request packets. Each requires processing and generates an Echo Reply.',
+      impact: 'Saturates network bandwidth and exhausts CPU resources.'
+    },
+    keyFeatures: ['High-speed generation', 'Variable packet sizes', 'IP spoofing', 'Rate limiting'],
+    mermaidDiagram: `graph LR
+    A[Attacker]-->|ICMP Echo|T[Target]
+    T-->|ICMP Reply|A`,
+    scenarios: [{
+      id: 'basic-icmp-flood',
+      name: 'Basic ICMP Flood',
+      description: 'Flood target with ICMP packets',
+      parameters: [
+        {name: 'target', label: 'Target IP', type: 'text', required: true, validation: 'ipv4'},
+        {name: 'count', label: 'Packet Count', type: 'number', defaultValue: 1000},
+        {name: 'rate', label: 'Packets/sec', type: 'number', defaultValue: 100}
+      ]
+    }],
+    safetyConsiderations: ['Monitor ICMP rate limits', 'Check network congestion']
+  },
+
+  'mitm': {
+    id: 'mitm',
+    name: 'Man-in-the-Middle (MITM)',
+    category: 'Network-Layer',
+    description: 'MITM attack using ARP spoofing to intercept traffic between hosts.',
+    theory: {
+      description: 'MITM attack uses ARP spoofing to intercept traffic between two hosts by poisoning their ARP caches.',
+      mechanism: 'Sends poisoned ARP responses to both victim and gateway, redirecting traffic through attacker.',
+      impact: 'Enables traffic interception, modification, and eavesdropping.'
+    },
+    keyFeatures: ['Bidirectional ARP poisoning', 'Automatic IP forwarding', 'Packet capture', 'Graceful cleanup'],
+    mermaidDiagram: `sequenceDiagram
+    A->>V: Poisoned ARP (Gateway)
+    A->>G: Poisoned ARP (Victim)
+    V->>A: Traffic for Gateway
+    A->>G: Forward traffic`,
+    scenarios: [{
+      id: 'basic-mitm',
+      name: 'Basic MITM',
+      description: 'Intercept traffic between victim and gateway',
+      parameters: [
+        {name: 'target', label: 'Victim IP', type: 'text', required: true, validation: 'ipv4'},
+        {name: 'gateway', label: 'Gateway IP', type: 'text', required: true, validation: 'ipv4'},
+        {name: 'interface', label: 'Interface', type: 'text', required: true, placeholder: 'eth0'},
+        {name: 'capture', label: 'Capture File', type: 'text', placeholder: 'output.pcap'}
+      ]
+    }],
+    safetyConsiderations: ['Always restore ARP tables', 'Monitor network stability', 'Enable IP forwarding properly']
+  },
+
+  'dhcp-starvation': {
+    id: 'dhcp-starvation',
+    name: 'DHCP Starvation',
+    category: 'Network-Layer',
+    description: 'Exhausts DHCP server IP address pool with spoofed requests.',
+    theory: {
+      description: 'Exhausts DHCP server IP pool by sending numerous DISCOVER requests with spoofed MAC addresses.',
+      mechanism: 'Generates random MAC addresses and sends DHCP DISCOVER requests to exhaust available IPs.',
+      impact: 'Prevents legitimate devices from obtaining IP addresses.'
+    },
+    keyFeatures: ['Random MAC generation', 'Configurable request rate', 'Pool exhaustion monitoring'],
+    mermaidDiagram: `sequenceDiagram
+    loop Multiple MACs
+      A->>D: DHCP DISCOVER (Random MAC)
+      D->>A: DHCP OFFER
+      Note over D: IP Pool Depleted
+    end`,
+    scenarios: [{
+      id: 'basic-dhcp-starvation',
+      name: 'Basic DHCP Starvation',
+      description: 'Exhaust DHCP pool',
+      parameters: [
+        {name: 'interface', label: 'Interface', type: 'text', required: true, placeholder: 'eth0'},
+        {name: 'count', label: 'Request Count', type: 'number', defaultValue: 200},
+        {name: 'rate', label: 'Requests/sec', type: 'number', defaultValue: 10}
+      ]
+    }],
+    safetyConsiderations: ['Can disrupt network services', 'Monitor DHCP server capacity', 'Have recovery plan ready']
+  },
+
+  'mac-flooding': {
+    id: 'mac-flooding',
+    name: 'MAC Flooding',
+    category: 'Network-Layer',
+    description: 'Overwhelms switch MAC table causing fail-open mode.',
+    theory: {
+      description: 'Overwhelms switch MAC address table causing it to enter fail-open mode where it broadcasts all traffic.',
+      mechanism: 'Floods switch with frames containing random source MAC addresses.',
+      impact: 'Forces switch into hub mode, broadcasting all traffic.'
+    },
+    keyFeatures: ['Random MAC generation', 'High-speed transmission', 'Switch behavior monitoring'],
+    mermaidDiagram: `graph TB
+    A[Attacker]-->|Random MAC 1|S[Switch]
+    A-->|Random MAC 2|S
+    Note[MAC Table Full]-->S`,
+    scenarios: [{
+      id: 'basic-mac-flooding',
+      name: 'Basic MAC Flooding',
+      description: 'Flood switch MAC table',
+      parameters: [
+        {name: 'interface', label: 'Interface', type: 'text', required: true, placeholder: 'eth0'},
+        {name: 'count', label: 'Frame Count', type: 'number', defaultValue: 10000},
+        {name: 'rate', label: 'Frames/sec', type: 'number', defaultValue: 500}
+      ]
+    }],
+    safetyConsiderations: ['Can disrupt entire network', 'Monitor switch CPU usage', 'Have recovery procedures']
+  },
+
+  'vlan-hopping': {
+    id: 'vlan-hopping',
+    name: 'VLAN Hopping',
+    category: 'Network-Layer',
+    description: 'Uses double VLAN tagging to bypass VLAN isolation.',
+    theory: {
+      description: 'Uses double VLAN tagging to hop between network VLANs, bypassing isolation.',
+      mechanism: 'Crafts packets with double VLAN tags to access isolated VLANs.',
+      impact: 'Bypasses VLAN segmentation and security controls.'
+    },
+    keyFeatures: ['Double VLAN tagging', 'VLAN isolation bypass', 'Configurable VLAN IDs'],
+    mermaidDiagram: `sequenceDiagram
+    A->>S: Frame with Double VLAN Tags
+    Note over S: Strip Outer Tag
+    S->>T: Forward with Inner Tag`,
+    scenarios: [{
+      id: 'basic-vlan-hopping',
+      name: 'Basic VLAN Hopping',
+      description: 'Hop between VLANs',
+      parameters: [
+        {name: 'interface', label: 'Interface', type: 'text', required: true, placeholder: 'eth0'},
+        {name: 'outerVlan', label: 'Outer VLAN ID', type: 'number', required: true, placeholder: '10'},
+        {name: 'innerVlan', label: 'Inner VLAN ID', type: 'number', required: true, placeholder: '20'},
+        {name: 'target', label: 'Target IP', type: 'text', required: true, validation: 'ipv4'}
+      ]
+    }],
+    safetyConsiderations: ['Test VLAN configuration first', 'Monitor for unexpected traffic', 'Verify switch settings']
+  },
+
+  'http-flood': {
+    id: 'http-flood',
+    name: 'HTTP Flood',
+    category: 'Application-Layer',
+    description: 'Application-layer DoS with numerous HTTP requests.',
+    theory: {
+      description: 'Application-layer DoS attack sending numerous HTTP requests to overwhelm web servers.',
+      mechanism: 'Multi-threaded requests exhaust server resources and connection pools.',
+      impact: 'Exhausts server resources, making services unavailable.'
+    },
+    keyFeatures: ['Multi-threaded requests', 'Customizable parameters', 'Connection pooling', 'Rate limiting'],
+    mermaidDiagram: `graph LR
+    A[Attacker]-->|HTTP Request 1|W[Web Server]
+    A-->|HTTP Request 2|W
+    Note[Server Exhausted]-->W`,
+    scenarios: [{
+      id: 'basic-http-flood',
+      name: 'Basic HTTP Flood',
+      description: 'Flood web server with requests',
+      parameters: [
+        {name: 'url', label: 'Target URL', type: 'text', required: true, validation: 'url', placeholder: 'http://target.com'},
+        {name: 'count', label: 'Request Count', type: 'number', defaultValue: 1000},
+        {name: 'threads', label: 'Threads', type: 'number', defaultValue: 10}
+      ]
+    }],
+    safetyConsiderations: ['Start with low thread count', 'Monitor server response', 'Check for rate limiting']
+  },
+
+  'xss': {
+    id: 'xss',
+    name: 'Cross-Site Scripting (XSS)',
+    category: 'Application-Layer',
+    description: 'Tests web applications for XSS vulnerabilities.',
+    theory: {
+      description: 'Tests for XSS vulnerabilities by injecting malicious scripts into input fields.',
+      mechanism: 'Injects various XSS payloads and analyzes responses for script execution.',
+      impact: 'Can steal cookies, hijack sessions, or deface websites.'
+    },
+    keyFeatures: ['Multiple payload testing', 'Response analysis', 'Reflected/Stored XSS detection'],
+    mermaidDiagram: `graph TB
+    A[Attacker]-->|Inject Payload|W[Web App]
+    W-->|Reflect in Response|A
+    A-->|Verify Execution|V[Vulnerability]`,
+    scenarios: [{
+      id: 'basic-xss',
+      name: 'Basic XSS Test',
+      description: 'Test for XSS vulnerabilities',
+      parameters: [
+        {name: 'url', label: 'Target URL', type: 'text', required: true, validation: 'url'},
+        {name: 'param', label: 'Parameter', type: 'text', required: true, placeholder: 'q'}
+      ]
+    }],
+    safetyConsiderations: ['Only test authorized applications', 'Don\'t execute malicious payloads', 'Report findings responsibly']
+  },
+
+  'directory-traversal': {
+    id: 'directory-traversal',
+    name: 'Directory Traversal',
+    category: 'Application-Layer',
+    description: 'Tests for directory traversal vulnerabilities.',
+    theory: {
+      description: 'Tests for directory traversal vulnerabilities by attempting to access files outside web root.',
+      mechanism: 'Uses various path traversal techniques to access sensitive files.',
+      impact: 'Can expose sensitive files and configuration data.'
+    },
+    keyFeatures: ['Multiple traversal techniques', 'Path encoding variants', 'Response pattern matching'],
+    mermaidDiagram: `graph LR
+    A[Attacker]-->|../../../etc/passwd|W[Web App]
+    W-->|File Contents or Error|A`,
+    scenarios: [{
+      id: 'basic-directory-traversal',
+      name: 'Basic Directory Traversal',
+      description: 'Test for path traversal',
+      parameters: [
+        {name: 'url', label: 'Target URL', type: 'text', required: true, validation: 'url'},
+        {name: 'param', label: 'Parameter', type: 'text', required: true, placeholder: 'file'}
+      ]
+    }],
+    safetyConsiderations: ['Test only authorized systems', 'Handle sensitive data appropriately', 'Document findings securely']
+  },
+
+  'xxe': {
+    id: 'xxe',
+    name: 'XML External Entity (XXE)',
+    category: 'Application-Layer',
+    description: 'Tests for XXE vulnerabilities in XML parsers.',
+    theory: {
+      description: 'Tests for XXE vulnerabilities by injecting malicious external entity declarations.',
+      mechanism: 'Injects XML with external entities to read files or perform SSRF.',
+      impact: 'Can read sensitive files, perform SSRF, or cause denial of service.'
+    },
+    keyFeatures: ['Multiple XXE payloads', 'File read detection', 'SSRF testing'],
+    mermaidDiagram: `sequenceDiagram
+    A->>W: XML with External Entity
+    W->>F: Parse & Load File
+    F->>W: File Contents
+    W->>A: Response with Data`,
+    scenarios: [{
+      id: 'basic-xxe',
+      name: 'Basic XXE Test',
+      description: 'Test for XXE vulnerabilities',
+      parameters: [
+        {name: 'url', label: 'Target URL', type: 'text', required: true, validation: 'url', placeholder: 'http://target.com/api/xml'}
+      ]
+    }],
+    safetyConsiderations: ['Test only with authorization', 'Be cautious with file access', 'Report vulnerabilities properly']
+  },
+
+  'ssl-strip': {
+    id: 'ssl-strip',
+    name: 'SSL Strip',
+    category: 'Application-Layer',
+    description: 'Downgrades HTTPS connections to HTTP (simulation).',
+    theory: {
+      description: 'Simulates downgrading HTTPS connections to HTTP by intercepting and modifying traffic.',
+      mechanism: 'Intercepts HTTPS requests and proxies as HTTP, stripping encryption.',
+      impact: 'Exposes sensitive data transmitted over connections.'
+    },
+    keyFeatures: ['HTTPS downgrade simulation', 'Traffic interception', 'Educational demonstration'],
+    mermaidDiagram: `graph LR
+    V[Victim]-->|HTTPS Request|A[Attacker]
+    A-->|HTTP Request|S[Server]
+    S-->|HTTPS Response|A
+    A-->|HTTP Response|V`,
+    scenarios: [{
+      id: 'basic-ssl-strip',
+      name: 'Basic SSL Strip',
+      description: 'Simulate SSL stripping',
+      parameters: [
+        {name: 'interface', label: 'Interface', type: 'text', required: true, placeholder: 'eth0'}
+      ]
+    }],
+    safetyConsiderations: ['Requires MITM position', 'Detectable by HSTS', 'Educational simulation only']
+  },
+
+  'bgp-hijacking': {
+    id: 'bgp-hijacking',
+    name: 'BGP Hijacking',
+    category: 'Network-Layer',
+    description: 'Simulates BGP route advertisement manipulation.',
+    theory: {
+      description: 'Simulates BGP route advertisement manipulation for educational purposes.',
+      mechanism: 'Demonstrates BGP route manipulation concepts without actual BGP interaction.',
+      impact: 'In real scenarios, can redirect traffic through attacker infrastructure.'
+    },
+    keyFeatures: ['Route announcement simulation', 'AS path manipulation', 'Educational demonstration'],
+    mermaidDiagram: `graph LR
+    A[Attacker]-->|Announce Route|R[Router]
+    R-->|Update Routing|I[Internet]
+    Note[Traffic Redirected]-->I`,
+    scenarios: [{
+      id: 'basic-bgp-hijacking',
+      name: 'Basic BGP Hijacking Simulation',
+      description: 'Simulate BGP hijacking',
+      parameters: [
+        {name: 'prefix', label: 'IP Prefix', type: 'text', required: true, placeholder: '1.2.3.0/24'},
+        {name: 'asNumber', label: 'AS Number', type: 'number', required: true, placeholder: '65000'}
+      ]
+    }],
+    safetyConsiderations: ['Simulation only', 'Requires BGP router access in reality', 'Highly regulated attack type']
+  },
+
+  'smurf-attack': {
+    id: 'smurf-attack',
+    name: 'Smurf Attack',
+    category: 'Amplification',
+    description: 'Amplification attack using ICMP broadcast.',
+    theory: {
+      description: 'Amplification attack using ICMP broadcast to multiply traffic toward victim.',
+      mechanism: 'Sends ICMP Echo to broadcast address with spoofed source (victim IP).',
+      impact: 'Amplifies attack traffic through broadcast responses.'
+    },
+    keyFeatures: ['ICMP broadcast exploitation', 'IP spoofing', 'Amplification factor', 'Bandwidth multiplication'],
+    mermaidDiagram: `sequenceDiagram
+    A->>B: ICMP Echo (Spoofed: Victim)
+    B->>V: ICMP Replies from All Hosts`,
+    scenarios: [{
+      id: 'basic-smurf',
+      name: 'Basic Smurf Attack',
+      description: 'Amplify traffic via broadcast',
+      parameters: [
+        {name: 'victim', label: 'Victim IP', type: 'text', required: true, validation: 'ipv4'},
+        {name: 'broadcast', label: 'Broadcast IP', type: 'text', required: true, placeholder: '192.168.1.255'},
+        {name: 'count', label: 'Packet Count', type: 'number', defaultValue: 100}
+      ]
+    }],
+    safetyConsiderations: ['Massive amplification possible', 'Monitor network load', 'Restricted by modern networks']
+  },
+
+  'ntp-amplification': {
+    id: 'ntp-amplification',
+    name: 'NTP Amplification',
+    category: 'Amplification',
+    description: 'Exploits NTP servers to amplify traffic toward victim.',
+    theory: {
+      description: 'Exploits NTP servers to amplify traffic using monlist command.',
+      mechanism: 'Sends NTP queries with spoofed source (victim IP) to NTP servers.',
+      impact: 'Extremely high amplification factor (up to 500x).'
+    },
+    keyFeatures: ['Multiple NTP server support', 'High amplification factor', 'Query type selection'],
+    mermaidDiagram: `sequenceDiagram
+    A->>N: NTP Query (Spoofed: Victim)
+    N->>V: Large NTP Response
+    Note over V: Amplification ~500x`,
+    scenarios: [{
+      id: 'basic-ntp-amplification',
+      name: 'Basic NTP Amplification',
+      description: 'Amplify via NTP servers',
+      parameters: [
+        {name: 'victim', label: 'Victim IP', type: 'text', required: true, validation: 'ipv4'},
+        {name: 'ntpServers', label: 'NTP Servers', type: 'text', required: true, placeholder: '1.2.3.4,5.6.7.8'},
+        {name: 'count', label: 'Packet Count', type: 'number', defaultValue: 100}
+      ]
+    }],
+    safetyConsiderations: ['Extremely high amplification', 'Most servers patched', 'Illegal without authorization']
+  },
+
+  'ftp-brute-force': {
+    id: 'ftp-brute-force',
+    name: 'FTP Brute Force',
+    category: 'Credential',
+    description: 'Attempts to gain FTP access via credential brute forcing.',
+    theory: {
+      description: 'Attempts to gain FTP access by systematically trying username/password combinations.',
+      mechanism: 'Iterates through password lists trying to authenticate to FTP servers.',
+      impact: 'Can compromise FTP accounts with weak credentials.'
+    },
+    keyFeatures: ['Password list support', 'Connection management', 'Success detection', 'Result logging'],
+    mermaidDiagram: `graph TB
+    Start-->Try[Try Credentials]
+    Try-->Check{Success?}
+    Check-->|No|Next[Next Password]
+    Check-->|Yes|Log[Log Success]
+    Next-->Try`,
+    scenarios: [{
+      id: 'basic-ftp-brute',
+      name: 'Basic FTP Brute Force',
+      description: 'Brute force FTP credentials',
+      parameters: [
+        {name: 'host', label: 'FTP Host', type: 'text', required: true, placeholder: '192.168.1.10'},
+        {name: 'port', label: 'Port', type: 'number', defaultValue: 21},
+        {name: 'username', label: 'Username', type: 'text', required: true, placeholder: 'admin'},
+        {name: 'passwords', label: 'Password List', type: 'textarea', required: true, placeholder: 'password1\npassword2'}
+      ]
+    }],
+    safetyConsiderations: ['Respect rate limits', 'Avoid account lockouts', 'Monitor for detection']
+  },
+
+  'rdp-brute-force': {
+    id: 'rdp-brute-force',
+    name: 'RDP Brute Force',
+    category: 'Credential',
+    description: 'Simulates RDP brute force attempts (educational).',
+    theory: {
+      description: 'Simulates RDP brute force attempts for educational purposes.',
+      mechanism: 'Demonstrates credential brute forcing concepts for RDP.',
+      impact: 'Real RDP brute force can compromise Windows systems.'
+    },
+    keyFeatures: ['Password list iteration', 'Connection simulation', 'Educational demonstration'],
+    mermaidDiagram: `graph TB
+    Start-->Try[Try Credentials]
+    Try-->Check{Success?}
+    Check-->|No|Next[Next Password]
+    Check-->|Yes|Log[Log Success]
+    Next-->Try`,
+    scenarios: [{
+      id: 'basic-rdp-brute',
+      name: 'Basic RDP Brute Force',
+      description: 'Simulate RDP brute force',
+      parameters: [
+        {name: 'host', label: 'RDP Host', type: 'text', required: true, placeholder: '192.168.1.10'},
+        {name: 'port', label: 'Port', type: 'number', defaultValue: 3389},
+        {name: 'username', label: 'Username', type: 'text', required: true, placeholder: 'administrator'},
+        {name: 'passwords', label: 'Password List', type: 'textarea', required: true, placeholder: 'password1\npassword2'}
+      ]
+    }],
+    safetyConsiderations: ['Simulation only', 'Real RDP requires specialized libraries', 'High detection rate']
   }
 }
 
@@ -1375,5 +1827,4 @@ export const getAttacksByCategory = (category) => {
  */
 export const getCategories = () => {
   const categories = [...new Set(Object.values(attacksData).map(attack => attack.category))]
-  return categories
-}
+  return categories}

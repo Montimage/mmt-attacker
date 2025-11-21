@@ -658,6 +658,38 @@ export const simulateAttack = async (attackId, scenarioId, parameters) => {
       return simulateCredentialHarvester(scenarioId, parameters)
     case 'pcap-replay':
       return simulatePcapReplay(scenarioId, parameters)
+    case 'udp-flood':
+      return simulateUdpFlood(scenarioId, parameters)
+    case 'icmp-flood':
+      return simulateIcmpFlood(scenarioId, parameters)
+    case 'mitm':
+      return simulateMitm(scenarioId, parameters)
+    case 'dhcp-starvation':
+      return simulateDhcpStarvation(scenarioId, parameters)
+    case 'mac-flooding':
+      return simulateMacFlooding(scenarioId, parameters)
+    case 'vlan-hopping':
+      return simulateVlanHopping(scenarioId, parameters)
+    case 'http-flood':
+      return simulateHttpFlood(scenarioId, parameters)
+    case 'xss':
+      return simulateXss(scenarioId, parameters)
+    case 'directory-traversal':
+      return simulateDirectoryTraversal(scenarioId, parameters)
+    case 'xxe':
+      return simulateXxe(scenarioId, parameters)
+    case 'ssl-strip':
+      return simulateSslStrip(scenarioId, parameters)
+    case 'bgp-hijacking':
+      return simulateBgpHijacking(scenarioId, parameters)
+    case 'smurf-attack':
+      return simulateSmurfAttack(scenarioId, parameters)
+    case 'ntp-amplification':
+      return simulateNtpAmplification(scenarioId, parameters)
+    case 'ftp-brute-force':
+      return simulateFtpBruteForce(scenarioId, parameters)
+    case 'rdp-brute-force':
+      return simulateRdpBruteForce(scenarioId, parameters)
     default:
       return {
         success: false,
@@ -690,3 +722,521 @@ export const validateParameters = (attackId, scenarioId, parameters) => {
     errors
   }
 }
+
+
+// UDP Flood simulation
+const simulateUdpFlood = (scenarioId, params) => {
+  const timeline = []
+  const packets = params.count || 1000
+  const rate = params.rate || 100
+  const duration = (packets / rate).toFixed(1)
+
+  timeline.push({ time: 0, message: 'Initializing UDP flood attack...', type: 'info' })
+  timeline.push({ time: 500, message: `Target: ${params.target}:${params.port || 'random'}`, type: 'info' })
+  timeline.push({ time: 700, message: `Packet rate: ${rate} packets/sec`, type: 'info' })
+  timeline.push({ time: 1000, message: 'Generating UDP packets...', type: 'progress' })
+  timeline.push({ time: 2000, message: `Sent ${Math.floor(packets * 0.5)} packets...`, type: 'info' })
+  timeline.push({ time: 3000, message: `Sent ${packets} packets`, type: 'success' })
+  timeline.push({ time: 3500, message: `Target bandwidth saturated`, type: 'warning' })
+
+  return {
+    success: true,
+    timeline,
+    metrics: {
+      packetsSent: packets,
+      bandwidth: `${(packets * 512 / 1024).toFixed(2)} KB`,
+      duration: `${duration}s`,
+      packetsPerSecond: rate
+    },
+    explanation: {
+      happening: 'UDP flood is overwhelming the target with high-volume UDP packets.',
+      highlights: [`${packets} packets sent`, `${rate} packets/sec`, 'Target saturated'],
+      interpretation: `Successfully flooded ${params.target} with ${packets} UDP packets, consuming bandwidth and processing resources.`
+    }
+  }
+}
+
+// ICMP Flood simulation
+const simulateIcmpFlood = (scenarioId, params) => {
+  const timeline = []
+  const packets = params.count || 1000
+  
+  timeline.push({ time: 0, message: 'Initializing ICMP flood...', type: 'info' })
+  timeline.push({ time: 500, message: `Target: ${params.target}`, type: 'info' })
+  timeline.push({ time: 1000, message: 'Sending ICMP echo requests...', type: 'progress' })
+  timeline.push({ time: 2000, message: `Sent ${packets} ICMP packets`, type: 'success' })
+  timeline.push({ time: 2500, message: 'Target processing overhead increased', type: 'warning' })
+
+  return {
+    success: true,
+    timeline,
+    metrics: {
+      packetsSent: packets,
+      icmpReplies: Math.floor(packets * 0.9),
+      bandwidth: `${(packets * 64 / 1024).toFixed(2)} KB`
+    },
+    explanation: {
+      happening: 'ICMP flood is overwhelming target with ping requests.',
+      highlights: [`${packets} ICMP packets`, 'Target responding', 'Resources consumed'],
+      interpretation: `ICMP flood attack sent ${packets} ping packets to ${params.target}, forcing the target to process and respond to each one.`
+    }
+  }
+}
+
+// MITM simulation  
+const simulateMitm = (scenarioId, params) => {
+  const timeline = []
+  
+  timeline.push({ time: 0, message: 'Initializing MITM attack...', type: 'info' })
+  timeline.push({ time: 500, message: `Target: ${params.target}`, type: 'info' })
+  timeline.push({ time: 700, message: `Gateway: ${params.gateway}`, type: 'info' })
+  timeline.push({ time: 1000, message: 'Resolving MAC addresses...', type: 'progress' })
+  timeline.push({ time: 1500, message: 'Sending ARP poison packets...', type: 'progress' })
+  timeline.push({ time: 2000, message: 'ARP caches poisoned', type: 'success' })
+  timeline.push({ time: 2500, message: 'Traffic interception active', type: 'success' })
+  timeline.push({ time: 3000, message: 'Intercepting packets...', type: 'info' })
+
+  return {
+    success: true,
+    timeline,
+    metrics: {
+      poisonPackets: 20,
+      interceptedPackets: random(50, 200),
+      duration: '3.0s'
+    },
+    explanation: {
+      happening: 'Traffic between victim and gateway is being intercepted.',
+      highlights: ['ARP poisoning active', 'Packets intercepted', 'IP forwarding enabled'],
+      interpretation: `Successfully positioned between ${params.target} and ${params.gateway}. All traffic is flowing through attacker's machine.`
+    }
+  }
+}
+
+/**
+ * Simulate DHCP Starvation attack
+ */
+const simulateDhcpStarvation = (scenarioId, params) => {
+  const timeline = []
+  const count = params.count || 200
+  const rate = params.rate || 10
+
+  timeline.push({ time: 0, message: 'Initializing DHCP starvation attack...', type: 'info' })
+  timeline.push({ time: 500, message: `Interface: ${params.interface}`, type: 'info' })
+  timeline.push({ time: 700, message: `Generating ${count} DHCP requests...`, type: 'progress' })
+  timeline.push({ time: 1500, message: 'Sending DHCP DISCOVER packets...', type: 'progress' })
+  timeline.push({ time: 2500, message: `Sent ${Math.floor(count * 0.5)} requests...`, type: 'info' })
+  timeline.push({ time: 3500, message: `Sent ${count} requests`, type: 'success' })
+  timeline.push({ time: 4000, message: 'DHCP pool exhaustion in progress', type: 'warning' })
+
+  return {
+    success: true,
+    timeline,
+    metrics: {
+      requestsSent: count,
+      rate: `${rate}/sec`,
+      poolStatus: 'Depleted',
+      duration: '4.0s'
+    },
+    explanation: {
+      happening: 'DHCP server IP pool is being exhausted with spoofed MAC addresses.',
+      highlights: [`${count} requests sent`, 'Random MAC addresses', 'Pool depletion'],
+      interpretation: `The attack generated ${count} DHCP DISCOVER requests with random MAC addresses, exhausting the server's available IP pool.`
+    }
+  }
+}
+
+/**
+ * Simulate MAC Flooding attack
+ */
+const simulateMacFlooding = (scenarioId, params) => {
+  const timeline = []
+  const count = params.count || 10000
+  const rate = params.rate || 500
+
+  timeline.push({ time: 0, message: 'Initializing MAC flooding attack...', type: 'info' })
+  timeline.push({ time: 500, message: `Interface: ${params.interface}`, type: 'info' })
+  timeline.push({ time: 700, message: 'Generating random MAC addresses...', type: 'progress' })
+  timeline.push({ time: 1500, message: 'Flooding switch with frames...', type: 'progress' })
+  timeline.push({ time: 2500, message: `Sent ${Math.floor(count * 0.3)} frames...`, type: 'info' })
+  timeline.push({ time: 3500, message: `Sent ${Math.floor(count * 0.7)} frames...`, type: 'info' })
+  timeline.push({ time: 4500, message: `Sent ${count} frames`, type: 'success' })
+  timeline.push({ time: 5000, message: 'Switch MAC table overflowed - entering fail-open mode', type: 'warning' })
+
+  return {
+    success: true,
+    timeline,
+    metrics: {
+      framesSent: count,
+      rate: `${rate}/sec`,
+      switchStatus: 'Fail-open',
+      duration: '5.0s'
+    },
+    explanation: {
+      happening: 'Switch MAC address table is overflowed, causing it to broadcast all traffic.',
+      highlights: [`${count} frames sent`, 'Random MACs', 'Fail-open mode'],
+      interpretation: `The switch's MAC table was overwhelmed with ${count} random MAC addresses, forcing it into fail-open mode where it broadcasts all traffic.`
+    }
+  }
+}
+
+/**
+ * Simulate VLAN Hopping attack
+ */
+const simulateVlanHopping = (scenarioId, params) => {
+  const timeline = []
+  const count = params.count || 100
+
+  timeline.push({ time: 0, message: 'Initializing VLAN hopping attack...', type: 'info' })
+  timeline.push({ time: 500, message: `Interface: ${params.interface}`, type: 'info' })
+  timeline.push({ time: 700, message: `Outer VLAN: ${params.outerVlan}`, type: 'info' })
+  timeline.push({ time: 900, message: `Inner VLAN: ${params.innerVlan}`, type: 'info' })
+  timeline.push({ time: 1200, message: 'Crafting double-tagged packets...', type: 'progress' })
+  timeline.push({ time: 2000, message: 'Sending packets to target...', type: 'progress' })
+  timeline.push({ time: 3000, message: `${count} packets sent successfully`, type: 'success' })
+  timeline.push({ time: 3500, message: 'VLAN isolation bypassed', type: 'warning' })
+
+  return {
+    success: true,
+    timeline,
+    metrics: {
+      packetsSent: count,
+      outerVlan: params.outerVlan,
+      innerVlan: params.innerVlan,
+      target: params.target,
+      duration: '3.5s'
+    },
+    explanation: {
+      happening: 'Double-tagged packets are bypassing VLAN isolation.',
+      highlights: ['VLAN hopping successful', 'Double tagging', 'Isolation bypassed'],
+      interpretation: `Successfully hopped from VLAN ${params.outerVlan} to VLAN ${params.innerVlan} using double VLAN tagging, reaching ${params.target}.`
+    }
+  }
+}
+
+/**
+ * Simulate HTTP Flood attack
+ */
+const simulateHttpFlood = (scenarioId, params) => {
+  const timeline = []
+  const count = params.count || 1000
+  const threads = params.threads || 10
+
+  timeline.push({ time: 0, message: 'Initializing HTTP flood attack...', type: 'info' })
+  timeline.push({ time: 500, message: `Target URL: ${params.url}`, type: 'info' })
+  timeline.push({ time: 700, message: `Threads: ${threads}`, type: 'info' })
+  timeline.push({ time: 1000, message: 'Starting multi-threaded flood...', type: 'progress' })
+  timeline.push({ time: 2000, message: `Sent ${Math.floor(count * 0.3)} requests...`, type: 'info' })
+  timeline.push({ time: 3000, message: `Sent ${Math.floor(count * 0.6)} requests...`, type: 'info' })
+  timeline.push({ time: 4000, message: `Sent ${count} requests`, type: 'success' })
+  timeline.push({ time: 4500, message: 'Server response time degraded', type: 'warning' })
+
+  return {
+    success: true,
+    timeline,
+    metrics: {
+      requestsSent: count,
+      threads: threads,
+      avgResponseTime: `${random(500, 3000)}ms`,
+      errors: random(10, 50),
+      duration: '4.5s'
+    },
+    explanation: {
+      happening: 'Web server is being overwhelmed with HTTP requests.',
+      highlights: [`${count} requests sent`, `${threads} threads`, 'Server degraded'],
+      interpretation: `Flooded ${params.url} with ${count} HTTP requests using ${threads} parallel threads. Server response time has increased significantly.`
+    }
+  }
+}
+
+/**
+ * Simulate XSS attack
+ */
+const simulateXss = (scenarioId, params) => {
+  const timeline = []
+  const payloads = random(5, 15)
+  const vulnerable = random(1, 3)
+
+  timeline.push({ time: 0, message: 'Initializing XSS vulnerability scan...', type: 'info' })
+  timeline.push({ time: 500, message: `Target URL: ${params.url}`, type: 'info' })
+  timeline.push({ time: 700, message: `Testing parameter: ${params.param}`, type: 'info' })
+  timeline.push({ time: 1000, message: `Testing ${payloads} XSS payloads...`, type: 'progress' })
+  timeline.push({ time: 2000, message: 'Analyzing responses...', type: 'progress' })
+  timeline.push({ time: 3000, message: `Found ${vulnerable} potential vulnerabilities`, type: vulnerable > 0 ? 'warning' : 'success' })
+  timeline.push({ time: 3500, message: 'Scan complete', type: 'success' })
+
+  return {
+    success: true,
+    timeline,
+    metrics: {
+      payloadsTested: payloads,
+      vulnerabilitiesFound: vulnerable,
+      parameter: params.param,
+      duration: '3.5s'
+    },
+    explanation: {
+      happening: 'XSS payloads are being tested against the target application.',
+      highlights: [`${payloads} payloads tested`, `${vulnerable} vulnerabilities`, 'Response analysis'],
+      interpretation: `Tested ${payloads} XSS payloads against parameter '${params.param}' at ${params.url}. ${vulnerable > 0 ? `Found ${vulnerable} potential XSS vulnerabilities.` : 'No vulnerabilities found.'}`
+    }
+  }
+}
+
+/**
+ * Simulate Directory Traversal attack
+ */
+const simulateDirectoryTraversal = (scenarioId, params) => {
+  const timeline = []
+  const payloads = random(8, 20)
+  const vulnerable = random(0, 2)
+
+  timeline.push({ time: 0, message: 'Initializing directory traversal scan...', type: 'info' })
+  timeline.push({ time: 500, message: `Target URL: ${params.url}`, type: 'info' })
+  timeline.push({ time: 700, message: `Testing parameter: ${params.param}`, type: 'info' })
+  timeline.push({ time: 1000, message: `Testing ${payloads} traversal payloads...`, type: 'progress' })
+  timeline.push({ time: 2500, message: 'Analyzing file access patterns...', type: 'progress' })
+  timeline.push({ time: 3500, message: `${vulnerable > 0 ? 'Vulnerability detected!' : 'No vulnerabilities found'}`, type: vulnerable > 0 ? 'warning' : 'success' })
+
+  return {
+    success: true,
+    timeline,
+    metrics: {
+      payloadsTested: payloads,
+      vulnerabilitiesFound: vulnerable,
+      parameter: params.param,
+      duration: '3.5s'
+    },
+    explanation: {
+      happening: 'Testing for directory traversal vulnerabilities using various path manipulation techniques.',
+      highlights: [`${payloads} payloads`, `${vulnerable} vulnerabilities`, 'Path analysis'],
+      interpretation: `Tested ${payloads} directory traversal payloads against '${params.param}'. ${vulnerable > 0 ? `Found ${vulnerable} potential vulnerabilities allowing file access outside web root.` : 'Application appears secure.'}`
+    }
+  }
+}
+
+/**
+ * Simulate XXE attack
+ */
+const simulateXxe = (scenarioId, params) => {
+  const timeline = []
+  const payloads = random(5, 10)
+  const vulnerable = random(0, 1)
+
+  timeline.push({ time: 0, message: 'Initializing XXE vulnerability scan...', type: 'info' })
+  timeline.push({ time: 500, message: `Target URL: ${params.url}`, type: 'info' })
+  timeline.push({ time: 1000, message: `Testing ${payloads} XXE payloads...`, type: 'progress' })
+  timeline.push({ time: 2000, message: 'Analyzing XML parser behavior...', type: 'progress' })
+  timeline.push({ time: 3000, message: `${vulnerable > 0 ? 'XXE vulnerability detected!' : 'No vulnerabilities found'}`, type: vulnerable > 0 ? 'warning' : 'success' })
+
+  return {
+    success: true,
+    timeline,
+    metrics: {
+      payloadsTested: payloads,
+      vulnerabilitiesFound: vulnerable,
+      xxeType: vulnerable > 0 ? 'File read' : 'None',
+      duration: '3.0s'
+    },
+    explanation: {
+      happening: 'Testing XML parser for external entity injection vulnerabilities.',
+      highlights: [`${payloads} payloads`, `${vulnerable} vulnerabilities`, 'Parser analysis'],
+      interpretation: `Tested ${payloads} XXE payloads against ${params.url}. ${vulnerable > 0 ? 'XML parser is vulnerable to external entity injection, allowing file reads.' : 'XML parser properly validates external entities.'}`
+    }
+  }
+}
+
+/**
+ * Simulate SSL Strip attack
+ */
+const simulateSslStrip = (scenarioId, params) => {
+  const timeline = []
+  const connections = random(5, 20)
+
+  timeline.push({ time: 0, message: 'Initializing SSL strip attack (simulation)...', type: 'info' })
+  timeline.push({ time: 500, message: `Interface: ${params.interface}`, type: 'info' })
+  timeline.push({ time: 1000, message: 'Setting up transparent proxy...', type: 'progress' })
+  timeline.push({ time: 2000, message: 'Intercepting HTTPS traffic...', type: 'progress' })
+  timeline.push({ time: 3000, message: `Downgraded ${connections} connections to HTTP`, type: 'warning' })
+  timeline.push({ time: 3500, message: 'SSL stripping active (simulation)', type: 'info' })
+
+  return {
+    success: true,
+    timeline,
+    metrics: {
+      connectionsDowngraded: connections,
+      interface: params.interface,
+      mode: 'Simulation',
+      duration: '3.5s'
+    },
+    explanation: {
+      happening: 'HTTPS connections are being downgraded to HTTP (educational simulation).',
+      highlights: [`${connections} connections`, 'HTTPS downgrade', 'Simulation mode'],
+      interpretation: `Simulated SSL stripping attack downgrading ${connections} HTTPS connections to HTTP. In reality, this requires MITM position and is detectable by HSTS.`
+    }
+  }
+}
+
+/**
+ * Simulate BGP Hijacking attack
+ */
+const simulateBgpHijacking = (scenarioId, params) => {
+  const timeline = []
+
+  timeline.push({ time: 0, message: 'Initializing BGP hijacking simulation...', type: 'info' })
+  timeline.push({ time: 500, message: `Target prefix: ${params.prefix}`, type: 'info' })
+  timeline.push({ time: 700, message: `AS Number: ${params.asNumber}`, type: 'info' })
+  timeline.push({ time: 1000, message: 'Simulating route announcement...', type: 'progress' })
+  timeline.push({ time: 2000, message: 'Route propagation simulated', type: 'info' })
+  timeline.push({ time: 2500, message: 'BGP hijacking simulation complete', type: 'success' })
+
+  return {
+    success: true,
+    timeline,
+    metrics: {
+      prefix: params.prefix,
+      asNumber: params.asNumber,
+      mode: 'Educational simulation',
+      duration: '2.5s'
+    },
+    explanation: {
+      happening: 'Simulating BGP route hijacking for educational purposes.',
+      highlights: ['Route announcement', 'AS path manipulation', 'Simulation only'],
+      interpretation: `Educational simulation of BGP hijacking for prefix ${params.prefix} using AS ${params.asNumber}. Real BGP hijacking requires router access and is highly regulated.`
+    }
+  }
+}
+
+/**
+ * Simulate Smurf Attack
+ */
+const simulateSmurfAttack = (scenarioId, params) => {
+  const timeline = []
+  const count = params.count || 100
+  const amplification = random(10, 50)
+
+  timeline.push({ time: 0, message: 'Initializing Smurf attack...', type: 'info' })
+  timeline.push({ time: 500, message: `Victim: ${params.victim}`, type: 'info' })
+  timeline.push({ time: 700, message: `Broadcast: ${params.broadcast}`, type: 'info' })
+  timeline.push({ time: 1000, message: 'Sending ICMP to broadcast address...', type: 'progress' })
+  timeline.push({ time: 2000, message: `Sent ${count} packets`, type: 'info' })
+  timeline.push({ time: 3000, message: `Amplification factor: ${amplification}x`, type: 'warning' })
+  timeline.push({ time: 3500, message: 'Traffic amplification complete', type: 'success' })
+
+  return {
+    success: true,
+    timeline,
+    metrics: {
+      packetsSent: count,
+      amplificationFactor: `${amplification}x`,
+      victim: params.victim,
+      broadcast: params.broadcast,
+      duration: '3.5s'
+    },
+    explanation: {
+      happening: 'ICMP broadcast is amplifying attack traffic toward victim.',
+      highlights: [`${count} packets`, `${amplification}x amplification`, 'Broadcast exploitation'],
+      interpretation: `Sent ${count} spoofed ICMP packets to ${params.broadcast}, resulting in ${amplification}x amplification toward victim ${params.victim}.`
+    }
+  }
+}
+
+/**
+ * Simulate NTP Amplification attack
+ */
+const simulateNtpAmplification = (scenarioId, params) => {
+  const timeline = []
+  const count = params.count || 100
+  const amplification = random(200, 500)
+
+  timeline.push({ time: 0, message: 'Initializing NTP amplification attack...', type: 'info' })
+  timeline.push({ time: 500, message: `Victim: ${params.victim}`, type: 'info' })
+  timeline.push({ time: 700, message: `NTP Servers: ${params.ntpServers}`, type: 'info' })
+  timeline.push({ time: 1000, message: 'Sending NTP queries with spoofed source...', type: 'progress' })
+  timeline.push({ time: 2500, message: `Sent ${count} queries`, type: 'info' })
+  timeline.push({ time: 3500, message: `Amplification factor: ${amplification}x`, type: 'warning' })
+  timeline.push({ time: 4000, message: 'NTP amplification attack complete', type: 'success' })
+
+  return {
+    success: true,
+    timeline,
+    metrics: {
+      queriesSent: count,
+      amplificationFactor: `${amplification}x`,
+      victim: params.victim,
+      ntpServers: params.ntpServers.split(',').length,
+      duration: '4.0s'
+    },
+    explanation: {
+      happening: 'NTP servers are amplifying traffic toward victim using monlist queries.',
+      highlights: [`${count} queries`, `${amplification}x amplification`, 'Multiple NTP servers'],
+      interpretation: `Sent ${count} spoofed NTP queries, achieving ${amplification}x amplification factor toward victim ${params.victim}. Modern NTP servers are typically patched against this.`
+    }
+  }
+}
+
+/**
+ * Simulate FTP Brute Force attack
+ */
+const simulateFtpBruteForce = (scenarioId, params) => {
+  const timeline = []
+  const passwords = params.passwords.split('\n').filter(p => p.trim())
+  const success = random(0, 1) === 1
+  const attempts = success ? random(5, passwords.length) : passwords.length
+
+  timeline.push({ time: 0, message: 'Initializing FTP brute force attack...', type: 'info' })
+  timeline.push({ time: 500, message: `Target: ${params.host}:${params.port || 21}`, type: 'info' })
+  timeline.push({ time: 700, message: `Username: ${params.username}`, type: 'info' })
+  timeline.push({ time: 1000, message: `Testing ${passwords.length} passwords...`, type: 'progress' })
+  timeline.push({ time: 2000, message: `Attempted ${Math.floor(attempts * 0.5)} passwords...`, type: 'info' })
+  timeline.push({ time: 3000, message: `Attempted ${attempts} passwords`, type: 'info' })
+  timeline.push({ time: 3500, message: success ? 'Valid credentials found!' : 'No valid credentials found', type: success ? 'warning' : 'info' })
+
+  return {
+    success: true,
+    timeline,
+    metrics: {
+      attempts: attempts,
+      totalPasswords: passwords.length,
+      credentialsFound: success,
+      duration: '3.5s'
+    },
+    explanation: {
+      happening: 'Testing password combinations against FTP server.',
+      highlights: [`${attempts} attempts`, success ? 'Credentials found' : 'No success', `User: ${params.username}`],
+      interpretation: `Attempted ${attempts} passwords for user '${params.username}' on ${params.host}. ${success ? 'Found valid credentials!' : 'No valid credentials discovered.'}`
+    }
+  }
+}
+
+/**
+ * Simulate RDP Brute Force attack
+ */
+const simulateRdpBruteForce = (scenarioId, params) => {
+  const timeline = []
+  const passwords = params.passwords.split('\n').filter(p => p.trim())
+  const success = random(0, 1) === 1
+  const attempts = success ? random(3, Math.min(10, passwords.length)) : Math.min(10, passwords.length)
+
+  timeline.push({ time: 0, message: 'Initializing RDP brute force simulation...', type: 'info' })
+  timeline.push({ time: 500, message: `Target: ${params.host}:${params.port || 3389}`, type: 'info' })
+  timeline.push({ time: 700, message: `Username: ${params.username}`, type: 'info' })
+  timeline.push({ time: 1000, message: 'Simulating connection attempts...', type: 'progress' })
+  timeline.push({ time: 2500, message: `Attempted ${attempts} passwords`, type: 'info' })
+  timeline.push({ time: 3000, message: success ? 'Simulation complete - credentials found' : 'Simulation complete - no success', type: 'info' })
+
+  return {
+    success: true,
+    timeline,
+    metrics: {
+      attempts: attempts,
+      credentialsFound: success,
+      mode: 'Educational simulation',
+      duration: '3.0s'
+    },
+    explanation: {
+      happening: 'Simulating RDP brute force attack (educational).',
+      highlights: [`${attempts} attempts`, 'Simulation mode', success ? 'Success simulated' : 'No success'],
+      interpretation: `Educational simulation of RDP brute force against ${params.host} for user '${params.username}'. Real RDP brute force requires specialized libraries and has high detection rates.`
+    }
+  }
+}
+
