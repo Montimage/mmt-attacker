@@ -18,7 +18,7 @@ class SmurfAttack(AttackBase):
     def add_arguments(self, parser: argparse.ArgumentParser) -> None:
         parser.add_argument('--victim', required=True, help='Victim IP address')
         parser.add_argument('--broadcast', required=True, help='Broadcast IP address')
-        parser.add_argument('--count', type=int, , help='Number of packets (default: 100)')
+        parser.add_argument('--count', type=int, default=100, help='Number of packets (default: 100)')
         parser.add_argument('--verbose', action='store_true', help='Verbose output')
 
     def validate(self, args: argparse.Namespace) -> bool:
@@ -32,7 +32,15 @@ class SmurfAttack(AttackBase):
         try:
             import smurf_attack as attack_module
             logger.info(f"Running smurf-attack attack")
-            # Attack execution handled by module
+
+            # Create and execute attack
+            attack = attack_module.SmurfAttack(
+                args.victim,
+                args.broadcast,
+                args.count,
+                args.verbose
+            )
+            attack.execute()
         except Exception as e:
             logger.error(f"Attack failed: {e}")
             raise

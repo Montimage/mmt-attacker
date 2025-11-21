@@ -31,7 +31,14 @@ class BgpHijacking(AttackBase):
         try:
             import bgp_hijacking as attack_module
             logger.info(f"Running bgp-hijacking attack")
-            # Attack execution handled by module
+
+            # Create and execute attack
+            attack = attack_module.BGPHijackingAttack(
+                args.prefix,
+                args.as_number,
+                args.verbose
+            )
+            attack.execute()
         except Exception as e:
             logger.error(f"Attack failed: {e}")
             raise

