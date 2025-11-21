@@ -10,16 +10,16 @@ function Input({
   className = '',
   ...props
 }) {
-  const inputClasses = `w-full px-4 py-2 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-200 transition-all ${
-    error ? 'border-red-300 focus:border-red-500' : 'border-gray-300 focus:border-green-700'
+  const inputClasses = `w-full px-4 py-2 border-2 rounded-lg shadow-custom focus:outline-none focus:shadow-custom-md focus:border-black transition-all bg-white ${
+    error ? 'border-gray-500 focus:border-black' : 'border-gray-400 focus:border-black'
   } ${className}`
 
   return (
     <div className="mb-4">
       {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-semibold text-gray-900 mb-2">
           {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
+          {required && <span className="text-black ml-1">*</span>}
         </label>
       )}
       <input
@@ -32,10 +32,10 @@ function Input({
         {...props}
       />
       {helpText && (
-        <p className="mt-1 text-sm text-gray-500">{helpText}</p>
+        <p className="mt-1 text-sm text-gray-600">{helpText}</p>
       )}
       {error && (
-        <p className="mt-1 text-sm text-red-600">{error}</p>
+        <p className="mt-1 text-sm text-black font-semibold">{error}</p>
       )}
     </div>
   )
