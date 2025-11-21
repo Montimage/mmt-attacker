@@ -8,12 +8,12 @@ function Button({
   className = '',
   ...props
 }) {
-  const baseClasses = 'px-6 py-3 rounded-lg border-2 shadow-custom font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
+  const baseClasses = 'px-6 py-3 rounded-lg border-2 font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
 
   const variants = {
-    primary: 'bg-green-900 text-white border-green-900 hover:bg-green-800 hover:shadow-custom-md',
-    secondary: 'bg-white text-gray-900 border-gray-300 hover:border-gray-400 hover:shadow-custom-md',
-    outline: 'bg-transparent text-green-900 border-green-900 hover:bg-green-50'
+    primary: 'bg-white text-black border-black shadow-custom-md hover:shadow-custom-lg hover:-translate-y-0.5 active:translate-y-0 active:shadow-custom',
+    secondary: 'bg-white text-gray-900 border-gray-400 shadow-custom hover:border-gray-600 hover:shadow-custom-md hover:-translate-y-0.5 active:translate-y-0 active:shadow-custom',
+    outline: 'bg-white text-gray-900 border-gray-300 shadow-custom hover:border-gray-500 hover:shadow-custom-md hover:-translate-y-0.5 active:translate-y-0'
   }
 
   const classes = `${baseClasses} ${variants[variant]} ${className}`
