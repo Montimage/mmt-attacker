@@ -6,8 +6,6 @@ import Badge from '../../components/common/Badge'
 import AttackTheory from '../../components/attack/AttackTheory'
 import AttackFlow from '../../components/attack/AttackFlow'
 import AttackScenario from '../../components/attack/AttackScenario'
-import AttackResults from '../../components/attack/AttackResults'
-import AttackExplanation from '../../components/attack/AttackExplanation'
 
 function AttackPageTemplate() {
   const { attackId } = useParams()
@@ -86,24 +84,9 @@ function AttackPageTemplate() {
             scenarios={attack.scenarios}
             onExecute={handleExecute}
             isExecuting={isExecuting}
+            results={results}
           />
         </div>
-
-        {/* Attack Results */}
-        {(results || isExecuting) && (
-          <div>
-            <h2 className="text-2xl font-bold text-black mb-4">Simulation Results</h2>
-            <AttackResults results={results} isRunning={isExecuting} />
-          </div>
-        )}
-
-        {/* Attack Explanation */}
-        {results?.explanation && (
-          <div>
-            <h2 className="text-2xl font-bold text-black mb-4">Understanding the Results</h2>
-            <AttackExplanation explanation={results.explanation} />
-          </div>
-        )}
 
         {/* Safety Considerations */}
         {attack.safetyConsiderations && attack.safetyConsiderations.length > 0 && (

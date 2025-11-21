@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Menu, X, Home, Github, Search, Grid } from 'lucide-react'
+import { Menu, X, Github, Search, Grid } from 'lucide-react'
 import { useState } from 'react'
 
 function Header() {
@@ -24,18 +24,16 @@ function Header() {
     <header className="sticky top-0 z-50 bg-white border-b-3 border-gray-400 shadow-custom-lg backdrop-blur-sm bg-opacity-95">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          {/* Logo and branding - Enhanced with 3D effect */}
+          {/* Logo and branding */}
           <Link
             to="/"
             className="flex items-center space-x-3 group"
           >
-            <div className="relative p-2 bg-white border-2 border-gray-400 rounded-lg shadow-custom-md group-hover:shadow-custom-lg group-hover:-translate-y-0.5 group-hover:border-black transition-all duration-200">
-              <img
-                src="/logo.svg"
-                alt="MMT-Attacker Logo"
-                className="w-7 h-7 object-contain"
-              />
-            </div>
+            <img
+              src="/logo.svg"
+              alt="MMT-Attacker Logo"
+              className="h-11 w-auto object-contain group-hover:opacity-80 transition-opacity duration-200"
+            />
             <div className="flex flex-col">
               <span className="text-xl font-bold text-black group-hover:text-gray-900 transition-colors">
                 MMT-Attacker
@@ -49,18 +47,6 @@ function Header() {
           {/* Desktop navigation - Enhanced with pill-style buttons */}
           <nav className="hidden md:flex items-center space-x-2">
             <Link
-              to="/"
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold transition-all duration-200 border-2 ${
-                isActive('/')
-                  ? 'bg-black text-white border-black shadow-custom-md'
-                  : 'bg-white text-gray-700 border-gray-300 hover:border-gray-500 hover:shadow-custom hover:-translate-y-0.5'
-              }`}
-            >
-              <Home className="w-4 h-4" />
-              <span>Home</span>
-            </Link>
-
-            <Link
               to="/browse"
               className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold transition-all duration-200 border-2 ${
                 isActive('/browse')
@@ -69,7 +55,7 @@ function Header() {
               }`}
             >
               <Grid className="w-4 h-4" />
-              <span>Browse</span>
+              <span>Attacks</span>
             </Link>
 
             {/* Search Button */}
@@ -138,19 +124,6 @@ function Header() {
           <nav className="md:hidden py-4 border-t-2 border-gray-300 animate-fade-in">
             <div className="flex flex-col space-y-2">
               <Link
-                to="/"
-                onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center space-x-3 px-4 py-3 rounded-lg font-semibold transition-all duration-200 border-2 ${
-                  isActive('/')
-                    ? 'bg-black text-white border-black shadow-custom-md'
-                    : 'bg-white text-gray-700 border-gray-300 hover:border-gray-500 hover:shadow-custom'
-                }`}
-              >
-                <Home className="w-5 h-5" />
-                <span>Home</span>
-              </Link>
-
-              <Link
                 to="/browse"
                 onClick={() => setMobileMenuOpen(false)}
                 className={`flex items-center space-x-3 px-4 py-3 rounded-lg font-semibold transition-all duration-200 border-2 ${
@@ -160,7 +133,7 @@ function Header() {
                 }`}
               >
                 <Grid className="w-5 h-5" />
-                <span>Browse Attacks</span>
+                <span>Attacks</span>
               </Link>
 
               {/* Mobile Search Form */}

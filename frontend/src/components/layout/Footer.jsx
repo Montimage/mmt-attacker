@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { AlertTriangle, Mail, Globe } from 'lucide-react'
 
 function Footer() {
@@ -18,7 +19,7 @@ function Footer() {
         </div>
 
         {/* Footer content */}
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-3 gap-8">
           {/* Contact Information */}
           <div>
             <h4 className="text-lg font-bold text-black mb-4">Montimage</h4>
@@ -47,7 +48,7 @@ function Footer() {
             </div>
           </div>
 
-          {/* Links */}
+          {/* Resources */}
           <div>
             <h4 className="text-lg font-bold text-black mb-4">Resources</h4>
             <div className="space-y-2 text-sm">
@@ -73,6 +74,31 @@ function Footer() {
               >
                 Technical Support
               </a>
+            </div>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h4 className="text-lg font-bold text-black mb-4">Legal</h4>
+            <div className="space-y-2 text-sm">
+              <Link
+                to="/about"
+                className="block text-gray-600 hover:text-black hover:font-semibold transition-all"
+              >
+                About Us
+              </Link>
+              <Link
+                to="/privacy"
+                className="block text-gray-600 hover:text-black hover:font-semibold transition-all"
+              >
+                Privacy Policy
+              </Link>
+              <Link
+                to="/gdpr"
+                className="block text-gray-600 hover:text-black hover:font-semibold transition-all"
+              >
+                GDPR Compliance
+              </Link>
             </div>
           </div>
         </div>
