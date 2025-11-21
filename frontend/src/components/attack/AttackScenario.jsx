@@ -1,13 +1,16 @@
 import { useState } from 'react'
+import { Eye } from 'lucide-react'
 import AttackParameters from './AttackParameters'
 import Button from '../common/Button'
 import CommandDisplay from './CommandDisplay'
+import ResultsModal from './ResultsModal'
 
-function AttackScenario({ attackId, scenarios, onExecute, isExecuting }) {
+function AttackScenario({ attackId, scenarios, onExecute, isExecuting, results }) {
   const [activeScenario, setActiveScenario] = useState(0)
   const [activeTab, setActiveTab] = useState('configure') // 'configure' or 'command'
   const [parameters, setParameters] = useState({})
   const [errors, setErrors] = useState({})
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const currentScenario = scenarios[activeScenario]
 
@@ -45,8 +48,9 @@ function AttackScenario({ attackId, scenarios, onExecute, isExecuting }) {
       return
     }
 
-    // Execute the attack
+    // Execute the attack and open modal
     onExecute(currentScenario.id, parameters)
+    setIsModalOpen(true)
   }
 
   return (
@@ -124,15 +128,28 @@ function AttackScenario({ attackId, scenarios, onExecute, isExecuting }) {
 
             {/* Execute Button */}
             <div className="mt-6 pt-6 border-t-2 border-gray-200">
-              <Button
-                variant="primary"
-                onClick={handleExecute}
-                disabled={isExecuting}
-                loading={isExecuting}
-                className="w-full md:w-auto"
-              >
-                {isExecuting ? 'Running Simulation...' : 'Start Attack Simulation'}
-              </Button>
+              <div className="flex flex-wrap gap-3">
+                <Button
+                  variant="primary"
+                  onClick={handleExecute}
+                  disabled={isExecuting}
+                  loading={isExecuting}
+                  className="flex-1 md:flex-initial"
+                >
+                  {isExecuting ? 'Running Simulation...' : 'Start Attack Simulation'}
+                </Button>
+
+                {results && (
+                  <Button
+                    variant="secondary"
+                    onClick={() => setIsModalOpen(true)}
+                    className="flex-1 md:flex-initial"
+                  >
+                    <Eye className="w-4 h-4 mr-2" />
+                    Show Results
+                  </Button>
+                )}
+              </div>
               {Object.keys(errors).length > 0 && (
                 <p className="mt-2 text-sm text-red-600">
                   Please fix the errors above before starting the simulation.
@@ -149,6 +166,14 @@ function AttackScenario({ attackId, scenarios, onExecute, isExecuting }) {
           />
         )}
       </div>
+
+      {/* Results Modal */}
+      <ResultsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        results={results}
+        isRunning={isExecuting}
+      />
     </div>
   )
 }

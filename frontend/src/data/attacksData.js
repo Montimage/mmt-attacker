@@ -41,6 +41,7 @@ export const attacksData = {
             label: 'Target IP Address',
             type: 'text',
             required: true,
+            defaultValue: '192.168.1.100',
             placeholder: '192.168.1.100',
             validation: 'ipv4',
             helpText: 'IP address to intercept traffic from'
@@ -50,6 +51,7 @@ export const attacksData = {
             label: 'Gateway IP Address',
             type: 'text',
             required: true,
+            defaultValue: '192.168.1.1',
             placeholder: '192.168.1.1',
             validation: 'ipv4',
             helpText: 'Gateway IP address to impersonate'
@@ -59,6 +61,7 @@ export const attacksData = {
             label: 'Network Interface',
             type: 'text',
             required: true,
+            defaultValue: 'eth0',
             placeholder: 'eth0',
             helpText: 'Network interface to use (e.g., eth0, wlan0)'
           },
@@ -73,6 +76,7 @@ export const attacksData = {
             name: 'packetLog',
             label: 'Packet Log Path',
             type: 'text',
+            defaultValue: '/tmp/captured_traffic.pcap',
             placeholder: '/tmp/captured_traffic.pcap',
             helpText: 'Path to save intercepted packets'
           }
@@ -88,6 +92,7 @@ export const attacksData = {
             label: 'Target IP Address',
             type: 'text',
             required: true,
+            defaultValue: '192.168.1.100',
             placeholder: '192.168.1.100',
             validation: 'ipv4',
             helpText: 'IP address to intercept traffic from'
@@ -97,6 +102,7 @@ export const attacksData = {
             label: 'Gateway IP Address',
             type: 'text',
             required: true,
+            defaultValue: '192.168.1.1',
             placeholder: '192.168.1.1',
             validation: 'ipv4',
             helpText: 'Gateway IP address to impersonate'
@@ -106,6 +112,7 @@ export const attacksData = {
             label: 'Network Interface',
             type: 'text',
             required: true,
+            defaultValue: 'eth0',
             placeholder: 'eth0',
             helpText: 'Network interface to use'
           },
@@ -168,6 +175,7 @@ export const attacksData = {
             label: 'Target IP Address',
             type: 'text',
             required: true,
+            defaultValue: '192.168.1.100',
             placeholder: '192.168.1.100',
             validation: 'ipv4',
             helpText: 'IP address to flood'
@@ -208,6 +216,7 @@ export const attacksData = {
             label: 'Target IP Address',
             type: 'text',
             required: true,
+            defaultValue: '192.168.1.100',
             placeholder: '192.168.1.100',
             validation: 'ipv4',
             helpText: 'IP address to flood'
@@ -217,6 +226,7 @@ export const attacksData = {
             label: 'Port Range',
             type: 'text',
             required: true,
+            defaultValue: '80-443',
             placeholder: '80-443',
             helpText: 'Range of ports to target (e.g., 80-443)'
           },
@@ -292,6 +302,7 @@ export const attacksData = {
             label: 'Target IP Address',
             type: 'text',
             required: true,
+            defaultValue: '192.168.1.100',
             placeholder: '192.168.1.100',
             validation: 'ipv4',
             helpText: 'IP address to attack'
@@ -333,6 +344,7 @@ export const attacksData = {
             label: 'Target IP Address',
             type: 'text',
             required: true,
+            defaultValue: '192.168.1.100',
             placeholder: '192.168.1.100',
             validation: 'ipv4',
             helpText: 'IP address to attack'
@@ -342,6 +354,7 @@ export const attacksData = {
             label: 'DNS Servers (one per line)',
             type: 'textarea',
             required: true,
+            defaultValue: '8.8.8.8\n8.8.4.4\n1.1.1.1',
             placeholder: '8.8.8.8\n8.8.4.4\n1.1.1.1',
             helpText: 'List of DNS servers, one per line'
           },
@@ -430,6 +443,7 @@ export const attacksData = {
             label: 'Target IP Address',
             type: 'text',
             required: true,
+            defaultValue: '192.168.1.100',
             placeholder: '192.168.1.100',
             validation: 'ipv4',
             helpText: 'IP address to test'
@@ -469,6 +483,7 @@ export const attacksData = {
             label: 'Target IPs (one per line)',
             type: 'textarea',
             required: true,
+            defaultValue: '192.168.1.100\n192.168.1.101\n192.168.1.102',
             placeholder: '192.168.1.100\n192.168.1.101\n192.168.1.102',
             helpText: 'List of target IPs, one per line'
           },
@@ -551,6 +566,7 @@ export const attacksData = {
             label: 'Target URL',
             type: 'text',
             required: true,
+            defaultValue: 'http://example.com',
             placeholder: 'http://example.com',
             validation: 'url',
             helpText: 'Target URL to attack'
@@ -591,6 +607,7 @@ export const attacksData = {
             label: 'Target URL',
             type: 'text',
             required: true,
+            defaultValue: 'http://example.com/api',
             placeholder: 'http://example.com/api',
             validation: 'url',
             helpText: 'API endpoint to target'
@@ -612,6 +629,7 @@ export const attacksData = {
             name: 'headers',
             label: 'Custom Headers (JSON)',
             type: 'textarea',
+            defaultValue: '{"Authorization": "Bearer token", "Content-Type": "application/json"}',
             placeholder: '{"Authorization": "Bearer token", "Content-Type": "application/json"}',
             validation: 'json',
             helpText: 'Custom HTTP headers as JSON'
@@ -620,6 +638,7 @@ export const attacksData = {
             name: 'data',
             label: 'POST Data (JSON)',
             type: 'textarea',
+            defaultValue: '{"test": "data"}',
             placeholder: '{"test": "data"}',
             validation: 'json',
             helpText: 'Request body as JSON'
@@ -685,6 +704,7 @@ export const attacksData = {
             label: 'Target Hostname',
             type: 'text',
             required: true,
+            defaultValue: 'example.com',
             placeholder: 'example.com',
             helpText: 'Target hostname or IP'
           },
@@ -723,6 +743,7 @@ export const attacksData = {
             label: 'Target Hostname',
             type: 'text',
             required: true,
+            defaultValue: 'example.com',
             placeholder: 'example.com',
             helpText: 'Target hostname'
           },
@@ -753,6 +774,7 @@ export const attacksData = {
             name: 'userAgent',
             label: 'User-Agent',
             type: 'text',
+            defaultValue: 'Mozilla/5.0',
             placeholder: 'Mozilla/5.0',
             helpText: 'Custom User-Agent string'
           },
@@ -760,6 +782,7 @@ export const attacksData = {
             name: 'proxy',
             label: 'Proxy',
             type: 'text',
+            defaultValue: 'socks5://127.0.0.1:9050',
             placeholder: 'socks5://127.0.0.1:9050',
             helpText: 'HTTP/SOCKS proxy for connections'
           }
@@ -816,6 +839,7 @@ export const attacksData = {
             label: 'Target IP Address',
             type: 'text',
             required: true,
+            defaultValue: '192.168.1.100',
             placeholder: '192.168.1.100',
             validation: 'ipv4',
             helpText: 'SSH server IP address'
@@ -825,6 +849,7 @@ export const attacksData = {
             label: 'Username',
             type: 'text',
             required: true,
+            defaultValue: 'admin',
             placeholder: 'root',
             helpText: 'Username to test'
           },
@@ -833,6 +858,7 @@ export const attacksData = {
             label: 'Password Wordlist (one per line)',
             type: 'textarea',
             required: true,
+            defaultValue: 'password123\nadmin\nletmein',
             placeholder: 'password123\nadmin\nletmein',
             helpText: 'List of passwords to try'
           },
@@ -863,6 +889,7 @@ export const attacksData = {
             label: 'Target IPs (one per line)',
             type: 'textarea',
             required: true,
+            defaultValue: '192.168.1.100\n192.168.1.101\n192.168.1.102',
             placeholder: '192.168.1.100\n192.168.1.101\n192.168.1.102',
             helpText: 'List of SSH server IPs'
           },
@@ -871,6 +898,7 @@ export const attacksData = {
             label: 'Usernames (one per line)',
             type: 'textarea',
             required: true,
+            defaultValue: 'root\nadmin\nuser',
             placeholder: 'root\nadmin\nuser',
             helpText: 'List of usernames to try'
           },
@@ -879,6 +907,7 @@ export const attacksData = {
             label: 'Passwords (one per line)',
             type: 'textarea',
             required: true,
+            defaultValue: 'password\nadmin123\ndefault',
             placeholder: 'password\nadmin123\ndefault',
             helpText: 'List of passwords to try'
           },
@@ -950,6 +979,7 @@ export const attacksData = {
             label: 'Target URL',
             type: 'text',
             required: true,
+            defaultValue: 'http://example.com/login',
             placeholder: 'http://example.com/login',
             validation: 'url',
             helpText: 'URL of the login page'
@@ -959,6 +989,7 @@ export const attacksData = {
             label: 'Parameter to Test',
             type: 'text',
             required: true,
+            defaultValue: 'username',
             placeholder: 'username',
             helpText: 'Form parameter to test'
           },
@@ -1002,6 +1033,7 @@ export const attacksData = {
             label: 'Target URL',
             type: 'text',
             required: true,
+            defaultValue: 'http://example.com/api',
             placeholder: 'http://example.com/api',
             validation: 'url',
             helpText: 'API or page URL'
@@ -1010,6 +1042,7 @@ export const attacksData = {
             name: 'data',
             label: 'POST Data',
             type: 'text',
+            defaultValue: 'id=1&type=user',
             placeholder: 'id=1&type=user',
             helpText: 'POST data to include'
           },
@@ -1017,6 +1050,7 @@ export const attacksData = {
             name: 'headers',
             label: 'Custom Headers (JSON)',
             type: 'textarea',
+            defaultValue: '{"X-API-Key": "test"}',
             placeholder: '{"X-API-Key": "test"}',
             validation: 'json',
             helpText: 'Custom HTTP headers'
@@ -1054,6 +1088,7 @@ export const attacksData = {
             name: 'proxy',
             label: 'Proxy',
             type: 'text',
+            defaultValue: 'http://127.0.0.1:8080',
             placeholder: 'http://127.0.0.1:8080',
             helpText: 'HTTP proxy for requests'
           }
@@ -1126,6 +1161,7 @@ export const attacksData = {
             name: 'redirect',
             label: 'Redirect URL',
             type: 'text',
+            defaultValue: 'https://company.com',
             placeholder: 'https://company.com',
             validation: 'url',
             helpText: 'URL to redirect after submission'
@@ -1141,6 +1177,7 @@ export const attacksData = {
             name: 'customForm',
             label: 'Custom HTML Form',
             type: 'textarea',
+            defaultValue: '<form>...</form>',
             placeholder: '<form>...</form>',
             helpText: 'Custom HTML form code'
           },
@@ -1163,6 +1200,7 @@ export const attacksData = {
             name: 'cert',
             label: 'SSL Certificate Path',
             type: 'text',
+            defaultValue: '/path/to/cert.pem',
             placeholder: '/path/to/cert.pem',
             helpText: 'Path to SSL certificate'
           },
@@ -1170,6 +1208,7 @@ export const attacksData = {
             name: 'key',
             label: 'SSL Key Path',
             type: 'text',
+            defaultValue: '/path/to/key.pem',
             placeholder: '/path/to/key.pem',
             helpText: 'Path to SSL private key'
           },
@@ -1177,6 +1216,7 @@ export const attacksData = {
             name: 'redirect',
             label: 'Redirect URL',
             type: 'text',
+            defaultValue: 'https://company.com',
             placeholder: 'https://company.com',
             validation: 'url',
             helpText: 'URL to redirect after submission'
@@ -1185,6 +1225,7 @@ export const attacksData = {
             name: 'logFile',
             label: 'Log File Path',
             type: 'text',
+            defaultValue: '/tmp/harvest.json',
             placeholder: '/tmp/harvest.json',
             helpText: 'Path to save captured credentials'
           }
@@ -1244,6 +1285,7 @@ export const attacksData = {
             label: 'PCAP File Path',
             type: 'text',
             required: true,
+            defaultValue: '/path/to/capture.pcap',
             placeholder: '/path/to/capture.pcap',
             helpText: 'Path to PCAP file'
           },
@@ -1252,6 +1294,7 @@ export const attacksData = {
             label: 'Network Interface',
             type: 'text',
             required: true,
+            defaultValue: 'eth0',
             placeholder: 'eth0',
             helpText: 'Interface to replay on'
           },
@@ -1259,6 +1302,7 @@ export const attacksData = {
             name: 'filter',
             label: 'BPF Filter',
             type: 'text',
+            defaultValue: 'tcp port 80 or port 443',
             placeholder: 'tcp port 80 or port 443',
             helpText: 'Berkeley Packet Filter expression'
           },
@@ -1293,6 +1337,7 @@ export const attacksData = {
             label: 'PCAP File Path',
             type: 'text',
             required: true,
+            defaultValue: '/path/to/dos_attack.pcap',
             placeholder: '/path/to/dos_attack.pcap',
             helpText: 'Path to PCAP file'
           },
@@ -1301,6 +1346,7 @@ export const attacksData = {
             label: 'Network Interface',
             type: 'text',
             required: true,
+            defaultValue: 'eth0',
             placeholder: 'eth0',
             helpText: 'Interface to replay on'
           },
@@ -1331,6 +1377,7 @@ export const attacksData = {
             name: 'output',
             label: 'Statistics Output File',
             type: 'text',
+            defaultValue: '/tmp/replay_stats.json',
             placeholder: '/tmp/replay_stats.json',
             helpText: 'Path to save statistics'
           }
@@ -1368,8 +1415,8 @@ export const attacksData = {
       name: 'Basic UDP Flood',
       description: 'Flood target with UDP packets',
       parameters: [
-        {name: 'target', label: 'Target IP', type: 'text', required: true, validation: 'ipv4', placeholder: '192.168.1.10'},
-        {name: 'port', label: 'Port', type: 'number', placeholder: '53'},
+        {name: 'target', label: 'Target IP', type: 'text', required: true, defaultValue: '192.168.1.10', validation: 'ipv4', placeholder: '192.168.1.10'},
+        {name: 'port', label: 'Port', type: 'number', defaultValue: 53, placeholder: '53'},
         {name: 'count', label: 'Packet Count', type: 'number', defaultValue: 1000},
         {name: 'rate', label: 'Packets/sec', type: 'number', defaultValue: 100}
       ]
@@ -1396,9 +1443,9 @@ export const attacksData = {
       name: 'Basic ICMP Flood',
       description: 'Flood target with ICMP packets',
       parameters: [
-        {name: 'target', label: 'Target IP', type: 'text', required: true, validation: 'ipv4'},
-        {name: 'count', label: 'Packet Count', type: 'number', defaultValue: 1000},
-        {name: 'rate', label: 'Packets/sec', type: 'number', defaultValue: 100}
+        {name: 'target', label: 'Target IP', type: 'text', required: true, defaultValue: '192.168.1.10', validation: 'ipv4', placeholder: '192.168.1.10'},
+        {name: 'count', label: 'Packet Count', type: 'number', defaultValue: 1000, placeholder: '1000'},
+        {name: 'rate', label: 'Packets/sec', type: 'number', defaultValue: 100, placeholder: '100'}
       ]
     }],
     safetyConsiderations: ['Monitor ICMP rate limits', 'Check network congestion']
@@ -1425,10 +1472,10 @@ export const attacksData = {
       name: 'Basic MITM',
       description: 'Intercept traffic between victim and gateway',
       parameters: [
-        {name: 'target', label: 'Victim IP', type: 'text', required: true, validation: 'ipv4'},
-        {name: 'gateway', label: 'Gateway IP', type: 'text', required: true, validation: 'ipv4'},
-        {name: 'interface', label: 'Interface', type: 'text', required: true, placeholder: 'eth0'},
-        {name: 'capture', label: 'Capture File', type: 'text', placeholder: 'output.pcap'}
+        {name: 'target', label: 'Victim IP', type: 'text', required: true, defaultValue: '192.168.1.100', validation: 'ipv4', placeholder: '192.168.1.100'},
+        {name: 'gateway', label: 'Gateway IP', type: 'text', required: true, defaultValue: '192.168.1.1', validation: 'ipv4', placeholder: '192.168.1.1'},
+        {name: 'interface', label: 'Interface', type: 'text', required: true, defaultValue: 'eth0', placeholder: 'eth0'},
+        {name: 'capture', label: 'Capture File', type: 'text', defaultValue: 'output.pcap', placeholder: 'output.pcap'}
       ]
     }],
     safetyConsiderations: ['Always restore ARP tables', 'Monitor network stability', 'Enable IP forwarding properly']
@@ -1456,9 +1503,9 @@ export const attacksData = {
       name: 'Basic DHCP Starvation',
       description: 'Exhaust DHCP pool',
       parameters: [
-        {name: 'interface', label: 'Interface', type: 'text', required: true, placeholder: 'eth0'},
-        {name: 'count', label: 'Request Count', type: 'number', defaultValue: 200},
-        {name: 'rate', label: 'Requests/sec', type: 'number', defaultValue: 10}
+        {name: 'interface', label: 'Interface', type: 'text', required: true, defaultValue: 'eth0', placeholder: 'eth0'},
+        {name: 'count', label: 'Request Count', type: 'number', defaultValue: 200, placeholder: '200'},
+        {name: 'rate', label: 'Requests/sec', type: 'number', defaultValue: 10, placeholder: '10'}
       ]
     }],
     safetyConsiderations: ['Can disrupt network services', 'Monitor DHCP server capacity', 'Have recovery plan ready']
@@ -1484,9 +1531,9 @@ export const attacksData = {
       name: 'Basic MAC Flooding',
       description: 'Flood switch MAC table',
       parameters: [
-        {name: 'interface', label: 'Interface', type: 'text', required: true, placeholder: 'eth0'},
-        {name: 'count', label: 'Frame Count', type: 'number', defaultValue: 10000},
-        {name: 'rate', label: 'Frames/sec', type: 'number', defaultValue: 500}
+        {name: 'interface', label: 'Interface', type: 'text', required: true, defaultValue: 'eth0', placeholder: 'eth0'},
+        {name: 'count', label: 'Frame Count', type: 'number', defaultValue: 10000, placeholder: '10000'},
+        {name: 'rate', label: 'Frames/sec', type: 'number', defaultValue: 500, placeholder: '500'}
       ]
     }],
     safetyConsiderations: ['Can disrupt entire network', 'Monitor switch CPU usage', 'Have recovery procedures']
@@ -1512,10 +1559,10 @@ export const attacksData = {
       name: 'Basic VLAN Hopping',
       description: 'Hop between VLANs',
       parameters: [
-        {name: 'interface', label: 'Interface', type: 'text', required: true, placeholder: 'eth0'},
-        {name: 'outerVlan', label: 'Outer VLAN ID', type: 'number', required: true, placeholder: '10'},
-        {name: 'innerVlan', label: 'Inner VLAN ID', type: 'number', required: true, placeholder: '20'},
-        {name: 'target', label: 'Target IP', type: 'text', required: true, validation: 'ipv4'}
+        {name: 'interface', label: 'Interface', type: 'text', required: true, defaultValue: 'eth0', placeholder: 'eth0'},
+        {name: 'outerVlan', label: 'Outer VLAN ID', type: 'number', required: true, defaultValue: 10, placeholder: '10'},
+        {name: 'innerVlan', label: 'Inner VLAN ID', type: 'number', required: true, defaultValue: 20, placeholder: '20'},
+        {name: 'target', label: 'Target IP', type: 'text', required: true, defaultValue: '192.168.1.10', validation: 'ipv4', placeholder: '192.168.1.10'}
       ]
     }],
     safetyConsiderations: ['Test VLAN configuration first', 'Monitor for unexpected traffic', 'Verify switch settings']
@@ -1541,9 +1588,9 @@ export const attacksData = {
       name: 'Basic HTTP Flood',
       description: 'Flood web server with requests',
       parameters: [
-        {name: 'url', label: 'Target URL', type: 'text', required: true, validation: 'url', placeholder: 'http://target.com'},
-        {name: 'count', label: 'Request Count', type: 'number', defaultValue: 1000},
-        {name: 'threads', label: 'Threads', type: 'number', defaultValue: 10}
+        {name: 'url', label: 'Target URL', type: 'text', required: true, defaultValue: 'http://target.com', validation: 'url', placeholder: 'http://target.com'},
+        {name: 'count', label: 'Request Count', type: 'number', defaultValue: 1000, placeholder: '1000'},
+        {name: 'threads', label: 'Threads', type: 'number', defaultValue: 10, placeholder: '10'}
       ]
     }],
     safetyConsiderations: ['Start with low thread count', 'Monitor server response', 'Check for rate limiting']
@@ -1569,8 +1616,8 @@ export const attacksData = {
       name: 'Basic XSS Test',
       description: 'Test for XSS vulnerabilities',
       parameters: [
-        {name: 'url', label: 'Target URL', type: 'text', required: true, validation: 'url'},
-        {name: 'param', label: 'Parameter', type: 'text', required: true, placeholder: 'q'}
+        {name: 'url', label: 'Target URL', type: 'text', required: true, defaultValue: 'http://example.com', validation: 'url', placeholder: 'http://example.com'},
+        {name: 'param', label: 'Parameter', type: 'text', required: true, defaultValue: 'q', placeholder: 'q'}
       ]
     }],
     safetyConsiderations: ['Only test authorized applications', 'Don\'t execute malicious payloads', 'Report findings responsibly']
@@ -1595,8 +1642,8 @@ export const attacksData = {
       name: 'Basic Directory Traversal',
       description: 'Test for path traversal',
       parameters: [
-        {name: 'url', label: 'Target URL', type: 'text', required: true, validation: 'url'},
-        {name: 'param', label: 'Parameter', type: 'text', required: true, placeholder: 'file'}
+        {name: 'url', label: 'Target URL', type: 'text', required: true, defaultValue: 'http://example.com', validation: 'url', placeholder: 'http://example.com'},
+        {name: 'param', label: 'Parameter', type: 'text', required: true, defaultValue: 'file', placeholder: 'file'}
       ]
     }],
     safetyConsiderations: ['Test only authorized systems', 'Handle sensitive data appropriately', 'Document findings securely']
@@ -1623,7 +1670,7 @@ export const attacksData = {
       name: 'Basic XXE Test',
       description: 'Test for XXE vulnerabilities',
       parameters: [
-        {name: 'url', label: 'Target URL', type: 'text', required: true, validation: 'url', placeholder: 'http://target.com/api/xml'}
+        {name: 'url', label: 'Target URL', type: 'text', required: true, defaultValue: 'http://target.com/api/xml', validation: 'url', placeholder: 'http://target.com/api/xml'}
       ]
     }],
     safetyConsiderations: ['Test only with authorization', 'Be cautious with file access', 'Report vulnerabilities properly']
@@ -1650,7 +1697,7 @@ export const attacksData = {
       name: 'Basic SSL Strip',
       description: 'Simulate SSL stripping',
       parameters: [
-        {name: 'interface', label: 'Interface', type: 'text', required: true, placeholder: 'eth0'}
+        {name: 'interface', label: 'Interface', type: 'text', required: true, defaultValue: 'eth0', placeholder: 'eth0'}
       ]
     }],
     safetyConsiderations: ['Requires MITM position', 'Detectable by HSTS', 'Educational simulation only']
@@ -1676,8 +1723,8 @@ export const attacksData = {
       name: 'Basic BGP Hijacking Simulation',
       description: 'Simulate BGP hijacking',
       parameters: [
-        {name: 'prefix', label: 'IP Prefix', type: 'text', required: true, placeholder: '1.2.3.0/24'},
-        {name: 'asNumber', label: 'AS Number', type: 'number', required: true, placeholder: '65000'}
+        {name: 'prefix', label: 'IP Prefix', type: 'text', required: true, defaultValue: '1.2.3.0/24', placeholder: '1.2.3.0/24'},
+        {name: 'asNumber', label: 'AS Number', type: 'number', required: true, defaultValue: 65000, placeholder: '65000'}
       ]
     }],
     safetyConsiderations: ['Simulation only', 'Requires BGP router access in reality', 'Highly regulated attack type']
@@ -1702,9 +1749,9 @@ export const attacksData = {
       name: 'Basic Smurf Attack',
       description: 'Amplify traffic via broadcast',
       parameters: [
-        {name: 'victim', label: 'Victim IP', type: 'text', required: true, validation: 'ipv4'},
-        {name: 'broadcast', label: 'Broadcast IP', type: 'text', required: true, placeholder: '192.168.1.255'},
-        {name: 'count', label: 'Packet Count', type: 'number', defaultValue: 100}
+        {name: 'victim', label: 'Victim IP', type: 'text', required: true, defaultValue: '192.168.1.100', validation: 'ipv4', placeholder: '192.168.1.100'},
+        {name: 'broadcast', label: 'Broadcast IP', type: 'text', required: true, defaultValue: '192.168.1.255', placeholder: '192.168.1.255'},
+        {name: 'count', label: 'Packet Count', type: 'number', defaultValue: 100, placeholder: '100'}
       ]
     }],
     safetyConsiderations: ['Massive amplification possible', 'Monitor network load', 'Restricted by modern networks']
@@ -1730,9 +1777,9 @@ export const attacksData = {
       name: 'Basic NTP Amplification',
       description: 'Amplify via NTP servers',
       parameters: [
-        {name: 'victim', label: 'Victim IP', type: 'text', required: true, validation: 'ipv4'},
-        {name: 'ntpServers', label: 'NTP Servers', type: 'text', required: true, placeholder: '1.2.3.4,5.6.7.8'},
-        {name: 'count', label: 'Packet Count', type: 'number', defaultValue: 100}
+        {name: 'victim', label: 'Victim IP', type: 'text', required: true, defaultValue: '192.168.1.100', validation: 'ipv4', placeholder: '192.168.1.100'},
+        {name: 'ntpServers', label: 'NTP Servers', type: 'text', required: true, defaultValue: '1.2.3.4,5.6.7.8', placeholder: '1.2.3.4,5.6.7.8'},
+        {name: 'count', label: 'Packet Count', type: 'number', defaultValue: 100, placeholder: '100'}
       ]
     }],
     safetyConsiderations: ['Extremely high amplification', 'Most servers patched', 'Illegal without authorization']
@@ -1760,10 +1807,10 @@ export const attacksData = {
       name: 'Basic FTP Brute Force',
       description: 'Brute force FTP credentials',
       parameters: [
-        {name: 'host', label: 'FTP Host', type: 'text', required: true, placeholder: '192.168.1.10'},
-        {name: 'port', label: 'Port', type: 'number', defaultValue: 21},
-        {name: 'username', label: 'Username', type: 'text', required: true, placeholder: 'admin'},
-        {name: 'passwords', label: 'Password List', type: 'textarea', required: true, placeholder: 'password1\npassword2'}
+        {name: 'host', label: 'FTP Host', type: 'text', required: true, defaultValue: '192.168.1.10', placeholder: '192.168.1.10'},
+        {name: 'port', label: 'Port', type: 'number', defaultValue: 21, placeholder: '21'},
+        {name: 'username', label: 'Username', type: 'text', required: true, defaultValue: 'admin', placeholder: 'admin'},
+        {name: 'passwords', label: 'Password List', type: 'textarea', required: true, defaultValue: 'password1\npassword2', placeholder: 'password1\npassword2'}
       ]
     }],
     safetyConsiderations: ['Respect rate limits', 'Avoid account lockouts', 'Monitor for detection']
@@ -1791,10 +1838,10 @@ export const attacksData = {
       name: 'Basic RDP Brute Force',
       description: 'Simulate RDP brute force',
       parameters: [
-        {name: 'host', label: 'RDP Host', type: 'text', required: true, placeholder: '192.168.1.10'},
-        {name: 'port', label: 'Port', type: 'number', defaultValue: 3389},
-        {name: 'username', label: 'Username', type: 'text', required: true, placeholder: 'administrator'},
-        {name: 'passwords', label: 'Password List', type: 'textarea', required: true, placeholder: 'password1\npassword2'}
+        {name: 'host', label: 'RDP Host', type: 'text', required: true, defaultValue: '192.168.1.10', placeholder: '192.168.1.10'},
+        {name: 'port', label: 'Port', type: 'number', defaultValue: 3389, placeholder: '3389'},
+        {name: 'username', label: 'Username', type: 'text', required: true, defaultValue: 'admin', placeholder: 'administrator'},
+        {name: 'passwords', label: 'Password List', type: 'textarea', required: true, defaultValue: 'password1\npassword2', placeholder: 'password1\npassword2'}
       ]
     }],
     safetyConsiderations: ['Simulation only', 'Real RDP requires specialized libraries', 'High detection rate']
