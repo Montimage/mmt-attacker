@@ -904,6 +904,568 @@ python src/cli.py sql-injection \
        --risk 3 \
        --level 5 \
        --proxy http://127.0.0.1:8080
+
+#### UDP Flood
+
+**Description:**  
+UDP Flood attack overwhelms a target system by sending a large volume of UDP packets to random or specific ports, consuming bandwidth and processing resources.
+
+**Attack Flow:**
+```mermaid
+sequenceDiagram
+    participant A as Attacker
+    participant T as Target
+    loop Flood
+        A->>T: UDP Packet (Random Port)
+        Note over T: Check for service
+        T->>A: ICMP Port Unreachable
+    end
+```
+
+**Key Features:**
+- Random or specific port targeting
+- IP spoofing capability
+- Variable payload sizes
+- Rate control
+- Bandwidth consumption monitoring
+
+**Parameters:**
+- `--target`: Target IP address
+- `--port`: Specific port or port range
+- `--random-ports`: Use random destination ports
+- `--count`: Number of packets
+- `--rate`: Packets per second
+- `--payload-size`: Payload size in bytes
+- `--spoof/--no-spoof`: IP spoofing control
+
+**Example Usage:**
+```bash
+python src/cli.py udp-flood --target 192.168.1.10 --port 53 --count 1000 --rate 100
+```
+
+**Safety Considerations:**
+- Monitor network bandwidth
+- Start with low packet rates
+- Verify target capacity
+
+#### ICMP Flood
+
+**Description:**  
+ICMP Flood (Ping Flood) overwhelms a target with ICMP Echo Request packets, consuming bandwidth and resources as the target processes packets and generates responses.
+
+**Attack Flow:**
+```mermaid
+graph LR
+    A[Attacker] -->|ICMP Echo Request| T[Target]
+    T -->|ICMP Echo Reply| A
+    A -->|ICMP Echo Request| T
+    T -->|ICMP Echo Reply| A
+```
+
+**Key Features:**
+- High-speed packet generation
+- Variable packet sizes
+- IP spoofing
+- Rate limiting
+- Real-time statistics
+
+**Parameters:**
+- `--target`: Target IP address
+- `--count`: Number of packets
+- `--rate`: Packets per second
+- `--size`: Packet size in bytes
+- `--spoof/--no-spoof`: IP spoofing control
+
+**Example Usage:**
+```bash
+python src/cli.py icmp-flood --target 192.168.1.10 --count 5000 --rate 500 --size 1400
+```
+
+**Safety Considerations:**
+- Monitor ICMP rate limits
+- Be aware of amplification effects
+- Check network congestion
+
+#### Man-in-the-Middle (MITM)
+
+**Description:**  
+MITM attack using ARP spoofing to intercept traffic between two hosts by poisoning their ARP caches.
+
+**Attack Flow:**
+```mermaid
+sequenceDiagram
+    A->>V: Poisoned ARP (Gateway)
+    A->>G: Poisoned ARP (Victim)
+    V->>A: Traffic for Gateway
+    A->>G: Forward traffic
+    G->>A: Response
+    A->>V: Forward response
+```
+
+**Key Features:**
+- Bidirectional ARP poisoning
+- Automatic IP forwarding
+- Packet capture capability
+- Graceful cleanup
+- MAC address resolution
+
+**Parameters:**
+- `--target`: Victim IP address
+- `--gateway`: Gateway IP address
+- `--interface`: Network interface
+- `--interval`: ARP poison interval
+- `--capture`: Save packets to file
+
+**Example Usage:**
+```bash
+sudo python src/cli.py mitm --target 192.168.1.10 --gateway 192.168.1.1 --interface eth0 --capture output.pcap
+```
+
+**Safety Considerations:**
+- Always restore ARP tables
+- Monitor network stability
+- Enable IP forwarding properly
+
+#### DHCP Starvation
+
+**Description:**  
+Exhausts DHCP server's IP address pool by sending numerous DISCOVER requests with spoofed MAC addresses.
+
+**Attack Flow:**
+```mermaid
+sequenceDiagram
+    loop Multiple MACs
+        A->>D: DHCP DISCOVER (Random MAC)
+        D->>A: DHCP OFFER
+        A->>D: DHCP REQUEST
+        D->>A: DHCP ACK
+        Note over D: IP Pool Depleted
+    end
+```
+
+**Key Features:**
+- Random MAC generation
+- Configurable request rate
+- Pool exhaustion monitoring
+- Network interface targeting
+
+**Parameters:**
+- `--interface`: Network interface
+- `--count`: Number of requests
+- `--rate`: Requests per second
+
+**Example Usage:**
+```bash
+sudo python src/cli.py dhcp-starvation --interface eth0 --count 200 --rate 10
+```
+
+**Safety Considerations:**
+- Can disrupt network services
+- Monitor DHCP server capacity
+- Have recovery plan ready
+
+#### MAC Flooding
+
+**Description:**  
+Overwhelms switch MAC address table causing fail-open mode where switch broadcasts all traffic.
+
+**Attack Flow:**
+```mermaid
+graph TB
+    A[Attacker] -->|Frame: Random MAC 1| S[Switch]
+    A -->|Frame: Random MAC 2| S
+    A -->|Frame: Random MAC N| S
+    Note["MAC Table Full
+    Switch enters fail-open"] --> S
+```
+
+**Key Features:**
+- Random source MAC generation
+- High-speed frame transmission
+- Switch behavior monitoring
+- Configurable frame rates
+
+**Parameters:**
+- `--interface`: Network interface
+- `--count`: Number of frames
+- `--rate`: Frames per second
+
+**Example Usage:**
+```bash
+sudo python src/cli.py mac-flooding --interface eth0 --count 10000 --rate 500
+```
+
+**Safety Considerations:**
+- Can disrupt entire network segment
+- Monitor switch CPU usage
+- Have network recovery procedures
+
+#### VLAN Hopping
+
+**Description:**  
+Uses double VLAN tagging to hop between network VLANs, bypassing VLAN isolation.
+
+**Attack Flow:**
+```mermaid
+sequenceDiagram
+    A->>S: Frame with Double VLAN Tags
+    Note over S: Strip Outer Tag (VLAN 10)
+    S->>T: Forward with Inner Tag (VLAN 20)
+    Note over T: Receive on VLAN 20
+```
+
+**Key Features:**
+- Double VLAN tagging
+- VLAN isolation bypass
+- Configurable VLAN IDs
+- Packet crafting
+
+**Parameters:**
+- `--interface`: Network interface
+- `--outer-vlan`: Outer VLAN ID
+- `--inner-vlan`: Inner VLAN ID
+- `--target`: Target IP address
+- `--count`: Number of packets
+
+**Example Usage:**
+```bash
+sudo python src/cli.py vlan-hopping --interface eth0 --outer-vlan 10 --inner-vlan 20 --target 192.168.20.1
+```
+
+**Safety Considerations:**
+- Test VLAN configuration first
+- Monitor for unexpected traffic
+- Verify switch VLAN settings
+
+#### HTTP Flood
+
+**Description:**  
+Application-layer DoS attack sending numerous HTTP requests to overwhelm web servers.
+
+**Attack Flow:**
+```mermaid
+graph LR
+    A[Attacker] -->|HTTP Request 1| W[Web Server]
+    A -->|HTTP Request 2| W
+    A -->|HTTP Request N| W
+    Note["Server Resources
+    Exhausted"] --> W
+```
+
+**Key Features:**
+- Multi-threaded requests
+- Customizable request parameters
+- Connection pooling
+- Rate limiting
+- Success verification
+
+**Parameters:**
+- `--url`: Target URL
+- `--count`: Number of requests
+- `--threads`: Number of threads
+
+**Example Usage:**
+```bash
+python src/cli.py http-flood --url http://target.com --count 1000 --threads 10
+```
+
+**Safety Considerations:**
+- Start with low thread count
+- Monitor server response
+- Check for rate limiting
+
+#### Cross-Site Scripting (XSS)
+
+**Description:**  
+Tests web applications for XSS vulnerabilities by injecting malicious scripts into input fields.
+
+**Attack Flow:**
+```mermaid
+graph TB
+    A[Attacker] -->|Inject Payload| W[Web App]
+    W -->|Reflect in Response| A
+    A -->|Verify Execution| V[Vulnerability Found]
+```
+
+**Key Features:**
+- Multiple payload testing
+- Response analysis
+- Reflected/Stored XSS detection
+- Custom payload support
+
+**Parameters:**
+- `--url`: Target URL
+- `--param`: Parameter to test
+- `--payloads`: Custom payloads file
+
+**Example Usage:**
+```bash
+python src/cli.py xss --url http://target.com/search --param q
+```
+
+**Safety Considerations:**
+- Only test authorized applications
+- Don't execute malicious payloads
+- Report findings responsibly
+
+#### Directory Traversal
+
+**Description:**  
+Tests for directory traversal vulnerabilities by attempting to access files outside web root.
+
+**Attack Flow:**
+```mermaid
+graph LR
+    A[Attacker] -->|../../../etc/passwd| W[Web App]
+    W -->|File Contents or Error| A
+```
+
+**Key Features:**
+- Multiple traversal techniques
+- Path encoding variants
+- Response pattern matching
+- Vulnerability verification
+
+**Parameters:**
+- `--url`: Target URL
+- `--param`: Parameter to test
+- `--payloads`: Custom payloads file
+
+**Example Usage:**
+```bash
+python src/cli.py directory-traversal --url http://target.com/view --param file
+```
+
+**Safety Considerations:**
+- Test only authorized systems
+- Handle sensitive data appropriately
+- Document findings securely
+
+#### XML External Entity (XXE)
+
+**Description:**  
+Tests for XXE vulnerabilities in XML parsers by injecting malicious external entity declarations.
+
+**Attack Flow:**
+```mermaid
+sequenceDiagram
+    A->>W: XML with External Entity
+    W->>F: Parse & Load External File
+    F->>W: File Contents
+    W->>A: Response with File Data
+```
+
+**Key Features:**
+- Multiple XXE payloads
+- File read detection
+- SSRF testing
+- Response analysis
+
+**Parameters:**
+- `--url`: Target URL
+- `--payloads`: Custom payloads file
+
+**Example Usage:**
+```bash
+python src/cli.py xxe --url http://target.com/api/xml
+```
+
+**Safety Considerations:**
+- Test only with authorization
+- Be cautious with file access
+- Report vulnerabilities properly
+
+#### SSL Strip
+
+**Description:**  
+Downgrades HTTPS connections to HTTP by intercepting and modifying traffic (simulation).
+
+**Attack Flow:**
+```mermaid
+graph LR
+    V[Victim] -->|HTTPS Request| A[Attacker]
+    A -->|HTTP Request| S[Server]
+    S -->|HTTPS Response| A
+    A -->|HTTP Response| V
+```
+
+**Key Features:**
+- HTTPS downgrade simulation
+- Traffic interception
+- Certificate manipulation
+- Educational demonstration
+
+**Parameters:**
+- `--interface`: Network interface
+
+**Example Usage:**
+```bash
+sudo python src/cli.py ssl-strip --interface eth0
+```
+
+**Safety Considerations:**
+- Requires MITM position
+- Detectable by HSTS
+- Educational simulation only
+
+#### BGP Hijacking
+
+**Description:**  
+Simulates BGP route advertisement manipulation (educational simulation).
+
+**Key Features:**
+- Route announcement simulation
+- AS path manipulation
+- Educational demonstration
+
+**Parameters:**
+- `--prefix`: Target IP prefix
+- `--as-number`: AS number
+
+**Example Usage:**
+```bash
+python src/cli.py bgp-hijacking --prefix 1.2.3.0/24 --as-number 65000
+```
+
+**Safety Considerations:**
+- Simulation only
+- Requires BGP router access in reality
+- Highly regulated attack type
+
+### Amplification Attacks
+
+#### Smurf Attack
+
+**Description:**  
+Amplification attack using ICMP broadcast to multiply traffic toward victim.
+
+**Attack Flow:**
+```mermaid
+sequenceDiagram
+    A->>B: ICMP Echo (Spoofed Source: Victim)
+    B->>V: ICMP Replies from All Hosts
+```
+
+**Key Features:**
+- ICMP broadcast exploitation
+- IP spoofing
+- Amplification factor
+- Bandwidth multiplication
+
+**Parameters:**
+- `--victim`: Victim IP address
+- `--broadcast`: Broadcast IP address
+- `--count`: Number of packets
+
+**Example Usage:**
+```bash
+sudo python src/cli.py smurf-attack --victim 192.168.1.10 --broadcast 192.168.1.255 --count 100
+```
+
+**Safety Considerations:**
+- Massive amplification possible
+- Monitor network load
+- Restricted by modern networks
+
+#### NTP Amplification
+
+**Description:**  
+Exploits NTP servers to amplify traffic toward victim using monlist command.
+
+**Attack Flow:**
+```mermaid
+sequenceDiagram
+    A->>N: NTP Query (Spoofed: Victim)
+    N->>V: Large NTP Response
+    Note over V: Amplification ~500x
+```
+
+**Key Features:**
+- Multiple NTP server support
+- High amplification factor
+- Query type selection
+- Server rotation
+
+**Parameters:**
+- `--victim`: Victim IP address
+- `--ntp-servers`: NTP server list
+- `--count`: Number of packets
+
+**Example Usage:**
+```bash
+sudo python src/cli.py ntp-amplification --victim 192.168.1.10 --ntp-servers "1.2.3.4,5.6.7.8" --count 100
+```
+
+**Safety Considerations:**
+- Extremely high amplification
+- Most servers patched
+- Illegal without authorization
+
+### Credential Attacks
+
+#### FTP Brute Force
+
+**Description:**  
+Attempts to gain FTP access by systematically trying username/password combinations.
+
+**Attack Flow:**
+```mermaid
+graph TB
+    Start --> Try[Try Credentials]
+    Try --> Check{Success?}
+    Check -->|No| Next[Next Password]
+    Check -->|Yes| Log[Log Success]
+    Next --> Try
+```
+
+**Key Features:**
+- Password list support
+- Connection management
+- Success detection
+- Result logging
+
+**Parameters:**
+- `--host`: FTP server host
+- `--port`: FTP port (default: 21)
+- `--username`: Username to test
+- `--passwords`: Password list file
+
+**Example Usage:**
+```bash
+python src/cli.py ftp-brute-force --host 192.168.1.10 --username admin --passwords passwords.txt
+```
+
+**Safety Considerations:**
+- Respect rate limits
+- Avoid account lockouts
+- Monitor for detection
+
+#### RDP Brute Force
+
+**Description:**  
+Simulates RDP brute force attempts (educational simulation).
+
+**Key Features:**
+- Password list iteration
+- Connection simulation
+- Educational demonstration
+
+**Parameters:**
+- `--host`: RDP server host
+- `--port`: RDP port (default: 3389)
+- `--username`: Username to test
+- `--passwords`: Password list file
+
+**Example Usage:**
+```bash
+python src/cli.py rdp-brute-force --host 192.168.1.10 --username administrator --passwords passwords.txt
+```
+
+**Safety Considerations:**
+- Simulation only
+- Real RDP brute force requires specialized libraries
+- High detection rate
+
 ## PCAP Replay Attacks
 
 **Description:**  
