@@ -9,6 +9,7 @@ MMT-Attacker is a powerful and flexible network attack simulation toolkit design
 
 - **Multiple Attack Vectors**: Support for various network and application-layer attacks
 - **PCAP Replay**: Advanced packet replay functionality with customization options
+- **Interactive Web Interface**: Modern React-based frontend for educational demonstrations
 - **Modular Design**: Easy to extend with new attack types
 - **Detailed Logging**: Comprehensive logging and monitoring capabilities
 - **Validation**: Input validation and safety checks built-in
@@ -29,6 +30,8 @@ MMT-Attacker is a powerful and flexible network attack simulation toolkit design
 
 ## Quick Start
 Looking for the Playbook? Check out the [PLAYBOOK](docs/PLAYBOOK.md).
+
+Want to explore the interactive demo? Visit the [Web Interface](frontend/README.md).
 
 ### Prerequisites
 
@@ -118,6 +121,14 @@ mmt-attacker/
 │       ├── validator.py          # Input validation
 │       ├── network.py            # Network utilities
 │       └── logger.py             # Logging utilities
+├── frontend/                     # Web interface (React + Vite)
+│   ├── src/                      # Frontend source code
+│   │   ├── components/          # React components
+│   │   ├── pages/               # Page components
+│   │   ├── data/                # Attack data and scenarios
+│   │   └── utils/               # Utility functions
+│   ├── package.json             # Node.js dependencies
+│   └── vite.config.js           # Vite configuration
 ├── docs/                         # Documentation
 │   ├── PLAYBOOK.md              # Detailed usage guide
 │   └── images/                   # Documentation images
@@ -276,12 +287,34 @@ For support, please:
 2. Search [existing issues](https://github.com/montimage/mmt-attacker/issues)
 3. Create a new issue if needed
 
+## Web Interface
+
+The project includes an interactive web interface for educational demonstrations and attack scenario exploration. Built with React and Vite, it provides:
+
+- Interactive attack scenarios with step-by-step walkthroughs
+- Visual attack flow diagrams using Mermaid
+- Command generation with parameter validation
+- Educational content for each attack type
+- Simulated attack execution and results
+
+### Running the Web Interface
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The interface will be available at `http://localhost:3000`.
+
+For production deployment, see [frontend/README.md](frontend/README.md).
+
 ## Roadmap
 
+- [x] GUI interface
 - [ ] Additional attack vectors
 - [ ] Enhanced reporting capabilities
-- [ ] GUI interface
 - [ ] Docker containerization
 - [ ] CI/CD pipeline
 - [ ] API integration
-- [ ] Cloud deployment support
+- [x] Cloud deployment support (Netlify)
