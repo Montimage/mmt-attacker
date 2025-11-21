@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import AttackParameters from './AttackParameters'
 import Button from '../common/Button'
+import CommandDisplay from './CommandDisplay'
 
-function AttackScenario({ scenarios, onExecute, isExecuting }) {
+function AttackScenario({ attackId, scenarios, onExecute, isExecuting }) {
   const [activeScenario, setActiveScenario] = useState(0)
+  const [activeTab, setActiveTab] = useState('configure') // 'configure' or 'command'
   const [parameters, setParameters] = useState({})
   const [errors, setErrors] = useState({})
 
@@ -59,6 +61,7 @@ function AttackScenario({ scenarios, onExecute, isExecuting }) {
                 setActiveScenario(index)
                 setParameters({})
                 setErrors({})
+                setActiveTab('configure')
               }}
               className={`flex-1 px-6 py-4 font-medium text-sm transition-colors whitespace-nowrap ${
                 activeScenario === index
@@ -82,31 +85,69 @@ function AttackScenario({ scenarios, onExecute, isExecuting }) {
           )}
         </div>
 
-        {/* Parameters Form */}
-        <AttackParameters
-          parameters={currentScenario.parameters}
-          values={parameters}
-          onChange={handleParameterChange}
-          errors={errors}
-        />
-
-        {/* Execute Button */}
-        <div className="mt-6 pt-6 border-t-2 border-gray-200">
-          <Button
-            variant="primary"
-            onClick={handleExecute}
-            disabled={isExecuting}
-            loading={isExecuting}
-            className="w-full md:w-auto"
-          >
-            {isExecuting ? 'Running Simulation...' : 'Start Attack Simulation'}
-          </Button>
-          {Object.keys(errors).length > 0 && (
-            <p className="mt-2 text-sm text-red-600">
-              Please fix the errors above before starting the simulation.
-            </p>
-          )}
+        {/* Sub-Tabs: Configure | Python Command */}
+        <div className="mb-6">
+          <div className="flex border-b border-gray-300">
+            <button
+              onClick={() => setActiveTab('configure')}
+              className={`px-6 py-3 font-medium text-sm transition-colors ${
+                activeTab === 'configure'
+                  ? 'text-green-900 border-b-2 border-green-900'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Configure
+            </button>
+            <button
+              onClick={() => setActiveTab('command')}
+              className={`px-6 py-3 font-medium text-sm transition-colors ${
+                activeTab === 'command'
+                  ? 'text-green-900 border-b-2 border-green-900'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Python Command
+            </button>
+          </div>
         </div>
+
+        {/* Tab Content */}
+        {activeTab === 'configure' ? (
+          <>
+            {/* Parameters Form */}
+            <AttackParameters
+              parameters={currentScenario.parameters}
+              values={parameters}
+              onChange={handleParameterChange}
+              errors={errors}
+            />
+
+            {/* Execute Button */}
+            <div className="mt-6 pt-6 border-t-2 border-gray-200">
+              <Button
+                variant="primary"
+                onClick={handleExecute}
+                disabled={isExecuting}
+                loading={isExecuting}
+                className="w-full md:w-auto"
+              >
+                {isExecuting ? 'Running Simulation...' : 'Start Attack Simulation'}
+              </Button>
+              {Object.keys(errors).length > 0 && (
+                <p className="mt-2 text-sm text-red-600">
+                  Please fix the errors above before starting the simulation.
+                </p>
+              )}
+            </div>
+          </>
+        ) : (
+          /* Python Command Display */
+          <CommandDisplay
+            attackId={attackId}
+            scenario={currentScenario}
+            parameterValues={parameters}
+          />
+        )}
       </div>
     </div>
   )
