@@ -20,7 +20,7 @@ class VlanHopping(AttackBase):
         parser.add_argument('--outer-vlan', type=int, required=True, help='Outer VLAN ID')
         parser.add_argument('--inner-vlan', type=int, required=True, help='Inner VLAN ID')
         parser.add_argument('--target', required=True, help='Target IP')
-        parser.add_argument('--count', type=int, , help='Number of packets (default: 10)')
+        parser.add_argument('--count', type=int, default=10, help='Number of packets (default: 10)')
         parser.add_argument('--verbose', action='store_true', help='Verbose output')
 
     def validate(self, args: argparse.Namespace) -> bool:
@@ -34,7 +34,17 @@ class VlanHopping(AttackBase):
         try:
             import vlan_hopping as attack_module
             logger.info(f"Running vlan-hopping attack")
-            # Attack execution handled by module
+
+            # Create and execute attack
+            attack = attack_module.VLANHoppingAttack(
+                args.interface,
+                args.outer_vlan,
+                args.inner_vlan,
+                args.target,
+                args.count,
+                args.verbose
+            )
+            attack.execute()
         except Exception as e:
             logger.error(f"Attack failed: {e}")
             raise

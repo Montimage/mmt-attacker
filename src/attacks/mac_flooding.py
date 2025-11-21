@@ -17,8 +17,8 @@ class MacFlooding(AttackBase):
 
     def add_arguments(self, parser: argparse.ArgumentParser) -> None:
         parser.add_argument('--interface', required=True, help='Network interface')
-        parser.add_argument('--count', type=int, , help='Number of frames (default: 1000)')
-        parser.add_argument('--rate', type=int, , help='Frames per second (default: 100)')
+        parser.add_argument('--count', type=int, default=1000, help='Number of frames (default: 1000)')
+        parser.add_argument('--rate', type=int, default=100, help='Frames per second (default: 100)')
         parser.add_argument('--verbose', action='store_true', help='Verbose output')
 
     def validate(self, args: argparse.Namespace) -> bool:
@@ -32,7 +32,15 @@ class MacFlooding(AttackBase):
         try:
             import mac_flooding as attack_module
             logger.info(f"Running mac-flooding attack")
-            # Attack execution handled by module
+
+            # Create and execute attack
+            attack = attack_module.MACFloodingAttack(
+                args.interface,
+                args.count,
+                args.rate,
+                args.verbose
+            )
+            attack.execute()
         except Exception as e:
             logger.error(f"Attack failed: {e}")
             raise

