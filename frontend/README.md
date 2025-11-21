@@ -56,6 +56,78 @@ npm run preview
 
 The optimized build will be output to the `dist/` directory.
 
+## ☁️ Deployment
+
+### Netlify Deployment
+
+This project is configured for easy deployment on Netlify with zero-config setup.
+
+#### Option 1: Deploy via Netlify CLI
+
+```bash
+# Install Netlify CLI globally
+npm install -g netlify-cli
+
+# Login to Netlify
+netlify login
+
+# Deploy to production
+netlify deploy --prod
+```
+
+#### Option 2: Deploy via Git Integration
+
+1. Push your code to GitHub, GitLab, or Bitbucket
+2. Go to [Netlify](https://app.netlify.com)
+3. Click "Add new site" → "Import an existing project"
+4. Connect your repository
+5. Netlify will auto-detect the configuration from `netlify.toml`
+6. Click "Deploy site"
+
+#### Option 3: Manual Deploy
+
+```bash
+# Build the project
+npm run build
+
+# Drag and drop the `dist/` folder to Netlify's deploy interface
+# Or use the Netlify CLI:
+netlify deploy --prod --dir=dist
+```
+
+### Configuration
+
+The project includes:
+- `netlify.toml` - Netlify configuration with build settings, redirects, and headers
+- `public/_redirects` - SPA routing redirects (backup for netlify.toml)
+
+#### Build Settings (from netlify.toml)
+- **Base directory**: `frontend/`
+- **Build command**: `npm run build`
+- **Publish directory**: `dist/`
+- **Node version**: 20
+
+#### Environment Variables
+
+No environment variables are required for the demo version. For production with backend integration, add:
+- `VITE_API_URL` - Backend API endpoint
+
+### Custom Domain
+
+After deployment:
+1. Go to Site settings → Domain management
+2. Add your custom domain
+3. Configure DNS records as instructed by Netlify
+
+### Performance Optimizations
+
+The deployment includes:
+- Static asset caching (1 year)
+- HTML caching disabled for updates
+- Security headers (XSS, frame options, etc.)
+- Gzip/Brotli compression (automatic)
+- CDN distribution (automatic)
+
 ## 📁 Project Structure
 
 ```

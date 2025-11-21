@@ -1,0 +1,5 @@
+# Redirects for Single Page Application routing
+# This file handles client-side routing for React Router
+
+# Redirect all routes to index.html for SPA functionality
+/*    /index.html   200
