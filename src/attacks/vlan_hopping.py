@@ -24,7 +24,29 @@ class VlanHopping(AttackBase):
         parser.add_argument('--verbose', action='store_true', help='Verbose output')
 
     def validate(self, args: argparse.Namespace) -> bool:
-        # Basic validation - extend as needed
+        # Validate network interface
+        if not self.validator.validate_interface(args.interface):
+            logger.error(f"Invalid or unavailable network interface: {args.interface}")
+            return False
+
+        # Validate VLAN IDs (valid range is 1-4094)
+        if not (1 <= args.outer_vlan <= 4094):
+            logger.error(f"Invalid outer VLAN ID: {args.outer_vlan}. Must be between 1 and 4094")
+            return False
+        if not (1 <= args.inner_vlan <= 4094):
+            logger.error(f"Invalid inner VLAN ID: {args.inner_vlan}. Must be between 1 and 4094")
+            return False
+
+        # Validate target IP
+        if not self.validator.validate_ip(args.target, allow_private=True, allow_loopback=False):
+            logger.error(f"Invalid target IP address: {args.target}")
+            return False
+
+        # Validate count
+        if args.count <= 0:
+            logger.error(f"Invalid packet count: {args.count}. Must be greater than 0")
+            return False
+
         return True
 
     def run(self, args: argparse.Namespace) -> None:

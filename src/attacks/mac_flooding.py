@@ -22,7 +22,25 @@ class MacFlooding(AttackBase):
         parser.add_argument('--verbose', action='store_true', help='Verbose output')
 
     def validate(self, args: argparse.Namespace) -> bool:
-        # Basic validation - extend as needed
+        # Validate network interface
+        if not self.validator.validate_interface(args.interface):
+            logger.error(f"Invalid or unavailable network interface: {args.interface}")
+            return False
+
+        # Validate count
+        if args.count <= 0:
+            logger.error(f"Invalid frame count: {args.count}. Must be greater than 0")
+            return False
+        if args.count > 100000:
+            logger.warning(f"Very large frame count ({args.count}) may overwhelm the switch")
+
+        # Validate rate
+        if args.rate <= 0:
+            logger.error(f"Invalid frame rate: {args.rate}. Must be greater than 0")
+            return False
+        if args.rate > 10000:
+            logger.warning(f"Very high frame rate ({args.rate}/sec) may overwhelm the system")
+
         return True
 
     def run(self, args: argparse.Namespace) -> None:

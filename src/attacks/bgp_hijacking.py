@@ -21,7 +21,16 @@ class BgpHijacking(AttackBase):
         parser.add_argument('--verbose', action='store_true', help='Verbose output')
 
     def validate(self, args: argparse.Namespace) -> bool:
-        # Basic validation - extend as needed
+        # Validate prefix (CIDR notation)
+        if not self.validator.validate_network(args.prefix):
+            logger.error(f"Invalid IP prefix/network: {args.prefix}. Must be in CIDR notation (e.g., 192.168.1.0/24)")
+            return False
+
+        # Validate AS number (valid range is 1-4294967295 for 32-bit ASN)
+        if not (1 <= args.as_number <= 4294967295):
+            logger.error(f"Invalid AS number: {args.as_number}. Must be between 1 and 4294967295")
+            return False
+
         return True
 
     def run(self, args: argparse.Namespace) -> None:
