@@ -1,5 +1,9 @@
 # MMT-Attacker
 
+<p align="center">
+  <img src="frontend/public/logo.svg" alt="MMT-Attacker Logo" width="200"/>
+</p>
+
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
 

@@ -44,7 +44,6 @@ function Footer() {
                 </a>
               </div>
               <p className="mt-2">39 rue Bobillot, 75013 Paris, France</p>
-              <p>Phone: +33 1 53 14 33 91</p>
             </div>
           </div>
 
