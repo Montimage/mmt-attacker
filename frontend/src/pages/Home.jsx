@@ -1,60 +1,87 @@
-import { AlertTriangle, Shield } from 'lucide-react'
+import HeroSection from '../components/home/HeroSection'
+import AttackTypeCard from '../components/home/AttackTypeCard'
+import { getCategories, getAttacksByCategory } from '../data/attacksData'
 
 function Home() {
-  return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* Hero Section */}
-      <div className="text-center mb-12">
-        <div className="flex justify-center mb-6">
-          <Shield className="w-20 h-20 text-green-900" />
-        </div>
-        <h1 className="text-4xl md:text-5xl font-bold text-black mb-4">
-          MMT-Attacker Demonstration Platform
-        </h1>
-        <p className="text-xl text-gray-600 mb-8">
-          Interactive Cybersecurity Attack Simulation
-        </p>
+  const categories = getCategories()
 
-        {/* Legal Warning Banner */}
-        <div className="card border-green-900 bg-green-50 max-w-3xl mx-auto">
-          <div className="flex items-start space-x-3">
-            <AlertTriangle className="w-8 h-8 text-green-900 flex-shrink-0 mt-1" />
-            <div className="text-left">
-              <h3 className="text-xl font-bold text-green-900 mb-2">⚠️ Legal Warning</h3>
-              <p className="text-gray-800 leading-relaxed">
-                This tool is for <strong>EDUCATIONAL AND TESTING PURPOSES ONLY</strong>.
-                You must obtain proper authorization before testing, use in controlled
-                environments only, and comply with all applicable laws and regulations.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+  return (
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <HeroSection />
 
       {/* Attack Categories Section */}
-      <div className="mt-16">
-        <h2 className="text-3xl font-bold text-black mb-8 text-center">Attack Categories</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Placeholder cards - will be replaced with actual attack cards */}
-          <div className="card card-hover cursor-pointer">
-            <h3 className="text-xl font-bold text-black mb-2">Network-Layer Attacks</h3>
-            <p className="text-gray-600">ARP Spoofing, SYN Flood, Ping of Death</p>
-          </div>
-          <div className="card card-hover cursor-pointer">
-            <h3 className="text-xl font-bold text-black mb-2">Application-Layer Attacks</h3>
-            <p className="text-gray-600">HTTP DoS, Slowloris, Credential Harvester</p>
-          </div>
-          <div className="card card-hover cursor-pointer">
-            <h3 className="text-xl font-bold text-black mb-2">Amplification Attacks</h3>
-            <p className="text-gray-600">DNS Amplification</p>
-          </div>
-          <div className="card card-hover cursor-pointer">
-            <h3 className="text-xl font-bold text-black mb-2">Credential Attacks</h3>
-            <p className="text-gray-600">SSH Brute Force, SQL Injection</p>
-          </div>
-          <div className="card card-hover cursor-pointer">
-            <h3 className="text-xl font-bold text-black mb-2">PCAP Replay</h3>
-            <p className="text-gray-600">Traffic replay and simulation</p>
+      <div id="attack-categories" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-black mb-4">
+            Attack Categories
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Explore different types of network and application attacks. Each attack includes
+            detailed theory, interactive simulations, and educational explanations.
+          </p>
+        </div>
+
+        {/* Attacks by Category */}
+        {categories.map((category) => {
+          const attacks = getAttacksByCategory(category)
+
+          const categoryDisplayNames = {
+            'Network-Layer': 'Network Layer Attacks',
+            'Application-Layer': 'Application Layer Attacks',
+            'Amplification': 'Amplification Attacks',
+            'Credential': 'Credential Attacks',
+            'Other': 'Other Attacks'
+          }
+
+          return (
+            <div key={category} className="mb-16 last:mb-0">
+              {/* Category Header */}
+              <div className="mb-6">
+                <h3 className="text-2xl font-bold text-black mb-2">
+                  {categoryDisplayNames[category] || category}
+                </h3>
+                <div className="h-1 w-20 bg-green-900 rounded"></div>
+              </div>
+
+              {/* Attack Cards Grid */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {attacks.map((attack) => (
+                  <AttackTypeCard key={attack.id} attack={attack} />
+                ))}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Bottom CTA Section */}
+      <div className="bg-gray-50 border-t-2 border-gray-200 py-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h3 className="text-2xl font-bold text-black mb-4">
+            Ready to Learn About Cybersecurity?
+          </h3>
+          <p className="text-gray-600 mb-6">
+            Choose an attack type above to explore detailed simulations, understand the mechanisms,
+            and learn how to protect against these threats.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <a
+              href="https://github.com/montimage/mmt-attacker"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-white text-gray-900 px-6 py-3 rounded-lg border-2 border-gray-300 shadow-custom hover:border-gray-400 hover:shadow-custom-md transition-all duration-200 font-medium"
+            >
+              View on GitHub
+            </a>
+            <a
+              href="https://github.com/montimage/mmt-attacker/blob/main/docs/PLAYBOOK.md"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-green-900 text-white px-6 py-3 rounded-lg border-2 border-green-900 shadow-custom hover:bg-green-800 hover:shadow-custom-md transition-all duration-200 font-medium"
+            >
+              Read Documentation
+            </a>
           </div>
         </div>
       </div>
