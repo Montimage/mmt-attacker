@@ -22,7 +22,23 @@ class HttpFlood(AttackBase):
         parser.add_argument('--verbose', action='store_true', help='Verbose output')
 
     def validate(self, args: argparse.Namespace) -> bool:
-        # Basic validation - extend as needed
+        # Validate URL
+        if not self.validator.validate_url(args.url):
+            logger.error(f"Invalid URL: {args.url}")
+            return False
+
+        # Validate count
+        if args.count <= 0:
+            logger.error(f"Invalid count: {args.count}. Must be greater than 0")
+            return False
+
+        # Validate threads
+        if args.threads <= 0:
+            logger.error(f"Invalid thread count: {args.threads}. Must be greater than 0")
+            return False
+        if args.threads > 100:
+            logger.warning(f"Large thread count ({args.threads}) may overwhelm the system")
+
         return True
 
     def run(self, args: argparse.Namespace) -> None:

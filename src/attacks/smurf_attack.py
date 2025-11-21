@@ -22,7 +22,23 @@ class SmurfAttack(AttackBase):
         parser.add_argument('--verbose', action='store_true', help='Verbose output')
 
     def validate(self, args: argparse.Namespace) -> bool:
-        # Basic validation - extend as needed
+        # Validate victim IP
+        if not self.validator.validate_ip(args.victim, allow_private=True, allow_loopback=False):
+            logger.error(f"Invalid victim IP address: {args.victim}")
+            return False
+
+        # Validate broadcast IP
+        if not self.validator.validate_ip(args.broadcast, allow_private=True, allow_loopback=False):
+            logger.error(f"Invalid broadcast IP address: {args.broadcast}")
+            return False
+
+        # Validate count
+        if args.count <= 0:
+            logger.error(f"Invalid packet count: {args.count}. Must be greater than 0")
+            return False
+        if args.count > 10000:
+            logger.warning(f"Large packet count ({args.count}) may cause network disruption")
+
         return True
 
     def run(self, args: argparse.Namespace) -> None:

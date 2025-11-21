@@ -23,7 +23,27 @@ class RdpBruteForce(AttackBase):
         parser.add_argument('--verbose', action='store_true', help='Verbose output')
 
     def validate(self, args: argparse.Namespace) -> bool:
-        # Basic validation - extend as needed
+        # Validate host (can be IP or hostname)
+        # Try IP validation first, if it fails, try as hostname
+        if not self.validator.validate_ip(args.host, allow_private=True, allow_loopback=True):
+            # Not a valid IP, try as hostname
+            import socket
+            try:
+                socket.gethostbyname(args.host)
+            except socket.error:
+                logger.error(f"Invalid host: {args.host}. Must be a valid IP or resolvable hostname")
+                return False
+
+        # Validate port
+        if not self.validator.validate_port(args.port):
+            logger.error(f"Invalid port: {args.port}. Must be between 0 and 65535")
+            return False
+
+        # Validate password file exists and is readable
+        if not self.validator.validate_file_path(args.passwords, check_exists=True, check_readable=True):
+            logger.error(f"Password file not found or not readable: {args.passwords}")
+            return False
+
         return True
 
     def run(self, args: argparse.Namespace) -> None:

@@ -21,7 +21,17 @@ class Xxe(AttackBase):
         parser.add_argument('--verbose', action='store_true', help='Verbose output')
 
     def validate(self, args: argparse.Namespace) -> bool:
-        # Basic validation - extend as needed
+        # Validate URL
+        if not self.validator.validate_url(args.url):
+            logger.error(f"Invalid URL: {args.url}")
+            return False
+
+        # Validate payloads file if provided
+        if args.payloads:
+            if not self.validator.validate_file_path(args.payloads, check_exists=True, check_readable=True):
+                logger.error(f"Payloads file not found or not readable: {args.payloads}")
+                return False
+
         return True
 
     def run(self, args: argparse.Namespace) -> None:
