@@ -82,6 +82,7 @@ function AttackPageTemplate() {
         <div>
           <h2 className="text-2xl font-bold text-black mb-4">Attack Scenarios</h2>
           <AttackScenario
+            attackId={attackId}
             scenarios={attack.scenarios}
             onExecute={handleExecute}
             isExecuting={isExecuting}
