@@ -1,7 +1,13 @@
-/* Tailwind CSS directives */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Tailwind CSS v4 import */
+@import "tailwindcss";
+
+/* Custom theme configuration for Tailwind v4 */
+@theme {
+  /* Custom box shadows */
+  --shadow-custom: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-custom-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-custom-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
 
 /* Custom base styles */
 @layer base {
