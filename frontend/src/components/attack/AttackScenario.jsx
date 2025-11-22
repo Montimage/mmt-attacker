@@ -35,10 +35,11 @@ function AttackScenario({ attackId, scenarios, onExecute, isExecuting, results }
   }
 
   const handleExecute = () => {
-    // Validate all required fields
+    // Validate all required fields, considering default values
     const newErrors = {}
     currentScenario.parameters.forEach(param => {
-      if (param.required && !parameters[param.name]) {
+      const value = parameters[param.name] !== undefined ? parameters[param.name] : param.defaultValue
+      if (param.required && !value) {
         newErrors[param.name] = `${param.label} is required`
       }
     })
@@ -48,8 +49,16 @@ function AttackScenario({ attackId, scenarios, onExecute, isExecuting, results }
       return
     }
 
+    // Merge parameters with default values for execution
+    const finalParameters = {}
+    currentScenario.parameters.forEach(param => {
+      finalParameters[param.name] = parameters[param.name] !== undefined
+        ? parameters[param.name]
+        : param.defaultValue
+    })
+
     // Execute the attack and open modal
-    onExecute(currentScenario.id, parameters)
+    onExecute(currentScenario.id, finalParameters)
     setIsModalOpen(true)
   }
 
