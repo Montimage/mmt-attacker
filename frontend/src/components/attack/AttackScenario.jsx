@@ -152,10 +152,10 @@ function AttackScenario({ attackId, scenarios, onExecute, isExecuting, results }
                   <Button
                     variant="secondary"
                     onClick={() => setIsModalOpen(true)}
-                    className="flex-1 md:flex-initial"
+                    className="flex-1 md:flex-initial inline-flex items-center justify-center"
                   >
                     <Eye className="w-4 h-4 mr-2" />
-                    Show Results
+                    <span>Show Results</span>
                   </Button>
                 )}
               </div>
