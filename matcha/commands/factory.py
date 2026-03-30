@@ -9,10 +9,12 @@ formatting.
 from __future__ import annotations
 
 import importlib
+import ipaddress
 import logging
 import os
 import sys
 from typing import Any, Dict
+from urllib.parse import urlparse
 
 import click
 
@@ -37,6 +39,80 @@ _CLICK_TYPES: Dict[str, click.ParamType] = {
 # ---------------------------------------------------------------------------
 
 
+def _validate_ip(value: str) -> str | None:
+    """Return an error string if *value* is not a valid IP address."""
+    try:
+        ipaddress.ip_address(value)
+    except ValueError:
+        return f"Invalid IP address: {value}"
+    return None
+
+
+def _validate_port(value: int) -> str | None:
+    """Return an error string if *value* is outside the valid port range."""
+    if not (0 <= value <= 65535):
+        return f"Invalid port number: {value} (must be 0-65535)"
+    return None
+
+
+def _validate_url(value: str) -> str | None:
+    """Return an error string if *value* is not a valid HTTP(S) URL."""
+    parsed = urlparse(value)
+    if parsed.scheme not in ("http", "https"):
+        return f"Invalid URL scheme: {parsed.scheme!r} (expected http or https)"
+    if not parsed.netloc:
+        return f"Invalid URL (missing hostname): {value}"
+    return None
+
+
+def _validate_file_path(value: str) -> str | None:
+    """Return an error string if *value* does not point to a readable file."""
+    if not os.path.exists(value):
+        return f"File not found: {value}"
+    if not os.access(value, os.R_OK):
+        return f"File not readable: {value}"
+    return None
+
+
+def _validate_network(value: str) -> str | None:
+    """Return an error string if *value* is not valid CIDR notation."""
+    try:
+        ipaddress.ip_network(value, strict=False)
+    except ValueError:
+        return f"Invalid network (CIDR notation expected): {value}"
+    return None
+
+
+# Maps parameter name patterns to their semantic validator.
+# Checked in order — first match wins.
+_PARAM_VALIDATORS = [
+    # Exact name matches first
+    ("target_prefix", _validate_network),
+    # Suffix-based patterns
+    ("_ip", _validate_ip),
+    ("_port", _validate_port),
+    ("_url", _validate_url),
+    ("_file", _validate_file_path),
+    ("wordlist", _validate_file_path),
+]
+
+# Params matched by exact name (not suffix)
+_EXACT_NAME_VALIDATORS: Dict[str, Any] = {
+    "target_prefix": _validate_network,
+    "wordlist": _validate_file_path,
+}
+
+
+def _get_semantic_validator(name: str):
+    """Return the semantic validation function for a param *name*, or None."""
+    if name in _EXACT_NAME_VALIDATORS:
+        return _EXACT_NAME_VALIDATORS[name]
+    for suffix, validator in _PARAM_VALIDATORS:
+        if name.endswith(suffix):
+            return validator
+    return None
+
+
 def validate_params(
     entry: AttackEntry,
     values: Dict[str, Any],
@@ -47,20 +123,40 @@ def validate_params(
     * Required parameters are present and not ``None``.
     * ``int`` / ``float`` values are the correct type (Click normally
       handles this, but we double-check for safety).
+    * Semantic validation: IP addresses, ports, URLs, file paths, and
+      network prefixes are validated based on parameter name patterns.
     """
     errors: list[str] = []
     for pdef in entry.params:
         val = values.get(pdef.name)
+        cli_flag = f"--{pdef.name.replace('_', '-')}"
+
+        # Required check
         if pdef.required and val is None:
-            cli_flag = f"--{pdef.name.replace('_', '-')}"
             errors.append(f"Missing required option: {cli_flag}")
-        elif val is not None and pdef.type in ("int", "float"):
+            continue
+
+        # Skip further checks if value is absent (optional + not provided)
+        if val is None:
+            continue
+
+        # Basic type check
+        if pdef.type in ("int", "float"):
             expected = int if pdef.type == "int" else float
             if not isinstance(val, expected):
                 errors.append(
-                    f"Option --{pdef.name.replace('_', '-')}: "
+                    f"Option {cli_flag}: "
                     f"expected {pdef.type}, got {type(val).__name__}"
                 )
+                continue
+
+        # Semantic validation
+        validator = _get_semantic_validator(pdef.name)
+        if validator is not None:
+            err = validator(val)
+            if err is not None:
+                errors.append(f"Option {cli_flag}: {err}")
+
     return errors
 
 
