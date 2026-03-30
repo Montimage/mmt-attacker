@@ -7,6 +7,7 @@ import sys
 import click
 
 from matcha import __version__
+from matcha.commands.info_cmd import info_cmd
 from matcha.commands.list_cmd import list_cmd
 
 
@@ -53,6 +54,7 @@ def cli(ctx, verbose, output, no_color):
         click.echo(ctx.get_help())
 
 
+cli.add_command(info_cmd)
 cli.add_command(list_cmd)
 
 
