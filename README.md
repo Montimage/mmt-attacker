@@ -6,9 +6,9 @@
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/Montimage/mmt-attacker/actions/workflows/ci.yml/badge.svg)](https://github.com/Montimage/mmt-attacker/actions/workflows/ci.yml)
 
-# 26 network attacks from one CLI
+# Network attack simulation for security education
 
-Run network-layer, application-layer, and replay attacks through a single `matcha` command with built-in validation and structured logging. No more juggling separate scripts.
+A unified `matcha` CLI for running network-layer, application-layer, and replay attacks in controlled lab environments — built to teach how attacks work, not just that they exist.
 
 [**Get Started**](#quick-start) | [**Playbook**](docs/PLAYBOOK.md) | [**Web Demo**](frontend/README.md)
 
@@ -19,60 +19,57 @@ Run network-layer, application-layer, and replay attacks through a single `match
 ```mermaid
 graph LR
     Install["pip install -e ."] --> CLI["matcha &lt;attack&gt;"]
-    CLI --> Registry["Attack Registry<br/>26 attacks"]
+    CLI --> Registry["Attack Registry"]
     Registry --> Validate["Validate args"]
     Validate --> Execute["Execute attack"]
-    Execute --> Target["Target System"]
+    Execute --> Target["Lab Target"]
     Execute --> Log["Structured logs"]
 ```
 
-Each attack inherits from `AttackBase`, which enforces argument parsing, input validation, and structured logging. The registry auto-discovers modules -- adding a new attack requires only a class and a one-line registration.
+Each attack inherits from `AttackBase`, which enforces argument parsing, input validation, and structured logging. The registry auto-discovers modules — adding a new attack requires only a class and a one-line registration.
 
 ## Attack Coverage
 
 | Layer | Attacks |
 |---|---|
-| **Network** (12) | [ARP Spoofing](docs/PLAYBOOK.md#arp-spoofing), BGP Hijacking, DHCP Starvation, [DNS Amplification](docs/PLAYBOOK.md#dns-amplification-attack), ICMP Flood, MAC Flooding, MITM, NTP Amplification, [Ping of Death](docs/PLAYBOOK.md#ping-of-death-attack), Smurf, [SYN Flood](docs/PLAYBOOK.md#syn-flood-attack), UDP Flood |
-| **Application** (13) | [Credential Harvester](docs/PLAYBOOK.md#credential-harvester-attack), Directory Traversal, FTP Brute Force, [HTTP DoS](docs/PLAYBOOK.md#http-dos-attack), HTTP Flood, RDP Brute Force, [Slowloris](docs/PLAYBOOK.md#slowloris-attack), [SQL Injection](docs/PLAYBOOK.md#sql-injection-attack), [SSH Brute Force](docs/PLAYBOOK.md#ssh-brute-force-attack), SSL Strip, VLAN Hopping, XSS, XXE |
-| **Replay** (1) | [PCAP Replay](docs/PLAYBOOK.md#pcap-replay-attacks) |
+| **Network** | [ARP Spoofing](docs/PLAYBOOK.md#arp-spoofing), BGP Hijacking, DHCP Starvation, [DNS Amplification](docs/PLAYBOOK.md#dns-amplification-attack), ICMP Flood, MAC Flooding, MITM, NTP Amplification, [Ping of Death](docs/PLAYBOOK.md#ping-of-death-attack), Smurf, [SYN Flood](docs/PLAYBOOK.md#syn-flood-attack), UDP Flood |
+| **Application** | [Credential Harvester](docs/PLAYBOOK.md#credential-harvester-attack), Directory Traversal, FTP Brute Force, [HTTP DoS](docs/PLAYBOOK.md#http-dos-attack), HTTP Flood, RDP Brute Force, [Slowloris](docs/PLAYBOOK.md#slowloris-attack), [SQL Injection](docs/PLAYBOOK.md#sql-injection-attack), [SSH Brute Force](docs/PLAYBOOK.md#ssh-brute-force-attack), SSL Strip, VLAN Hopping, XSS, XXE |
+| **Replay** | [PCAP Replay](docs/PLAYBOOK.md#pcap-replay-attacks) |
 
 ## Key Features
 
 | Feature | What you get |
 |---|---|
-| Single CLI | 26 attacks through `matcha` -- replaces a fragmented script collection |
+| Single CLI | All attacks through `matcha` — one interface for the entire curriculum |
 | PCAP replay | Replay captured traffic with speed control and interface selection |
 | Built-in validation | IP, port, interface, and parameter checks before execution |
-| Structured logging | Every attack logs events for post-analysis |
+| Structured logging | Every attack logs events for post-analysis and review |
 | Pluggable architecture | Add an attack by subclassing `AttackBase` and registering it |
 | Web demo | React-based interactive walkthroughs with Mermaid flow diagrams |
 | Shell completions | Tab-completion for bash, zsh, and fish |
 
 ## Quick Start
 
-### Prerequisites
+**Prerequisites:** Python 3.8+ and root/sudo privileges (required for raw socket attacks)
 
-- Python 3.8+
-- Root/sudo privileges (for raw socket attacks)
-
-### Install
+Clone the repository:
 
 ```bash
 git clone https://github.com/montimage/mmt-attacker.git
 cd mmt-attacker
 ```
 
+Install:
+
 ```bash
 pip install -e .
 ```
 
-### Verify
+Verify:
 
 ```bash
 matcha --help
 ```
-
-### Run an attack
 
 List all available attacks:
 
@@ -80,15 +77,13 @@ List all available attacks:
 matcha list
 ```
 
-Launch an attack:
+Launch an attack (in a controlled lab environment):
 
 ```bash
 matcha http-dos --target-url http://example.com --threads 10
 ```
 
 ### Shell Completions
-
-Add to your shell profile for tab-completion:
 
 ```bash
 # bash (~/.bashrc)
@@ -105,7 +100,7 @@ eval "$(_MATCHA_COMPLETE=zsh_source matcha)"
 _MATCHA_COMPLETE=fish_source matcha | source
 ```
 
-Or print the activation command directly:
+Or print the activation command:
 
 ```bash
 matcha completions bash   # or zsh / fish
@@ -146,15 +141,29 @@ matcha info arp-spoof
 
 ## Web Interface
 
+Install frontend dependencies:
+
 ```bash
 cd frontend && npm install
 ```
+
+Start the dev server:
 
 ```bash
 npm run dev
 ```
 
-Opens at `http://localhost:3000` -- interactive attack walkthroughs, Mermaid flow diagrams, command generation with validation, and simulated execution results.
+Opens at `http://localhost:3000` — interactive attack walkthroughs, Mermaid flow diagrams, command generation with validation, and simulated execution results.
+
+## Educational Use
+
+MMT-Attacker is built for security courses, CTF preparation, and lab-based research. The web demo explains each attack's mechanism without executing real traffic. The CLI is for hands-on practice in isolated, authorized environments.
+
+Use cases:
+- University network security courses
+- Cybersecurity workshop labs
+- IDS/IPS detection research (generate known attack traffic)
+- Personal study in a home lab
 
 ## Security Warning
 
@@ -173,10 +182,10 @@ Unauthorized use may be illegal. See [PLAYBOOK](docs/PLAYBOOK.md) for detailed e
 - [x] Cloud deployment (Netlify)
 - [x] CLI tool (`matcha`)
 - [x] Shell completions
+- [x] CI/CD pipeline
 - [ ] Additional attack vectors
 - [ ] Enhanced reporting
 - [ ] Docker containerization
-- [x] CI/CD pipeline
 - [ ] API integration
 
 ## Get Started
