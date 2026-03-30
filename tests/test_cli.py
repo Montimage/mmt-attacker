@@ -87,3 +87,35 @@ def test_no_color_env_var():
     result = runner.invoke(cli, [], obj=obj)
     assert result.exit_code == 0
     assert obj.get("no_color") is True
+
+
+# ---------------------------------------------------------------------------
+# Subcommand smoke tests
+# ---------------------------------------------------------------------------
+
+
+def test_list_exits_zero_and_contains_attacks():
+    """``matcha list`` exits 0 and output contains attack names."""
+    runner = CliRunner()
+    result = runner.invoke(cli, ["list"])
+    assert result.exit_code == 0
+    # Must contain at least a few well-known attack names
+    assert "syn-flood" in result.output
+    assert "arp-spoof" in result.output
+    assert "slowloris" in result.output
+
+
+def test_syn_flood_help_exits_zero_and_shows_options():
+    """``matcha syn-flood --help`` exits 0 and shows required options."""
+    runner = CliRunner()
+    result = runner.invoke(cli, ["syn-flood", "--help"])
+    assert result.exit_code == 0
+    assert "--target" in result.output
+    assert "--ports" in result.output
+
+
+def test_syn_flood_missing_required_args():
+    """``matcha syn-flood`` without required args exits with code 2."""
+    runner = CliRunner()
+    result = runner.invoke(cli, ["syn-flood"])
+    assert result.exit_code == 2
