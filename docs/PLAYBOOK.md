@@ -105,14 +105,26 @@ curl http://localhost:8080
 docker compose exec attacker curl -s http://target
 ```
 
+### Get the target IP
+
+Attack parameters that accept `--target-ip` require an IP address, not a
+hostname. Resolve it once before running attacks:
+
+```bash
+TARGET_IP=$(docker compose exec attacker sh -c "getent hosts target | awk '{print \$1}'")
+echo $TARGET_IP   # e.g. 172.20.0.2
+```
+
+Use `$TARGET_IP` in all commands below.
+
 ### Running attacks
 
-All attacks use `docker compose exec attacker matcha <attack>`. The target
-container's hostname on the shared network is `target`.
+All attacks use `docker compose exec attacker matcha <attack>`. Pass the
+resolved IP from above as `--target-ip`.
 
 ```bash
 # General pattern
-docker compose exec attacker matcha <attack> [options]
+docker compose exec attacker matcha <attack> --target-ip $TARGET_IP [options]
 
 # List all available attacks
 docker compose exec attacker matcha list
@@ -173,14 +185,14 @@ graph LR
 # Basic — flood the target's web port
 docker compose exec attacker \
   matcha syn-flood \
-    --target-ip target \
+    --target-ip $TARGET_IP \
     --target-port 80 \
     --count 500
 
 # With more options
 docker compose exec attacker \
   matcha syn-flood \
-    --target-ip target \
+    --target-ip $TARGET_IP \
     --target-port 80 \
     --count 1000 \
     --interface eth0
@@ -210,7 +222,7 @@ graph LR
 ```bash
 docker compose exec attacker \
   matcha icmp-flood \
-    --target-ip target \
+    --target-ip $TARGET_IP \
     --count 1000
 ```
 
@@ -238,7 +250,7 @@ sequenceDiagram
 ```bash
 docker compose exec attacker \
   matcha udp-flood \
-    --target-ip target \
+    --target-ip $TARGET_IP \
     --target-port 80 \
     --count 500
 ```
@@ -335,7 +347,7 @@ sequenceDiagram
 ```bash
 docker compose exec attacker \
   matcha ping-of-death \
-    --target-ip target \
+    --target-ip $TARGET_IP \
     --count 10
 ```
 
@@ -608,7 +620,7 @@ docker compose exec attacker sh -c \
 # Run the attack
 docker compose exec attacker \
   matcha ssh-brute-force \
-    --target-ip target \
+    --target-ip $TARGET_IP \
     --username demo \
     --wordlist /tmp/wordlist.txt
 ```
@@ -637,7 +649,7 @@ docker compose exec attacker sh -c \
 
 docker compose exec attacker \
   matcha ftp-brute-force \
-    --target-ip target \
+    --target-ip $TARGET_IP \
     --username anonymous \
     --wordlist /tmp/ftp_words.txt
 ```
