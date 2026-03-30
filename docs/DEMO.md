@@ -58,7 +58,7 @@ target      mmt-attacker-target                     running   0.0.0.0:8080->80/t
 curl http://localhost:8080
 
 # Or from inside the attacker container
-docker compose exec attacker python3 -c "import urllib.request; print(urllib.request.urlopen('http://target').read(100))"
+docker compose exec attacker curl -s http://target
 ```
 
 ---

@@ -39,7 +39,8 @@ FROM python:3.12-slim AS runtime
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
         libpcap0.8 \
-        tcpdump && \
+        tcpdump \
+        curl && \
     rm -rf /var/lib/apt/lists/* && \
     # Create a non-root user; attacks that need raw sockets are run with
     # --cap-add NET_ADMIN --cap-add NET_RAW at container start time.
