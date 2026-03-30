@@ -10,7 +10,6 @@ from click.testing import CliRunner
 from matcha.cli import cli
 from matcha.commands.syn_flood_cmd import parse_ports, validate_target_ip
 
-
 # ---------------------------------------------------------------------------
 # Unit tests -- parse_ports
 # ---------------------------------------------------------------------------
@@ -146,13 +145,9 @@ def test_cli_syn_flood_text():
     """``matcha syn-flood --target-ip ...`` prints text output."""
     mock_cls = _mock_load_class()
 
-    with patch(
-        "matcha.commands.factory.load_attack_class", return_value=mock_cls
-    ):
+    with patch("matcha.commands.factory.load_attack_class", return_value=mock_cls):
         runner = CliRunner()
-        result = runner.invoke(
-            cli, ["syn-flood", "--target-ip", "127.0.0.1"]
-        )
+        result = runner.invoke(cli, ["syn-flood", "--target-ip", "127.0.0.1"])
     assert result.exit_code == 0
     assert "packets_sent" in result.output
 
@@ -161,9 +156,7 @@ def test_cli_syn_flood_json():
     """``matcha -o json syn-flood ...`` outputs valid JSON stats."""
     mock_cls = _mock_load_class()
 
-    with patch(
-        "matcha.commands.factory.load_attack_class", return_value=mock_cls
-    ):
+    with patch("matcha.commands.factory.load_attack_class", return_value=mock_cls):
         runner = CliRunner()
         result = runner.invoke(
             cli,
@@ -179,9 +172,7 @@ def test_cli_syn_flood_custom_count():
     """--count is forwarded to SYNFloodAttack."""
     mock_cls = _mock_load_class()
 
-    with patch(
-        "matcha.commands.factory.load_attack_class", return_value=mock_cls
-    ):
+    with patch("matcha.commands.factory.load_attack_class", return_value=mock_cls):
         runner = CliRunner()
         result = runner.invoke(
             cli,
@@ -196,9 +187,7 @@ def test_cli_syn_flood_custom_port():
     """--target-port is forwarded to SYNFloodAttack."""
     mock_cls = _mock_load_class()
 
-    with patch(
-        "matcha.commands.factory.load_attack_class", return_value=mock_cls
-    ):
+    with patch("matcha.commands.factory.load_attack_class", return_value=mock_cls):
         runner = CliRunner()
         result = runner.invoke(
             cli,

@@ -1,13 +1,14 @@
 """Man-in-the-Middle (MITM) attack implementation"""
 
 import argparse
-import sys
-import os
 import logging
+import os
+import sys
 
 from .base import AttackBase
 
 logger = logging.getLogger(__name__)
+
 
 class Mitm(AttackBase):
     """Man-in-the-Middle attack implementation"""
@@ -16,18 +17,19 @@ class Mitm(AttackBase):
     description = "Perform Man-in-the-Middle attack using ARP spoofing"
 
     def add_arguments(self, parser: argparse.ArgumentParser) -> None:
-        target_group = parser.add_argument_group('Target Configuration')
-        target_group.add_argument('--target', required=True, help='Target IP address')
-        target_group.add_argument('--gateway', required=True, help='Gateway IP address')
-        target_group.add_argument('--interface', required=True, help='Network interface')
+        target_group = parser.add_argument_group("Target Configuration")
+        target_group.add_argument("--target", required=True, help="Target IP address")
+        target_group.add_argument("--gateway", required=True, help="Gateway IP address")
+        target_group.add_argument("--interface", required=True, help="Network interface")
 
-        behavior_group = parser.add_argument_group('Attack Behavior')
-        behavior_group.add_argument('--interval', type=float, default=1.0,
-                                   help='ARP poison interval in seconds')
-        behavior_group.add_argument('--capture', help='Save captured packets to file')
+        behavior_group = parser.add_argument_group("Attack Behavior")
+        behavior_group.add_argument(
+            "--interval", type=float, default=1.0, help="ARP poison interval in seconds"
+        )
+        behavior_group.add_argument("--capture", help="Save captured packets to file")
 
-        monitor_group = parser.add_argument_group('Monitoring')
-        monitor_group.add_argument('--verbose', action='store_true', help='Enable verbose output')
+        monitor_group = parser.add_argument_group("Monitoring")
+        monitor_group.add_argument("--verbose", action="store_true", help="Enable verbose output")
 
     def validate(self, args: argparse.Namespace) -> bool:
         if not self.validator.validate_ip(args.target, allow_private=True):
@@ -49,8 +51,10 @@ class Mitm(AttackBase):
         return True
 
     def run(self, args: argparse.Namespace) -> None:
-        scripts_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'scripts')
-        mitm_path = os.path.join(scripts_dir, 'mitm')
+        scripts_dir = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "scripts"
+        )
+        mitm_path = os.path.join(scripts_dir, "mitm")
 
         sys.path.insert(0, mitm_path)
         try:
@@ -62,7 +66,7 @@ class Mitm(AttackBase):
                 interface=args.interface,
                 interval=args.interval,
                 capture_file=args.capture,
-                verbose=args.verbose
+                verbose=args.verbose,
             )
 
             logger.info(f"Running MITM attack: {args.target} <-> {args.gateway}")

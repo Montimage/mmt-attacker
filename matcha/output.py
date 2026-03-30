@@ -8,7 +8,8 @@ from __future__ import annotations
 
 import json
 import sys
-from typing import Any, Dict, List, Sequence
+from collections.abc import Sequence
+from typing import Any
 
 
 def _is_table(value: Sequence[Any]) -> bool:
@@ -21,7 +22,7 @@ def _is_table(value: Sequence[Any]) -> bool:
     return all(set(row.keys()) == keys for row in value)
 
 
-def _format_table(rows: List[Dict[str, Any]]) -> str:
+def _format_table(rows: list[dict[str, Any]]) -> str:
     """Return a simple ASCII table for a list of dicts."""
     if not rows:
         return ""
@@ -39,7 +40,7 @@ def _format_table(rows: List[Dict[str, Any]]) -> str:
     return "\n".join(lines)
 
 
-def _format_text(data: Dict[str, Any]) -> str:
+def _format_text(data: dict[str, Any]) -> str:
     """Return a human-readable text representation of *data*."""
     lines: list[str] = []
     for key, value in data.items():
@@ -55,7 +56,7 @@ def _format_text(data: Dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def format_output(data: Dict[str, Any], fmt: str = "text") -> None:
+def format_output(data: dict[str, Any], fmt: str = "text") -> None:
     """Print *data* to stdout in the requested format.
 
     Parameters

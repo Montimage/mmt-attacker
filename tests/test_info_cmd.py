@@ -14,10 +14,10 @@ from matcha.commands.info_cmd import (
 )
 from matcha.commands.list_cmd import CATEGORIES
 
-
 # ---------------------------------------------------------------------------
 # Registry integrity
 # ---------------------------------------------------------------------------
+
 
 def test_all_catalog_attacks_have_details():
     """Every attack in the list catalog must have a detail entry."""
@@ -88,6 +88,7 @@ def test_parameter_entries_have_required_keys():
 # Text output
 # ---------------------------------------------------------------------------
 
+
 def test_format_text_contains_name():
     """Text output should include the attack name."""
     text = _format_text("syn-flood", _ATTACK_DETAILS["syn-flood"])
@@ -130,6 +131,7 @@ def test_format_text_shows_required_and_optional():
 # JSON output
 # ---------------------------------------------------------------------------
 
+
 def test_format_json_valid():
     """JSON output must be valid JSON."""
     raw = _format_json("syn-flood", _ATTACK_DETAILS["syn-flood"])
@@ -160,6 +162,7 @@ def test_format_json_parameters_is_list():
 # ---------------------------------------------------------------------------
 # CLI integration via Click CliRunner
 # ---------------------------------------------------------------------------
+
 
 def test_cli_info_syn_flood_text():
     """``matcha info syn-flood`` should print detailed info in text mode."""
@@ -203,7 +206,10 @@ def test_cli_info_unknown_attack_error_message():
     """Error message for unknown attack should mention 'unknown attack'."""
     runner = CliRunner()
     result = runner.invoke(cli, ["info", "unknown-attack"])
-    assert "unknown attack" in result.output.lower() or "unknown attack" in (result.output + getattr(result, 'stderr', '')).lower()
+    assert (
+        "unknown attack" in result.output.lower()
+        or "unknown attack" in (result.output + getattr(result, "stderr", "")).lower()
+    )
 
 
 def test_cli_info_pcap_replay():

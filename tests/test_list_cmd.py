@@ -15,10 +15,10 @@ from matcha.commands.list_cmd import (
     _total_attacks,
 )
 
-
 # ---------------------------------------------------------------------------
 # Catalog integrity
 # ---------------------------------------------------------------------------
+
 
 def test_total_attack_count():
     """The catalog must contain exactly 26 attacks."""
@@ -42,15 +42,14 @@ def test_replay_count():
 
 def test_no_duplicate_names():
     """Attack names must be unique across all categories."""
-    all_names = [
-        atk["name"] for cat in CATEGORIES for atk in cat["attacks"]
-    ]
+    all_names = [atk["name"] for cat in CATEGORIES for atk in cat["attacks"]]
     assert len(all_names) == len(set(all_names))
 
 
 # ---------------------------------------------------------------------------
 # Text output
 # ---------------------------------------------------------------------------
+
 
 def test_format_text_contains_categories():
     """Text output should include each category header."""
@@ -77,6 +76,7 @@ def test_format_text_contains_all_attacks():
 # ---------------------------------------------------------------------------
 # JSON output
 # ---------------------------------------------------------------------------
+
 
 def test_format_json_valid():
     """JSON output must be valid JSON."""
@@ -111,6 +111,7 @@ def test_format_json_categories():
 # ---------------------------------------------------------------------------
 # CLI integration via Click CliRunner
 # ---------------------------------------------------------------------------
+
 
 def test_cli_list_text():
     """``matcha list`` should print categorized text output."""

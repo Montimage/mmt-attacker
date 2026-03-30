@@ -1,13 +1,14 @@
 """Perform Smurf amplification attack"""
 
 import argparse
-import sys
-import os
 import logging
+import os
+import sys
 
 from .base import AttackBase
 
 logger = logging.getLogger(__name__)
+
 
 class SmurfAttack(AttackBase):
     """Perform Smurf amplification attack"""
@@ -16,10 +17,12 @@ class SmurfAttack(AttackBase):
     description = "Perform Smurf amplification attack"
 
     def add_arguments(self, parser: argparse.ArgumentParser) -> None:
-        parser.add_argument('--victim', required=True, help='Victim IP address')
-        parser.add_argument('--broadcast', required=True, help='Broadcast IP address')
-        parser.add_argument('--count', type=int, default=100, help='Number of packets (default: 100)')
-        parser.add_argument('--verbose', action='store_true', help='Verbose output')
+        parser.add_argument("--victim", required=True, help="Victim IP address")
+        parser.add_argument("--broadcast", required=True, help="Broadcast IP address")
+        parser.add_argument(
+            "--count", type=int, default=100, help="Number of packets (default: 100)"
+        )
+        parser.add_argument("--verbose", action="store_true", help="Verbose output")
 
     def validate(self, args: argparse.Namespace) -> bool:
         # Validate victim IP
@@ -28,7 +31,9 @@ class SmurfAttack(AttackBase):
             return False
 
         # Validate broadcast IP
-        if not self.validator.validate_ip(args.broadcast, allow_private=True, allow_loopback=False):
+        if not self.validator.validate_ip(
+            args.broadcast, allow_private=True, allow_loopback=False
+        ):
             logger.error(f"Invalid broadcast IP address: {args.broadcast}")
             return False
 
@@ -42,19 +47,19 @@ class SmurfAttack(AttackBase):
         return True
 
     def run(self, args: argparse.Namespace) -> None:
-        scripts_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'scripts')
-        path = os.path.join(scripts_dir, 'smurf_attack')
+        scripts_dir = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "scripts"
+        )
+        path = os.path.join(scripts_dir, "smurf_attack")
         sys.path.insert(0, path)
         try:
             import smurf_attack as attack_module
-            logger.info(f"Running smurf-attack attack")
+
+            logger.info("Running smurf-attack attack")
 
             # Create and execute attack
             attack = attack_module.SmurfAttack(
-                args.victim,
-                args.broadcast,
-                args.count,
-                args.verbose
+                args.victim, args.broadcast, args.count, args.verbose
             )
             attack.execute()
         except Exception as e:

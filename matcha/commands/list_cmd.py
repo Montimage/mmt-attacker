@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import sys
-from typing import Any, Dict, List
+from typing import Any
 
 import click
 
@@ -14,7 +14,7 @@ import click
 # Each entry is (name, one-line description).
 # Grouped into the three categories defined by the project spec.
 
-NETWORK_LAYER: List[Dict[str, str]] = [
+NETWORK_LAYER: list[dict[str, str]] = [
     {"name": "arp-spoof", "description": "Perform ARP spoofing attack"},
     {"name": "bgp-hijacking", "description": "Perform BGP hijacking simulation"},
     {"name": "dhcp-starvation", "description": "Perform DHCP starvation attack"},
@@ -29,7 +29,7 @@ NETWORK_LAYER: List[Dict[str, str]] = [
     {"name": "udp-flood", "description": "Perform UDP flood attack"},
 ]
 
-APPLICATION_LAYER: List[Dict[str, str]] = [
+APPLICATION_LAYER: list[dict[str, str]] = [
     {"name": "credential-harvester", "description": "Perform credential harvesting attack"},
     {"name": "directory-traversal", "description": "Perform directory traversal attack"},
     {"name": "ftp-brute-force", "description": "Perform FTP brute force attack"},
@@ -45,11 +45,11 @@ APPLICATION_LAYER: List[Dict[str, str]] = [
     {"name": "xxe", "description": "Perform XXE attack"},
 ]
 
-REPLAY: List[Dict[str, str]] = [
+REPLAY: list[dict[str, str]] = [
     {"name": "pcap-replay", "description": "Replay captured network traffic from PCAP files"},
 ]
 
-CATEGORIES: List[Dict[str, Any]] = [
+CATEGORIES: list[dict[str, Any]] = [
     {"category": "Network-layer", "attacks": NETWORK_LAYER},
     {"category": "Application-layer", "attacks": APPLICATION_LAYER},
     {"category": "Replay", "attacks": REPLAY},
@@ -63,6 +63,7 @@ def _total_attacks() -> int:
 # ---------------------------------------------------------------------------
 # Text formatter
 # ---------------------------------------------------------------------------
+
 
 def _format_text() -> str:
     """Return a human-readable categorized attack list."""
@@ -82,6 +83,7 @@ def _format_text() -> str:
 # JSON formatter
 # ---------------------------------------------------------------------------
 
+
 def _format_json() -> str:
     """Return the attack catalog as a JSON string."""
     payload: list[dict[str, Any]] = []
@@ -100,6 +102,7 @@ def _format_json() -> str:
 # ---------------------------------------------------------------------------
 # Click command
 # ---------------------------------------------------------------------------
+
 
 @click.command("list")
 @click.pass_context

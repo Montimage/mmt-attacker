@@ -88,6 +88,7 @@ def test_format_json_non_serializable(capsys):
 def test_no_logging_in_stdout(capsys):
     """Neither text nor json mode should emit logging output to stdout."""
     import logging
+
     logger = logging.getLogger("matcha.output")
     logger.warning("should go to stderr not stdout")
     data = {"clean": True}

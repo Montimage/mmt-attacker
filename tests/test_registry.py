@@ -15,10 +15,10 @@ from matcha.registry import (
     list_attacks,
 )
 
-
 # ---------------------------------------------------------------------------
 # Registry completeness
 # ---------------------------------------------------------------------------
+
 
 def test_total_attack_count():
     """The registry must contain exactly 26 attacks."""
@@ -52,6 +52,7 @@ def test_no_duplicate_names():
 # ---------------------------------------------------------------------------
 # Entry structure
 # ---------------------------------------------------------------------------
+
 
 def test_every_entry_is_attack_entry():
     """Every value returned by list_attacks is an AttackEntry."""
@@ -113,6 +114,7 @@ def test_required_params_have_none_default():
 # Category consistency
 # ---------------------------------------------------------------------------
 
+
 def test_categories_are_valid():
     """Every entry category must be one of the three known categories."""
     valid = {CATEGORY_NETWORK, CATEGORY_APPLICATION, CATEGORY_REPLAY}
@@ -137,6 +139,7 @@ def test_list_attacks_sorted():
 # ---------------------------------------------------------------------------
 # get_attack()
 # ---------------------------------------------------------------------------
+
 
 def test_get_attack_known():
     """get_attack returns the correct entry for a known attack."""
@@ -163,6 +166,7 @@ def test_get_attack_returns_attack_entry():
 # list_attacks()
 # ---------------------------------------------------------------------------
 
+
 def test_list_attacks_total_count():
     """Sum of all entries across categories must equal 26."""
     grouped = list_attacks()
@@ -178,6 +182,7 @@ def test_list_attacks_returns_dict():
 # ---------------------------------------------------------------------------
 # all_attack_names()
 # ---------------------------------------------------------------------------
+
 
 def test_all_attack_names_sorted():
     """all_attack_names() must return a sorted list."""
@@ -195,6 +200,7 @@ def test_all_attack_names_returns_list():
 # ---------------------------------------------------------------------------
 # Specific attack spot checks
 # ---------------------------------------------------------------------------
+
 
 def test_pcap_replay_entry():
     """pcap-replay should be in the Replay category."""
@@ -227,6 +233,7 @@ def test_module_paths_use_dot_notation():
 # ---------------------------------------------------------------------------
 # Dataclass immutability
 # ---------------------------------------------------------------------------
+
 
 def test_attack_entry_is_frozen():
     """AttackEntry instances should be immutable (frozen dataclass)."""
