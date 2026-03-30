@@ -17,7 +17,7 @@ MMT-Attacker is a modular attack simulation toolkit for security testing. It cov
 
 ```mermaid
 graph TD
-    CLI["python src/cli.py &lt;attack&gt;"]
+    CLI["matcha &lt;attack&gt;"]
     CLI --> Registry["Attack Registry"]
     Registry --> |"validate args"| Attack["Attack Module"]
     Attack --> |"network I/O"| Target["Target System"]
@@ -88,23 +88,44 @@ cd mmt-attacker
 ```
 
 ```bash
-pip install -r requirements.txt
+pip install -e .
 ```
 
 ### Verify
 
 ```bash
-python src/cli.py --help
+matcha --help
 ```
 
 ### Run an attack
 
 ```bash
-python src/cli.py --list
+matcha list
 ```
 
 ```bash
-python src/cli.py http-dos --target http://example.com --threads 10
+matcha http-dos --target-url http://example.com --threads 10
+```
+
+### Shell Completions
+
+Enable tab-completion for your shell:
+
+```bash
+# bash — add to ~/.bashrc
+eval "$(_MATCHA_COMPLETE=bash_source matcha)"
+
+# zsh — add to ~/.zshrc
+eval "$(_MATCHA_COMPLETE=zsh_source matcha)"
+
+# fish — add to ~/.config/fish/config.fish
+_MATCHA_COMPLETE=fish_source matcha | source
+```
+
+Or use the built-in helper to print the activation command:
+
+```bash
+matcha completions bash   # or zsh / fish
 ```
 
 ## Usage Examples
@@ -112,31 +133,26 @@ python src/cli.py http-dos --target http://example.com --threads 10
 ### PCAP Replay
 
 ```bash
-python src/cli.py pcap-replay \
-    --input-file capture.pcap \
+matcha pcap-replay \
+    --pcap-file capture.pcap \
     --interface eth0 \
-    --loop 3 \
     --speed 2.0
 ```
 
 ### ARP Spoofing
 
 ```bash
-python src/cli.py arp-spoof \
-    --target 192.168.1.100 \
-    --gateway 192.168.1.1 \
-    --interface eth0 \
-    --bidirectional
+matcha arp-spoof \
+    --target-ip 192.168.1.100 \
+    --gateway-ip 192.168.1.1
 ```
 
 ### HTTP DoS
 
 ```bash
-python src/cli.py http-dos \
-    --target http://example.com \
-    --method POST \
-    --threads 10 \
-    --verify-success
+matcha http-dos \
+    --target-url http://example.com \
+    --threads 10
 ```
 
 ## Web Interface
@@ -177,7 +193,7 @@ Unauthorized use may be illegal. See [PLAYBOOK](docs/PLAYBOOK.md) for detailed e
 ## Get Started
 
 ```bash
-pip install -r requirements.txt
+pip install -e .
 ```
 
 [**Read the Playbook**](docs/PLAYBOOK.md) | [**Try the Web Demo**](frontend/README.md) | MIT Licensed
