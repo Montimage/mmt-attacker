@@ -7,9 +7,10 @@ import sys
 import click
 
 from matcha import __version__
+from matcha.commands.factory import make_command
 from matcha.commands.info_cmd import info_cmd
 from matcha.commands.list_cmd import list_cmd
-from matcha.commands.syn_flood_cmd import syn_flood_cmd
+from matcha.registry import CATEGORY_NETWORK, list_attacks
 
 
 @click.group(invoke_without_command=True)
@@ -57,7 +58,10 @@ def cli(ctx, verbose, output, no_color):
 
 cli.add_command(info_cmd)
 cli.add_command(list_cmd)
-cli.add_command(syn_flood_cmd)
+
+# Auto-wire all network-layer attack commands from the registry.
+for _entry in list_attacks().get(CATEGORY_NETWORK, []):
+    cli.add_command(make_command(_entry))
 
 
 if __name__ == "__main__":
