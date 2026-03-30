@@ -7,6 +7,7 @@ import sys
 import click
 
 from matcha import __version__
+from matcha.commands.list_cmd import list_cmd
 
 
 @click.group(invoke_without_command=True)
@@ -50,6 +51,9 @@ def cli(ctx, verbose, output, no_color):
 
     if ctx.invoked_subcommand is None:
         click.echo(ctx.get_help())
+
+
+cli.add_command(list_cmd)
 
 
 if __name__ == "__main__":
