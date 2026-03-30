@@ -9,23 +9,27 @@ License: Proprietary
 Version: 1.0.0
 """
 
-import os, sys, argparse
-from typing import Dict, Any, List
+import argparse
+import os
+import sys
+from typing import Any
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 try:
     from logger import get_logger
 except ImportError:
     import logging
+
     def get_logger(name):
         logger = logging.getLogger(name)
         if not logger.handlers:
             handler = logging.StreamHandler()
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             logger.addHandler(handler)
             logger.setLevel(logging.INFO)
         return logger
+
 
 logger = get_logger(__name__)
 
@@ -47,7 +51,7 @@ DEFAULT_PAYLOADS = [
 class XXEAttack:
     """XXE attack simulator."""
 
-    def __init__(self, url: str, payloads: List[str], verbose: bool = False):
+    def __init__(self, url: str, payloads: list[str], verbose: bool = False):
         self.url = url
         self.payloads = payloads
         self.verbose = verbose
@@ -58,7 +62,7 @@ class XXEAttack:
     def test_payload(self, payload: str) -> bool:
         """Test a single XXE payload."""
         try:
-            headers = {'Content-Type': 'application/xml'}
+            headers = {"Content-Type": "application/xml"}
             response = requests.post(self.url, data=payload, headers=headers, timeout=10)
             self.attempts += 1
 
@@ -66,19 +70,19 @@ class XXEAttack:
             indicators = ["root:", "[extensions]", "<?php"]
             for indicator in response.text:
                 if indicator in response.text:
-                    logger.warning(f"Potential XXE vulnerability found")
+                    logger.warning("Potential XXE vulnerability found")
                     self.found_vulnerabilities.append(payload)
                     return True
 
             if self.verbose:
-                logger.debug(f"Payload unsuccessful")
+                logger.debug("Payload unsuccessful")
             return False
         except Exception as e:
             if self.verbose:
                 logger.debug(f"Error: {e}")
             return False
 
-    def execute(self) -> Dict[str, Any]:
+    def execute(self) -> dict[str, Any]:
         """Execute the XXE testing."""
         logger.info(f"Starting XXE testing with {len(self.payloads)} payloads")
 
@@ -88,7 +92,9 @@ class XXEAttack:
                 self.test_payload(payload)
 
             if self.found_vulnerabilities:
-                logger.warning(f"Found {len(self.found_vulnerabilities)} potential vulnerabilities")
+                logger.warning(
+                    f"Found {len(self.found_vulnerabilities)} potential vulnerabilities"
+                )
             else:
                 logger.info("No XXE vulnerabilities detected")
 
@@ -97,7 +103,10 @@ class XXEAttack:
         except Exception as e:
             logger.error(f"Error: {e}")
         finally:
-            stats = {"attempts": self.attempts, "vulnerabilities_found": len(self.found_vulnerabilities)}
+            stats = {
+                "attempts": self.attempts,
+                "vulnerabilities_found": len(self.found_vulnerabilities),
+            }
             return stats
 
 
@@ -116,7 +125,7 @@ def main():
     try:
         args = parse_arguments()
         if args.payloads:
-            with open(args.payloads, 'r') as f:
+            with open(args.payloads) as f:
                 payloads = [line.strip() for line in f if line.strip()]
         else:
             payloads = DEFAULT_PAYLOADS

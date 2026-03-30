@@ -6,20 +6,18 @@ import json
 from unittest.mock import MagicMock, patch
 
 import click
-import pytest
 from click.testing import CliRunner
 
 from matcha.commands.factory import (
-    load_attack_class,
     make_command,
     validate_params,
 )
 from matcha.registry import AttackEntry, ParamDef
 
-
 # ---------------------------------------------------------------------------
 # Fixtures -- reusable registry entries
 # ---------------------------------------------------------------------------
+
 
 def _simple_entry() -> AttackEntry:
     """An entry with one required str and one optional int param."""
@@ -84,6 +82,7 @@ def _multi_required_entry() -> AttackEntry:
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _wrap_in_group(cmd: click.Command) -> click.Group:
     """Wrap *cmd* in a group that mimics the real ``cli`` group context."""
@@ -244,9 +243,7 @@ class TestMakeCommandValidation:
         cmd = make_command(_simple_entry())
         group = _wrap_in_group(cmd)
         runner = CliRunner()
-        result = runner.invoke(
-            group, ["fake-attack", "--target-ip", "1.2.3.4", "--count", "abc"]
-        )
+        result = runner.invoke(group, ["fake-attack", "--target-ip", "1.2.3.4", "--count", "abc"])
         assert result.exit_code != 0
 
     def test_multi_required_missing_both(self):
@@ -275,9 +272,7 @@ class TestMakeCommandExecution:
 
         with patch("matcha.commands.factory.load_attack_class", return_value=mock_cls):
             runner = CliRunner()
-            result = runner.invoke(
-                group, ["fake-attack", "--target-ip", "1.2.3.4"]
-            )
+            result = runner.invoke(group, ["fake-attack", "--target-ip", "1.2.3.4"])
         assert result.exit_code == 0
         assert "target: 1.2.3.4" in result.output
         assert "packets: 100" in result.output
@@ -291,9 +286,7 @@ class TestMakeCommandExecution:
 
         with patch("matcha.commands.factory.load_attack_class", return_value=mock_cls):
             runner = CliRunner()
-            result = runner.invoke(
-                group, ["-o", "json", "fake-attack", "--target-ip", "1.2.3.4"]
-            )
+            result = runner.invoke(group, ["-o", "json", "fake-attack", "--target-ip", "1.2.3.4"])
         assert result.exit_code == 0
         payload = json.loads(result.output)
         assert payload["target"] == "1.2.3.4"
@@ -324,9 +317,7 @@ class TestMakeCommandExecution:
 
         with patch("matcha.commands.factory.load_attack_class", return_value=mock_cls):
             runner = CliRunner()
-            runner.invoke(
-                group, ["fake-attack", "--target-ip", "10.0.0.1"]
-            )
+            runner.invoke(group, ["fake-attack", "--target-ip", "10.0.0.1"])
 
         mock_cls.assert_called_once_with(target_ip="10.0.0.1", count=100)
 
@@ -339,9 +330,7 @@ class TestMakeCommandExecution:
 
         with patch("matcha.commands.factory.load_attack_class", return_value=mock_cls):
             runner = CliRunner()
-            runner.invoke(
-                group, ["bool-attack", "--target-ip", "10.0.0.1"]
-            )
+            runner.invoke(group, ["bool-attack", "--target-ip", "10.0.0.1"])
 
         _, kwargs = mock_cls.call_args
         assert kwargs["verbose_mode"] is True
@@ -392,9 +381,7 @@ class TestMakeCommandExecution:
 
         with patch("matcha.commands.factory.load_attack_class", return_value=mock_cls):
             runner = CliRunner()
-            runner.invoke(
-                group, ["fake-attack", "--target-ip", "10.0.0.1"]
-            )
+            runner.invoke(group, ["fake-attack", "--target-ip", "10.0.0.1"])
 
         mock_cls.return_value.execute.assert_called_once()
 
@@ -461,9 +448,7 @@ class TestSemanticValidation:
 
     def test_invalid_url_scheme(self):
         entry = _multi_required_entry()
-        errors = validate_params(
-            entry, {"target_url": "ftp://bad.example.com", "parameter": "id"}
-        )
+        errors = validate_params(entry, {"target_url": "ftp://bad.example.com", "parameter": "id"})
         assert len(errors) == 1
         assert "Invalid URL scheme" in errors[0]
 
@@ -507,9 +492,7 @@ class TestSemanticValidation:
 
     def test_file_not_found(self):
         entry = _float_entry()
-        errors = validate_params(
-            entry, {"pcap_file": "/nonexistent/file.pcap", "speed": 1.0}
-        )
+        errors = validate_params(entry, {"pcap_file": "/nonexistent/file.pcap", "speed": 1.0})
         assert len(errors) == 1
         assert "File not found" in errors[0]
 
@@ -563,9 +546,7 @@ class TestSemanticValidation:
                 ParamDef("wordlist", "str", True, None, "Wordlist file"),
             ],
         )
-        errors = validate_params(
-            entry, {"target_ip": "10.0.0.1", "wordlist": "/no/such/file.txt"}
-        )
+        errors = validate_params(entry, {"target_ip": "10.0.0.1", "wordlist": "/no/such/file.txt"})
         assert len(errors) == 1
         assert "File not found" in errors[0]
 
@@ -580,6 +561,7 @@ class TestMakeCommandWithRealRegistry:
 
     def test_syn_flood_command(self):
         from matcha.registry import get_attack
+
         entry = get_attack("syn-flood")
         cmd = make_command(entry)
         assert cmd.name == "syn-flood"
@@ -590,6 +572,7 @@ class TestMakeCommandWithRealRegistry:
 
     def test_pcap_replay_command(self):
         from matcha.registry import get_attack
+
         entry = get_attack("pcap-replay")
         cmd = make_command(entry)
         assert cmd.name == "pcap-replay"
@@ -601,6 +584,7 @@ class TestMakeCommandWithRealRegistry:
     def test_all_attacks_produce_commands(self):
         """Every registered attack should produce a valid command."""
         from matcha.registry import all_attack_names, get_attack
+
         for name in all_attack_names():
             entry = get_attack(name)
             cmd = make_command(entry)
@@ -610,6 +594,7 @@ class TestMakeCommandWithRealRegistry:
     def test_all_commands_show_help(self):
         """Every generated command should produce valid --help output."""
         from matcha.registry import all_attack_names, get_attack
+
         runner = CliRunner()
         for name in all_attack_names():
             entry = get_attack(name)

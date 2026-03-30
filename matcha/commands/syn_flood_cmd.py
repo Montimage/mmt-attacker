@@ -6,7 +6,6 @@ import ipaddress
 import logging
 import os
 import sys
-from typing import List
 
 import click
 
@@ -20,7 +19,7 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 
 
-def parse_ports(port_string: str) -> List[int]:
+def parse_ports(port_string: str) -> list[int]:
     """Parse a comma-separated port list (ranges supported).
 
     Examples:
@@ -74,9 +73,7 @@ def _load_syn_flood_class():
     Python package (no ``__init__.py``).  We add the project root to
     ``sys.path`` when needed so the import resolves.
     """
-    _project_root = os.path.dirname(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    )
+    _project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     if _project_root not in sys.path:
         sys.path.insert(0, _project_root)
 

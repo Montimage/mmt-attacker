@@ -10,22 +10,26 @@ License: Proprietary
 Version: 1.0.0
 """
 
-import os, sys, argparse
+import argparse
+import os
+import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 try:
     from logger import get_logger
 except ImportError:
     import logging
+
     def get_logger(name):
         logger = logging.getLogger(name)
         if not logger.handlers:
             handler = logging.StreamHandler()
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             logger.addHandler(handler)
             logger.setLevel(logging.INFO)
         return logger
+
 
 logger = get_logger(__name__)
 

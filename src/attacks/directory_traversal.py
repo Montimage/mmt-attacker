@@ -1,13 +1,14 @@
 """Perform directory traversal attack"""
 
 import argparse
-import sys
-import os
 import logging
+import os
+import sys
 
 from .base import AttackBase
 
 logger = logging.getLogger(__name__)
+
 
 class DirectoryTraversal(AttackBase):
     """Perform directory traversal attack"""
@@ -16,10 +17,10 @@ class DirectoryTraversal(AttackBase):
     description = "Perform directory traversal attack"
 
     def add_arguments(self, parser: argparse.ArgumentParser) -> None:
-        parser.add_argument('--url', required=True, help='Target URL')
-        parser.add_argument('--param', required=True, help='Parameter to test')
-        parser.add_argument('--payloads', help='Custom payloads file')
-        parser.add_argument('--verbose', action='store_true', help='Verbose output')
+        parser.add_argument("--url", required=True, help="Target URL")
+        parser.add_argument("--param", required=True, help="Parameter to test")
+        parser.add_argument("--payloads", help="Custom payloads file")
+        parser.add_argument("--verbose", action="store_true", help="Verbose output")
 
     def validate(self, args: argparse.Namespace) -> bool:
         # Validate URL
@@ -34,33 +35,35 @@ class DirectoryTraversal(AttackBase):
 
         # Validate payloads file if provided
         if args.payloads:
-            if not self.validator.validate_file_path(args.payloads, check_exists=True, check_readable=True):
+            if not self.validator.validate_file_path(
+                args.payloads, check_exists=True, check_readable=True
+            ):
                 logger.error(f"Payloads file not found or not readable: {args.payloads}")
                 return False
 
         return True
 
     def run(self, args: argparse.Namespace) -> None:
-        scripts_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'scripts')
-        path = os.path.join(scripts_dir, 'directory_traversal')
+        scripts_dir = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "scripts"
+        )
+        path = os.path.join(scripts_dir, "directory_traversal")
         sys.path.insert(0, path)
         try:
             import directory_traversal as attack_module
-            logger.info(f"Running directory-traversal attack")
+
+            logger.info("Running directory-traversal attack")
 
             # Load payloads
             if args.payloads:
-                with open(args.payloads, 'r') as f:
+                with open(args.payloads) as f:
                     payloads = [line.strip() for line in f if line.strip()]
             else:
                 payloads = attack_module.DEFAULT_PAYLOADS
 
             # Create and execute attack
             attack = attack_module.DirectoryTraversalAttack(
-                args.url,
-                args.param,
-                payloads,
-                args.verbose
+                args.url, args.param, payloads, args.verbose
             )
             attack.execute()
         except Exception as e:

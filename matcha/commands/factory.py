@@ -13,7 +13,7 @@ import ipaddress
 import logging
 import os
 import sys
-from typing import Any, Dict
+from typing import Any
 from urllib.parse import urlparse
 
 import click
@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 # Type mapping -- registry type strings to Python / Click types
 # ---------------------------------------------------------------------------
 
-_CLICK_TYPES: Dict[str, click.ParamType] = {
+_CLICK_TYPES: dict[str, click.ParamType] = {
     "str": click.STRING,
     "int": click.INT,
     "float": click.FLOAT,
@@ -97,7 +97,7 @@ _PARAM_VALIDATORS = [
 ]
 
 # Params matched by exact name (not suffix)
-_EXACT_NAME_VALIDATORS: Dict[str, Any] = {
+_EXACT_NAME_VALIDATORS: dict[str, Any] = {
     "target_prefix": _validate_network,
     "wordlist": _validate_file_path,
 }
@@ -115,7 +115,7 @@ def _get_semantic_validator(name: str):
 
 def validate_params(
     entry: AttackEntry,
-    values: Dict[str, Any],
+    values: dict[str, Any],
 ) -> list[str]:
     """Validate *values* against *entry*.params and return a list of errors.
 
@@ -144,10 +144,7 @@ def validate_params(
         if pdef.type in ("int", "float"):
             expected = int if pdef.type == "int" else float
             if not isinstance(val, expected):
-                errors.append(
-                    f"Option {cli_flag}: "
-                    f"expected {pdef.type}, got {type(val).__name__}"
-                )
+                errors.append(f"Option {cli_flag}: expected {pdef.type}, got {type(val).__name__}")
                 continue
 
         # Semantic validation
@@ -172,9 +169,7 @@ def load_attack_class(entry: AttackEntry) -> type:
     Python package.  We add the project root to ``sys.path`` when needed so
     the import resolves.
     """
-    _project_root = os.path.dirname(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    )
+    _project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     if _project_root not in sys.path:
         sys.path.insert(0, _project_root)
 
@@ -192,7 +187,7 @@ def _make_option(pdef: ParamDef) -> click.Option:
     option_name = f"--{pdef.name.replace('_', '-')}"
     param_decls = [option_name]
 
-    kwargs: Dict[str, Any] = {
+    kwargs: dict[str, Any] = {
         "help": pdef.help,
     }
 
@@ -235,7 +230,7 @@ def make_command(entry: AttackEntry) -> click.Command:
         # Map CLI option names (with hyphens) back to Python names
         # (with underscores). Click does this automatically for the
         # callback kwargs, so `kwargs` keys already use underscores.
-        values: Dict[str, Any] = {}
+        values: dict[str, Any] = {}
         for pdef in entry.params:
             values[pdef.name] = kwargs.get(pdef.name)
 

