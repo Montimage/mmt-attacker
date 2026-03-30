@@ -207,7 +207,7 @@ def _format_table_rows(rows: list[dict[str, Any]]) -> list[str]:
 # ---------------------------------------------------------------------------
 
 
-def _interpret_result(data: dict[str, Any], entry: "AttackEntry | None") -> dict[str, Any]:
+def _interpret_result(data: dict[str, Any], entry: AttackEntry | None) -> dict[str, Any]:
     """Derive a normalised verdict from a raw result dict.
 
     Returns a dict with keys:
@@ -254,8 +254,7 @@ def _interpret_result(data: dict[str, Any], entry: "AttackEntry | None") -> dict
             reason    = "No work was performed — check permissions and target reachability"
 
     # Brute-force attacks: distinguish "ran fine" from "credential found"
-    brute_found_key   = data.get("successful_password") or data.get("password")
-    brute_success_key = data.get("successful", data.get("success"))
+    brute_found_key = data.get("successful_password") or data.get("password")
     if "attempts" in data and "passwords_loaded" in data:
         # SSH / FTP brute force
         if brute_found_key:
@@ -265,9 +264,6 @@ def _interpret_result(data: dict[str, Any], entry: "AttackEntry | None") -> dict
             reason = "No valid credential found in the provided wordlist"
 
     # --- Build narrative -------------------------------------------------
-    name        = entry.name        if entry else data.get("name", "attack")
-    description = entry.description if entry else ""
-
     packets  = data.get("packets_sent", data.get("requests_sent", data.get("frames_sent")))
     duration = data.get("duration_seconds", data.get("duration"))
     target   = data.get("target_ip", data.get("target_url", data.get("target", "")))
@@ -297,7 +293,10 @@ def _interpret_result(data: dict[str, Any], entry: "AttackEntry | None") -> dict
     # Vulnerability scan specifics
     vulns = data.get("vulnerabilities_found", data.get("successful_attacks"))
     if vulns is not None and attempts is None:
-        parts.append(f"Tested {data.get('payloads_tested', data.get('attempts', '?'))} payload(s) — {vulns} vulnerability/vulnerabilities confirmed.")
+        tested = data.get("payloads_tested", data.get("attempts", "?"))
+        parts.append(
+            f"Tested {tested} payload(s) — {vulns} vulnerability/vulnerabilities confirmed."
+        )
 
     # Credentials captured
     creds = data.get("credentials_captured")
@@ -319,7 +318,7 @@ def _interpret_result(data: dict[str, Any], entry: "AttackEntry | None") -> dict
 # ---------------------------------------------------------------------------
 
 
-def _verdict_panel(data: dict[str, Any], entry: "AttackEntry | None") -> list[str]:
+def _verdict_panel(data: dict[str, Any], entry: AttackEntry | None) -> list[str]:
     """Return box lines for the STATUS / DESCRIPTION / HOW IT HAPPENED panel."""
     verdict = _interpret_result(data, entry)
     lines: list[str] = []
@@ -367,7 +366,7 @@ def _verdict_panel(data: dict[str, Any], entry: "AttackEntry | None") -> list[st
 # ---------------------------------------------------------------------------
 
 
-def _format_text(data: dict[str, Any], entry: "AttackEntry | None" = None) -> str:
+def _format_text(data: dict[str, Any], entry: AttackEntry | None = None) -> str:
     lines: list[str] = []
 
     # Title: attack name + target
@@ -503,7 +502,7 @@ def format_attack_info(name: str, detail: dict[str, Any]) -> str:
 def format_output(
     data: dict[str, Any],
     fmt: str = "text",
-    entry: "AttackEntry | None" = None,
+    entry: AttackEntry | None = None,
 ) -> None:
     """Print *data* to stdout in the requested format.
 
