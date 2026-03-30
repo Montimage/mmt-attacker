@@ -54,6 +54,9 @@ COPY --from=builder /install /usr/local
 COPY --from=builder /build/scripts/ /app/scripts/
 COPY --from=builder /build/utils/   /app/utils/
 
+# Ensure the matcha user can read all app files
+RUN chown -R matcha:matcha /app
+
 # Set working directory and PATH so matcha is found
 WORKDIR /app
 ENV PYTHONPATH=/app
