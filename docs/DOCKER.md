@@ -138,7 +138,7 @@ docker run --rm \
 
 ## Interactive shell
 
-To explore the container or debug an issue, override the entrypoint:
+Drop into a bash session inside the container to explore matcha interactively, run multiple commands in a row, or debug issues without rebuilding the image each time.
 
 ```bash
 docker run --rm -it \
@@ -149,12 +149,92 @@ docker run --rm -it \
   matcha
 ```
 
-Inside the shell:
+You will land at a prompt inside the container:
+
+```
+matcha@<container-id>:/app$
+```
+
+### Orientation commands
 
 ```bash
-matcha list
+# Show CLI version and top-level help
 matcha --version
+matcha --help
+
+# List all 26 available attacks
+matcha list
+
+# Get full details (parameters, description) for any attack
+matcha info syn-flood
+matcha info arp-spoof
+matcha info http-dos
 ```
+
+### Explore and run attacks
+
+```bash
+# Check available network interfaces inside the container
+ip link show
+
+# Run a SYN flood against a lab target
+matcha syn-flood --target-ip 192.168.1.100 --target-port 80 --count 200
+
+# ARP spoof between a host and its gateway
+matcha arp-spoof --target-ip 192.168.1.100 --gateway-ip 192.168.1.1
+
+# Slowloris HTTP attack
+matcha slowloris --target-url http://192.168.1.100 --connections 50
+
+# SSH brute-force against a lab target
+matcha ssh-brute-force --target-ip 192.168.1.100 --username admin --wordlist /app/wordlist.txt
+
+# DNS amplification
+matcha dns-amplification --target-ip 192.168.1.100 --dns-server 8.8.8.8
+
+# Get JSON output for any command
+matcha --output json list
+matcha --output json info syn-flood
+```
+
+### Replay a PCAP file
+
+If you started the container with a volume mount (see below), replay a local capture:
+
+```bash
+# Start the container with a pcaps directory mounted
+# (run this on the host, then the path is available inside)
+docker run --rm -it \
+  --cap-add NET_ADMIN \
+  --cap-add NET_RAW \
+  --network host \
+  -v /path/to/your/pcaps:/pcaps \
+  --entrypoint bash \
+  matcha
+
+# Inside the container:
+ls /pcaps
+matcha pcap-replay --pcap-file /pcaps/capture.pcap --interface eth0 --speed 1.0
+```
+
+### Shell completions inside the container
+
+```bash
+# Enable tab-completion for the current bash session
+eval "$(_MATCHA_COMPLETE=bash_source matcha)"
+
+# Now tab-complete attack names and flags:
+matcha sy<TAB>          # completes to syn-flood
+matcha syn-flood --<TAB>  # shows available flags
+```
+
+### Exit the container
+
+```bash
+exit
+```
+
+Because `--rm` is set, the container is deleted automatically when you exit.
 
 ---
 
