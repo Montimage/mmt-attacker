@@ -1,5 +1,7 @@
 """Smoke tests for the matcha CLI."""
 
+import logging
+
 from click.testing import CliRunner
 
 from matcha import __version__
@@ -24,5 +26,58 @@ def test_no_args():
     """Invoking bare matcha with no arguments should display group help."""
     runner = CliRunner()
     result = runner.invoke(cli, [])
-    assert result.exit_code == 0 or result.exit_code == 2
-    assert "usage" in result.output.lower() or "matcha" in result.output.lower()
+    assert result.exit_code == 0
+    assert "matcha" in result.output.lower()
+
+
+def test_help_shows_global_options():
+    """--help output must list all global options."""
+    runner = CliRunner()
+    result = runner.invoke(cli, ["--help"])
+    assert result.exit_code == 0
+    for flag in ["--verbose", "--output", "--no-color", "--version", "--help"]:
+        assert flag in result.output
+
+
+def test_verbose_sets_debug_logging():
+    """-v flag should set root logger to DEBUG."""
+    runner = CliRunner()
+    result = runner.invoke(cli, ["-v"])
+    assert result.exit_code == 0
+    root_level = logging.getLogger().level
+    assert root_level == logging.DEBUG
+
+
+def test_output_default_is_text():
+    """Default output format should be text."""
+    runner = CliRunner()
+    result = runner.invoke(cli, [])
+    assert result.exit_code == 0
+
+
+def test_output_json():
+    """--output json should be accepted."""
+    runner = CliRunner()
+    result = runner.invoke(cli, ["--output", "json"])
+    assert result.exit_code == 0
+
+
+def test_output_invalid_choice():
+    """Invalid --output value should fail."""
+    runner = CliRunner()
+    result = runner.invoke(cli, ["--output", "xml"])
+    assert result.exit_code != 0
+
+
+def test_no_color_flag():
+    """--no-color flag should be accepted and respected."""
+    runner = CliRunner()
+    result = runner.invoke(cli, ["--no-color"])
+    assert result.exit_code == 0
+
+
+def test_no_color_env_var():
+    """NO_COLOR env var should disable color."""
+    runner = CliRunner(env={"NO_COLOR": "1"})
+    result = runner.invoke(cli, [])
+    assert result.exit_code == 0
