@@ -33,9 +33,10 @@ def cli(ctx, verbose, output, no_color):
     ctx.obj["output"] = output
 
     # Honour --no-color flag and NO_COLOR env var (see https://no-color.org/)
-    if no_color or os.environ.get("NO_COLOR", "") != "":
+    color_disabled = no_color or os.environ.get("NO_COLOR", "") != ""
+    if color_disabled:
         ctx.color = False
-    ctx.obj["no_color"] = no_color or os.environ.get("NO_COLOR", "") != ""
+    ctx.obj["no_color"] = color_disabled
 
     # Configure logging: messages go to stderr so stdout stays clean for
     # structured output.
