@@ -102,7 +102,7 @@ Verify the target is reachable:
 curl http://localhost:8080
 
 # From inside the attacker container
-docker compose exec attacker sh -c "wget -qO- http://target"
+docker compose exec attacker sh -c "curl -s http://target"
 ```
 
 ### Running attacks
