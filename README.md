@@ -4,6 +4,7 @@
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![PyPI](https://img.shields.io/pypi/v/mmt-attacker.svg)](https://pypi.org/project/mmt-attacker/)
 [![CI](https://github.com/Montimage/mmt-attacker/actions/workflows/ci.yml/badge.svg)](https://github.com/Montimage/mmt-attacker/actions/workflows/ci.yml)
 
 # Network attack simulation for security education
@@ -52,7 +53,13 @@ Each attack inherits from `AttackBase`, which enforces argument parsing, input v
 
 **Prerequisites:** Python 3.8+ and root/sudo privileges (required for raw socket attacks)
 
-**One-line install** (Linux / macOS):
+**pip:**
+
+```bash
+pip install mmt-attacker
+```
+
+**One-line install** (Linux / macOS — installs system deps automatically):
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/Montimage/mmt-attacker/main/install.sh | bash

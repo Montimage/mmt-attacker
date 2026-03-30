@@ -130,17 +130,21 @@ ensure_pip() {
 install_matcha() {
     local python="$1"
 
-    info "Installing ${TOOL_NAME} from GitHub (${REPO_OWNER}/${REPO_NAME})..."
-
     # Upgrade pip first to avoid legacy resolver issues
     "$python" -m pip install --upgrade pip --quiet
 
-    # Install the package directly from GitHub
-    "$python" -m pip install \
-        --quiet \
-        "git+https://github.com/${REPO_OWNER}/${REPO_NAME}.git@${DEFAULT_BRANCH}#egg=${REPO_NAME}"
-
-    ok "${TOOL_NAME} installed"
+    # Try PyPI first (fastest, versioned), fall back to GitHub source
+    info "Installing ${TOOL_NAME} from PyPI..."
+    if "$python" -m pip install --quiet "${REPO_NAME}"; then
+        ok "${TOOL_NAME} installed from PyPI"
+    else
+        warn "PyPI install failed — falling back to GitHub source..."
+        info "Installing ${TOOL_NAME} from GitHub (${REPO_OWNER}/${REPO_NAME}@${DEFAULT_BRANCH})..."
+        "$python" -m pip install \
+            --quiet \
+            "git+https://github.com/${REPO_OWNER}/${REPO_NAME}.git@${DEFAULT_BRANCH}#egg=${REPO_NAME}"
+        ok "${TOOL_NAME} installed from GitHub"
+    fi
 }
 
 # --- Verification ---
