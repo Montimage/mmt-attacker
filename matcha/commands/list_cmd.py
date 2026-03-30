@@ -8,6 +8,8 @@ from typing import Any
 
 import click
 
+from matcha.output import format_attack_list
+
 # ---------------------------------------------------------------------------
 # Attack catalog
 # ---------------------------------------------------------------------------
@@ -66,17 +68,8 @@ def _total_attacks() -> int:
 
 
 def _format_text() -> str:
-    """Return a human-readable categorized attack list."""
-    lines: list[str] = []
-    for cat in CATEGORIES:
-        header = f"{cat['category']} ({len(cat['attacks'])} attacks)"
-        lines.append(header)
-        lines.append("-" * len(header))
-        for atk in cat["attacks"]:
-            lines.append(f"  {atk['name']:25s} {atk['description']}")
-        lines.append("")
-    lines.append(f"Total: {_total_attacks()} attacks")
-    return "\n".join(lines)
+    """Return a rich human-readable categorized attack list."""
+    return format_attack_list(CATEGORIES)
 
 
 # ---------------------------------------------------------------------------

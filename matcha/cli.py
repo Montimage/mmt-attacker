@@ -50,13 +50,15 @@ def cli(ctx, verbose, output, no_color):
 
     # Configure logging: messages go to stderr so stdout stays clean for
     # structured output.
+    import matcha.output as _out
+    import utils.logger as _ul
+    _ul._USE_COLOR   = not color_disabled and sys.stderr.isatty()
+    _out._COLOR      = not color_disabled and sys.stdout.isatty()
     log_level = logging.DEBUG if verbose else logging.WARNING
+    _ul.configure_logging(level=log_level)
+    # Also configure the root logger so third-party libraries are quiet
     root_logger = logging.getLogger()
     root_logger.setLevel(log_level)
-    if not root_logger.handlers:
-        handler = logging.StreamHandler(sys.stderr)
-        handler.setFormatter(logging.Formatter("%(levelname)s: %(message)s"))
-        root_logger.addHandler(handler)
 
     if ctx.invoked_subcommand is None:
         click.echo(ctx.get_help())

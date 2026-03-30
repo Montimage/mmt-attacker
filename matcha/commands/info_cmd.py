@@ -8,6 +8,8 @@ from typing import Any
 
 import click
 
+from matcha.output import format_attack_info
+
 # ---------------------------------------------------------------------------
 # Attack detail registry
 # ---------------------------------------------------------------------------
@@ -715,26 +717,8 @@ def lookup_attack(name: str) -> dict[str, Any] | None:
 
 
 def _format_text(name: str, detail: dict[str, Any]) -> str:
-    """Return a human-readable info page for an attack."""
-    lines: list[str] = []
-    lines.append(f"Attack:      {name}")
-    lines.append(f"Category:    {detail['category']}")
-    lines.append(f"Description: {detail['description']}")
-    lines.append("")
-    lines.append("Parameters:")
-    for param in detail["parameters"]:
-        req = "required" if param["required"] else "optional"
-        default_part = ""
-        if not param["required"] and param["default"] is not None:
-            default_part = f", default: {param['default']}"
-        lines.append(
-            f"  --{param['name'].replace('_', '-'):20s} ({param['type']}, {req}{default_part})"
-        )
-        lines.append(f"    {' ' * 20} {param['help']}")
-    lines.append("")
-    lines.append("Example:")
-    lines.append(f"  {detail['example']}")
-    return "\n".join(lines)
+    """Return a rich human-readable info page for an attack."""
+    return format_attack_info(name, detail)
 
 
 # ---------------------------------------------------------------------------
