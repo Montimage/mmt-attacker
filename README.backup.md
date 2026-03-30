@@ -1,5 +1,3 @@
-# MMT-Attacker
-
 <p align="center">
   <img src="frontend/public/logo.svg" alt="MMT-Attacker Logo" width="200"/>
 </p>
@@ -7,101 +5,203 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
 
-MMT-Attacker is a powerful and flexible network attack simulation toolkit designed for security testing and network resilience assessment. It provides a comprehensive set of attack modules and PCAP replay capabilities to help security professionals evaluate network security measures in controlled environments.
+# Simulate 10 network attacks from one CLI
 
-## Features
+MMT-Attacker is a modular attack simulation toolkit for security testing. It covers network-layer attacks (ARP, SYN, DNS, ICMP), application-layer attacks (HTTP, SSH, SQL, Slowloris), PCAP replay, and credential harvesting -- all through a single CLI with built-in validation and logging.
 
-- **Multiple Attack Vectors**: Support for various network and application-layer attacks
-- **PCAP Replay**: Advanced packet replay functionality with customization options
-- **Interactive Web Interface**: Modern React-based frontend for educational demonstrations
-- **Modular Design**: Easy to extend with new attack types
-- **Detailed Logging**: Comprehensive logging and monitoring capabilities
-- **Validation**: Input validation and safety checks built-in
-- **Configuration**: Flexible configuration options for each attack type
+[**Get Started**](#quick-start) | [**Playbook**](docs/PLAYBOOK.md) | [**Web Demo**](frontend/README.md)
 
-### Supported Attacks
+---
 
-- [ARP Spoofing](docs/PLAYBOOK.md#arp-spoofing-attack): Man-in-the-middle attack using ARP cache poisoning
-- [SYN Flood](docs/PLAYBOOK.md#syn-flood-attack): TCP SYN flood DoS attack
-- [DNS Amplification](docs/PLAYBOOK.md#dns-amplification-attack): DNS reflection and amplification attack
-- [HTTP DoS](docs/PLAYBOOK.md#http-dos-attack): HTTP-based denial of service attack
-- [Slowloris](docs/PLAYBOOK.md#slowloris-attack): Slow HTTP DoS attack
-- [SSH Brute Force](docs/PLAYBOOK.md#ssh-brute-force-attack): SSH credential brute force attack
-- [SQL Injection](docs/PLAYBOOK.md#sql-injection-attack): SQL injection testing and exploitation
-- [PCAP Replay](docs/PLAYBOOK.md#pcap-replay-attacks): Network traffic capture replay
-- [Ping of Death](docs/PLAYBOOK.md#ping-of-death-attack): ICMP-based DoS attack
-- [Credential Harvester](docs/PLAYBOOK.md#credential-harvester-attack): Phishing and credential theft simulation
+## How It Works
+
+```mermaid
+graph TD
+    CLI["matcha &lt;attack&gt;"]
+    CLI --> Registry["Attack Registry"]
+    Registry --> |"validate args"| Attack["Attack Module"]
+    Attack --> |"network I/O"| Target["Target System"]
+
+    subgraph Attack Modules
+        ARP["ARP Spoof"]
+        SYN["SYN Flood"]
+        DNS["DNS Amplification"]
+        HTTP["HTTP DoS"]
+        SLOW["Slowloris"]
+        SSH["SSH Brute Force"]
+        SQL["SQL Injection"]
+        PCAP["PCAP Replay"]
+        PING["Ping of Death"]
+        CRED["Credential Harvester"]
+    end
+
+    Registry --> ARP & SYN & DNS & HTTP & SLOW & SSH & SQL & PCAP & PING & CRED
+
+    subgraph Utilities
+        VAL["Validator"]
+        NET["Network Utils"]
+        LOG["Logger"]
+    end
+
+    Attack --> VAL & NET & LOG
+```
+
+Each attack inherits from `AttackBase`, which enforces argument parsing, input validation, and structured logging. The registry auto-discovers modules, so adding a new attack requires only a class and a one-line registration.
+
+## Attack Coverage
+
+| Layer | Attack | Description |
+|---|---|---|
+| Network | [ARP Spoofing](docs/PLAYBOOK.md#arp-spoofing) | MITM via ARP cache poisoning |
+| Network | [SYN Flood](docs/PLAYBOOK.md#syn-flood-attack) | TCP SYN flood DoS |
+| Network | [DNS Amplification](docs/PLAYBOOK.md#dns-amplification-attack) | DNS reflection/amplification |
+| Network | [Ping of Death](docs/PLAYBOOK.md#ping-of-death-attack) | Oversized ICMP packets |
+| Application | [HTTP DoS](docs/PLAYBOOK.md#http-dos-attack) | Multi-threaded HTTP flood |
+| Application | [Slowloris](docs/PLAYBOOK.md#slowloris-attack) | Slow HTTP connection exhaustion |
+| Application | [SSH Brute Force](docs/PLAYBOOK.md#ssh-brute-force-attack) | Credential brute forcing over SSH |
+| Application | [SQL Injection](docs/PLAYBOOK.md#sql-injection-attack) | SQL injection testing |
+| Application | [Credential Harvester](docs/PLAYBOOK.md#credential-harvester-attack) | Phishing/credential theft simulation |
+| Replay | [PCAP Replay](docs/PLAYBOOK.md#pcap-replay-attacks) | Replay captured traffic with custom speed/looping |
+
+## Key Features
+
+- **Single CLI, 10 attacks** -- one tool replaces a fragmented collection of scripts
+- **PCAP replay** -- replay captured traffic with speed control, looping, and interface selection
+- **Web demo UI** -- React-based interactive walkthroughs with Mermaid flow diagrams
+- **Pluggable architecture** -- add a new attack by subclassing `AttackBase` and registering it
+- **Built-in validation** -- IP, port, interface, and parameter checks before execution
+- **Structured logging** -- every attack logs events for post-analysis
 
 ## Quick Start
-Looking for the Playbook? Check out the [PLAYBOOK](docs/PLAYBOOK.md).
-
-Want to explore the interactive demo? Visit the [Web Interface](frontend/README.md).
 
 ### Prerequisites
 
-- Python 3.7 or higher
-- Root/sudo privileges (for certain attacks)
-- Network interface in promiscuous mode (for packet capture/injection)
+- Python 3.7+
+- Root/sudo privileges (for raw socket attacks)
+- Network interface in promiscuous mode (for packet injection)
 
-### Installation
+### Install
 
 ```bash
-# Clone the repository
 git clone https://github.com/montimage/mmt-attacker.git
 cd mmt-attacker
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Verify installation
-python src/cli.py --help
 ```
-
-### Basic Usage
 
 ```bash
-# List available attacks
-python src/cli.py --list
-
-# Get help for a specific attack
-python src/cli.py <attack-type> --help
-
-# Run an attack (example: HTTP DoS)
-python src/cli.py http-dos --target http://example.com --threads 10
+pip install -e .
 ```
 
-## Examples
+### Verify
+
+```bash
+matcha --help
+```
+
+### Run an attack
+
+```bash
+matcha list
+```
+
+```bash
+matcha http-dos --target-url http://example.com --threads 10
+```
+
+### Shell Completions
+
+Enable tab-completion for your shell:
+
+```bash
+# bash — add to ~/.bashrc
+eval "$(_MATCHA_COMPLETE=bash_source matcha)"
+
+# zsh — add to ~/.zshrc
+eval "$(_MATCHA_COMPLETE=zsh_source matcha)"
+
+# fish — add to ~/.config/fish/config.fish
+_MATCHA_COMPLETE=fish_source matcha | source
+```
+
+Or use the built-in helper to print the activation command:
+
+```bash
+matcha completions bash   # or zsh / fish
+```
+
+## Usage Examples
 
 ### PCAP Replay
+
 ```bash
-python src/cli.py pcap-replay \
-    --input-file capture.pcap \
+matcha pcap-replay \
+    --pcap-file capture.pcap \
     --interface eth0 \
-    --loop 3 \
     --speed 2.0
 ```
 
 ### ARP Spoofing
+
 ```bash
-python src/cli.py arp-spoof \
-    --target 192.168.1.100 \
-    --gateway 192.168.1.1 \
-    --interface eth0 \
-    --bidirectional
+matcha arp-spoof \
+    --target-ip 192.168.1.100 \
+    --gateway-ip 192.168.1.1
 ```
 
 ### HTTP DoS
+
 ```bash
-python src/cli.py http-dos \
-    --target http://example.com \
-    --method POST \
-    --threads 10 \
-    --verify-success
+matcha http-dos \
+    --target-url http://example.com \
+    --threads 10
 ```
 
-## Development
+## Web Interface
 
-### Project Structure
+The project includes an interactive web UI for educational attack demonstrations.
+
+```bash
+cd frontend && npm install
+```
+
+```bash
+npm run dev
+```
+
+Opens at `http://localhost:3000`. Features: interactive attack walkthroughs, Mermaid flow diagrams, command generation with validation, and simulated execution results.
+
+## Security Warning
+
+This tool is for **authorized security testing and education only**. Before use:
+
+- Obtain written authorization from the system owner
+- Test only in controlled, isolated environments
+- Follow responsible disclosure practices
+- Comply with all applicable laws
+
+Unauthorized use may be illegal. See [PLAYBOOK](docs/PLAYBOOK.md) for detailed ethical guidelines.
+
+## Roadmap
+
+- [x] GUI interface
+- [x] Cloud deployment (Netlify)
+- [ ] Additional attack vectors
+- [ ] Enhanced reporting
+- [ ] Docker containerization
+- [ ] CI/CD pipeline
+- [ ] API integration
+
+## Get Started
+
+```bash
+pip install -e .
+```
+
+[**Read the Playbook**](docs/PLAYBOOK.md) | [**Try the Web Demo**](frontend/README.md) | MIT Licensed
+
+---
+
+<details>
+<summary>Project Structure</summary>
 
 ```
 mmt-attacker/
@@ -140,118 +240,57 @@ mmt-attacker/
 └── README.md                    # Project overview
 ```
 
-### Adding New Attacks
+</details>
 
-1. Create a new attack module in `src/attacks/`
-2. Inherit from `AttackBase` class
-3. Implement required methods:
-   - `add_arguments()`
-   - `validate()`
-   - `run()`
-4. Register the attack in `src/attacks/__init__.py`
+<details>
+<summary>Adding New Attacks</summary>
 
-Example:
+1. Create a new module in `src/attacks/`
+2. Inherit from `AttackBase`
+3. Implement `add_arguments()`, `validate()`, and `run()`
+4. Register in `src/attacks/__init__.py`
+
 ```python
-from argparse import ArgumentParser
-from typing import Optional
-import logging
-
 from .base import AttackBase
+from argparse import ArgumentParser
+import logging
 
 logger = logging.getLogger(__name__)
 
 class NewAttack(AttackBase):
-    """Template for implementing a new attack module"""
-    
-    name = "new-attack"  # Used in CLI: python src/cli.py new-attack ...
+    name = "new-attack"
     description = "Description of the new attack type"
-    
+
     def add_arguments(self, parser: ArgumentParser) -> None:
-        # Group related arguments
-        target_group = parser.add_argument_group('Target Configuration')
-        target_group.add_argument(
-            '--target', 
-            required=True,
-            help='Target IP or hostname'
-        )
-        target_group.add_argument(
-            '--port',
-            type=int,
-            default=80,
-            help='Target port'
-        )
-        
-        # Add attack-specific options
-        attack_group = parser.add_argument_group('Attack Configuration')
-        attack_group.add_argument(
-            '--method',
-            choices=['GET', 'POST'],
-            default='GET',
-            help='HTTP method to use'
-        )
-        
-        # Add common options
-        net_group = parser.add_argument_group('Network Configuration')
-        net_group.add_argument(
-            '--interface',
-            help='Network interface to use'
-        )
-        net_group.add_argument(
-            '--timeout',
-            type=float,
-            default=5.0,
-            help='Operation timeout in seconds'
-        )
-    
-    def validate(self, args: ArgumentParser) -> bool:
-        # Validate target configuration
+        parser.add_argument('--target', required=True, help='Target IP or hostname')
+        parser.add_argument('--port', type=int, default=80, help='Target port')
+
+    def validate(self, args) -> bool:
         if not self.validator.validate_ip(args.target):
-            logger.error(f"Invalid target IP: {args.target}")
+            logger.error(f"Invalid target: {args.target}")
             return False
-            
-        if not self.validator.validate_port(args.port):
-            logger.error(f"Invalid port: {args.port}")
-            return False
-            
-        # Validate network configuration
-        if args.interface and not self.validator.validate_interface(args.interface):
-            logger.error(f"Invalid interface: {args.interface}")
-            return False
-            
-        if args.timeout <= 0:
-            logger.error(f"Invalid timeout: {args.timeout}")
-            return False
-            
         return True
-    
-    def run(self, args: ArgumentParser) -> None:
-        try:
-            logger.info(f"Starting {self.name} attack against {args.target}:{args.port}")
-            
-            # Implement attack logic here
-            # Use self.validator for input validation
-            # Use appropriate error handling
-            # Log important events and progress
-            
-            logger.info(f"Attack completed successfully")
-            
-        except Exception as e:
-            logger.error(f"Attack failed: {str(e)}")
-            raise
+
+    def run(self, args) -> None:
+        logger.info(f"Starting {self.name} against {args.target}:{args.port}")
+        # Attack logic here
 ```
 
-Then register the attack in `src/attacks/__init__.py`:
+Register it:
+
 ```python
 from .new_attack import NewAttack
 
-# Register the attack
 ATTACKS = {
     # ... existing attacks ...
     "new-attack": NewAttack,
 }
 ```
 
-## Contributing
+</details>
+
+<details>
+<summary>Contributing</summary>
 
 1. Fork the repository
 2. Create a feature branch
@@ -259,66 +298,24 @@ ATTACKS = {
 4. Push to the branch
 5. Create a Pull Request
 
-Please ensure your code:
-- Follows PEP 8 style guide
-- Includes appropriate tests
-- Updates documentation as needed
-- Maintains backward compatibility
+Code requirements:
+- PEP 8 style
+- Include tests
+- Update docs as needed
+- Maintain backward compatibility
 
-## Security Considerations
+</details>
 
-⚠️ **WARNING**: This tool is for educational and testing purposes only.
+<details>
+<summary>Support</summary>
 
-- Always obtain proper authorization before testing
-- Use in controlled environments only
-- Follow responsible disclosure practices
-- Comply with all applicable laws and regulations
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Montimage Research Team
-- Open Source Community
-- Security Research Community
-
-## Support
-
-For support, please:
 1. Check the [documentation](docs/)
 2. Search [existing issues](https://github.com/montimage/mmt-attacker/issues)
-3. Create a new issue if needed
+3. Email [developer@montimage.eu](mailto:developer@montimage.eu)
+4. Create a new issue if needed
 
-## Web Interface
+</details>
 
-The project includes an interactive web interface for educational demonstrations and attack scenario exploration. Built with React and Vite, it provides:
+---
 
-- Interactive attack scenarios with step-by-step walkthroughs
-- Visual attack flow diagrams using Mermaid
-- Command generation with parameter validation
-- Educational content for each attack type
-- Simulated attack execution and results
-
-### Running the Web Interface
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-The interface will be available at `http://localhost:3000`.
-
-For production deployment, see [frontend/README.md](frontend/README.md).
-
-## Roadmap
-
-- [x] GUI interface
-- [ ] Additional attack vectors
-- [ ] Enhanced reporting capabilities
-- [ ] Docker containerization
-- [ ] CI/CD pipeline
-- [ ] API integration
-- [x] Cloud deployment support (Netlify)
+Built by [Montimage](https://montimage.eu)
