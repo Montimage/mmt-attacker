@@ -26,11 +26,6 @@ classifiers = [
     "Topic :: System :: Networking",
 ]
 
-[project.urls]
-Homepage = "https://github.com/Montimage/mmt-attacker"
-Repository = "https://github.com/Montimage/mmt-attacker"
-Documentation = "https://github.com/Montimage/mmt-attacker/tree/main/docs"
-Issues = "https://github.com/Montimage/mmt-attacker/issues"
 dependencies = [
     "click>=8.0",
     "beautifulsoup4>=4.9.3",
@@ -44,6 +39,12 @@ dependencies = [
     "scapy>=2.4.5",
     "urllib3>=1.26.5",
 ]
+
+[project.urls]
+Homepage = "https://github.com/Montimage/mmt-attacker"
+Repository = "https://github.com/Montimage/mmt-attacker"
+Documentation = "https://github.com/Montimage/mmt-attacker/tree/main/docs"
+Issues = "https://github.com/Montimage/mmt-attacker/issues"
 
 [project.optional-dependencies]
 dev = [
