@@ -2,8 +2,9 @@
   <img src="frontend/public/logo.svg" alt="MMT-Attacker Logo" width="200"/>
 </p>
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![CI](https://github.com/Montimage/mmt-attacker/actions/workflows/ci.yml/badge.svg)](https://github.com/Montimage/mmt-attacker/actions/workflows/ci.yml)
 
 # 26 network attacks from one CLI
 
@@ -175,7 +176,7 @@ Unauthorized use may be illegal. See [PLAYBOOK](docs/PLAYBOOK.md) for detailed e
 - [ ] Additional attack vectors
 - [ ] Enhanced reporting
 - [ ] Docker containerization
-- [ ] CI/CD pipeline
+- [x] CI/CD pipeline
 - [ ] API integration
 
 ## Get Started
@@ -184,7 +185,7 @@ Unauthorized use may be illegal. See [PLAYBOOK](docs/PLAYBOOK.md) for detailed e
 pip install -e .
 ```
 
-[**Read the Playbook**](docs/PLAYBOOK.md) | [**Try the Web Demo**](frontend/README.md) | MIT Licensed
+[**Read the Playbook**](docs/PLAYBOOK.md) | [**Try the Web Demo**](frontend/README.md) | [**Contributing**](CONTRIBUTING.md) | Apache 2.0 Licensed
 
 ---
 
