@@ -95,8 +95,10 @@ class SYNFloodAttack:
     def __init__(
         self,
         target_ip: str,
-        ports: list[int],
-        packet_count: int = 1000,
+        target_port: int = 80,
+        ports: list[int] | None = None,
+        count: int = 1000,
+        packet_count: int | None = None,
         rate: int = 100,
         spoof_ip: bool = True,
         verbose: bool = False,
@@ -122,6 +124,14 @@ class SYNFloodAttack:
             self.target_ip = target_ip
         except ValueError:
             raise ValueError(f"Invalid target IP address: {target_ip}")
+
+        # Resolve ports: accept either a list (legacy) or a single target_port int (CLI)
+        if ports is None:
+            ports = [target_port]
+
+        # Resolve packet_count: accept either count (CLI registry name) or packet_count (legacy)
+        if packet_count is None:
+            packet_count = count
 
         # Validate ports
         self.ports = []
