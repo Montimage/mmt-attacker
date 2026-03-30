@@ -102,7 +102,7 @@ Verify the target is reachable:
 curl http://localhost:8080
 
 # From inside the attacker container
-docker compose exec attacker sh -c "curl -s http://target"
+docker compose exec attacker python3 -c "import urllib.request; print(urllib.request.urlopen('http://target').read(100))"
 ```
 
 ### Running attacks
