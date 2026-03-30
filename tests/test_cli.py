@@ -110,8 +110,8 @@ def test_syn_flood_help_exits_zero_and_shows_options():
     runner = CliRunner()
     result = runner.invoke(cli, ["syn-flood", "--help"])
     assert result.exit_code == 0
-    assert "--target" in result.output
-    assert "--ports" in result.output
+    assert "--target-ip" in result.output
+    assert "--target-port" in result.output
 
 
 def test_syn_flood_missing_required_args():
@@ -119,3 +119,50 @@ def test_syn_flood_missing_required_args():
     runner = CliRunner()
     result = runner.invoke(cli, ["syn-flood"])
     assert result.exit_code == 2
+
+
+# ---------------------------------------------------------------------------
+# Network-layer attack command smoke tests
+# ---------------------------------------------------------------------------
+
+NETWORK_ATTACKS = [
+    "arp-spoof",
+    "bgp-hijacking",
+    "dhcp-starvation",
+    "dns-amplification",
+    "icmp-flood",
+    "mac-flooding",
+    "mitm",
+    "ntp-amplification",
+    "ping-of-death",
+    "smurf-attack",
+    "syn-flood",
+    "udp-flood",
+]
+
+
+def test_all_network_attacks_registered_as_subcommands():
+    """Every network-layer attack must appear as a CLI subcommand."""
+    runner = CliRunner()
+    result = runner.invoke(cli, ["--help"])
+    assert result.exit_code == 0
+    for name in NETWORK_ATTACKS:
+        assert name in result.output, f"{name} not found in CLI help output"
+
+
+def test_network_attack_help_exits_zero():
+    """``matcha <attack> --help`` exits 0 for every network-layer attack."""
+    runner = CliRunner()
+    for name in NETWORK_ATTACKS:
+        result = runner.invoke(cli, [name, "--help"])
+        assert result.exit_code == 0, f"{name} --help exited with {result.exit_code}"
+
+
+def test_network_attacks_missing_required_args():
+    """Network attacks with required args should exit 2 when called bare."""
+    runner = CliRunner()
+    for name in NETWORK_ATTACKS:
+        result = runner.invoke(cli, [name])
+        assert result.exit_code == 2, (
+            f"{name} should exit 2 without required args, got {result.exit_code}"
+        )

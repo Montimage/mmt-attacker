@@ -88,16 +88,16 @@ def test_validate_ip_empty():
 
 
 # ---------------------------------------------------------------------------
-# CLI -- help & registration
+# CLI -- help & registration (factory-generated command)
 # ---------------------------------------------------------------------------
 
 
 def test_cli_syn_flood_help():
-    """``matcha syn-flood --help`` should show all options."""
+    """``matcha syn-flood --help`` should show registry-based options."""
     runner = CliRunner()
     result = runner.invoke(cli, ["syn-flood", "--help"])
     assert result.exit_code == 0
-    for flag in ["--target", "--ports", "--count", "--rate", "--spoof-ip"]:
+    for flag in ["--target-ip", "--target-port", "--count"]:
         assert flag in result.output
 
 
@@ -115,30 +115,9 @@ def test_cli_help_shows_syn_flood():
 
 
 def test_cli_syn_flood_missing_target():
-    """Missing --target should fail."""
+    """Missing --target-ip should fail."""
     runner = CliRunner()
-    result = runner.invoke(cli, ["syn-flood", "--ports", "80"])
-    assert result.exit_code != 0
-
-
-def test_cli_syn_flood_missing_ports():
-    """Missing --ports should fail."""
-    runner = CliRunner()
-    result = runner.invoke(cli, ["syn-flood", "--target", "127.0.0.1"])
-    assert result.exit_code != 0
-
-
-def test_cli_syn_flood_invalid_target():
-    """Invalid target IP should exit with code 2."""
-    runner = CliRunner()
-    result = runner.invoke(cli, ["syn-flood", "--target", "not-an-ip", "--ports", "80"])
-    assert result.exit_code == 2
-
-
-def test_cli_syn_flood_invalid_ports():
-    """All-invalid ports should exit with code 2."""
-    runner = CliRunner()
-    result = runner.invoke(cli, ["syn-flood", "--target", "127.0.0.1", "--ports", "abc"])
+    result = runner.invoke(cli, ["syn-flood"])
     assert result.exit_code == 2
 
 
@@ -148,13 +127,9 @@ def test_cli_syn_flood_invalid_ports():
 
 _FAKE_STATS = {
     "target_ip": "127.0.0.1",
-    "ports": [80],
+    "target_port": 80,
     "packets_sent": 10,
     "duration_seconds": 0.5,
-    "configured_rate": 100,
-    "actual_rate": 20.0,
-    "rate_efficiency": 20.0,
-    "estimated_traffic_bytes": 600,
 }
 
 
@@ -168,15 +143,15 @@ def _mock_load_class():
 
 
 def test_cli_syn_flood_text():
-    """``matcha syn-flood --target ... --ports ...`` prints text output."""
+    """``matcha syn-flood --target-ip ...`` prints text output."""
     mock_cls = _mock_load_class()
 
     with patch(
-        "matcha.commands.syn_flood_cmd._load_syn_flood_class", return_value=mock_cls
+        "matcha.commands.factory.load_attack_class", return_value=mock_cls
     ):
         runner = CliRunner()
         result = runner.invoke(
-            cli, ["syn-flood", "--target", "127.0.0.1", "--ports", "80"]
+            cli, ["syn-flood", "--target-ip", "127.0.0.1"]
         )
     assert result.exit_code == 0
     assert "packets_sent" in result.output
@@ -187,12 +162,12 @@ def test_cli_syn_flood_json():
     mock_cls = _mock_load_class()
 
     with patch(
-        "matcha.commands.syn_flood_cmd._load_syn_flood_class", return_value=mock_cls
+        "matcha.commands.factory.load_attack_class", return_value=mock_cls
     ):
         runner = CliRunner()
         result = runner.invoke(
             cli,
-            ["-o", "json", "syn-flood", "--target", "127.0.0.1", "--ports", "80"],
+            ["-o", "json", "syn-flood", "--target-ip", "127.0.0.1"],
         )
     assert result.exit_code == 0
     payload = json.loads(result.output)
@@ -205,86 +180,30 @@ def test_cli_syn_flood_custom_count():
     mock_cls = _mock_load_class()
 
     with patch(
-        "matcha.commands.syn_flood_cmd._load_syn_flood_class", return_value=mock_cls
+        "matcha.commands.factory.load_attack_class", return_value=mock_cls
     ):
         runner = CliRunner()
         result = runner.invoke(
             cli,
-            ["syn-flood", "--target", "127.0.0.1", "--ports", "80", "--count", "50"],
+            ["syn-flood", "--target-ip", "127.0.0.1", "--count", "50"],
         )
     assert result.exit_code == 0
     _, kwargs = mock_cls.call_args
-    assert kwargs["packet_count"] == 50
+    assert kwargs["count"] == 50
 
 
-def test_cli_syn_flood_custom_rate():
-    """--rate is forwarded to SYNFloodAttack."""
+def test_cli_syn_flood_custom_port():
+    """--target-port is forwarded to SYNFloodAttack."""
     mock_cls = _mock_load_class()
 
     with patch(
-        "matcha.commands.syn_flood_cmd._load_syn_flood_class", return_value=mock_cls
+        "matcha.commands.factory.load_attack_class", return_value=mock_cls
     ):
         runner = CliRunner()
         result = runner.invoke(
             cli,
-            ["syn-flood", "--target", "127.0.0.1", "--ports", "80", "--rate", "200"],
+            ["syn-flood", "--target-ip", "127.0.0.1", "--target-port", "443"],
         )
     assert result.exit_code == 0
     _, kwargs = mock_cls.call_args
-    assert kwargs["rate"] == 200
-
-
-def test_cli_syn_flood_no_spoof():
-    """--no-spoof-ip is forwarded to SYNFloodAttack."""
-    mock_cls = _mock_load_class()
-
-    with patch(
-        "matcha.commands.syn_flood_cmd._load_syn_flood_class", return_value=mock_cls
-    ):
-        runner = CliRunner()
-        result = runner.invoke(
-            cli,
-            [
-                "syn-flood",
-                "--target", "127.0.0.1",
-                "--ports", "80",
-                "--no-spoof-ip",
-            ],
-        )
-    assert result.exit_code == 0
-    _, kwargs = mock_cls.call_args
-    assert kwargs["spoof_ip"] is False
-
-
-def test_cli_syn_flood_multiple_ports():
-    """Multiple ports are parsed and forwarded."""
-    mock_cls = _mock_load_class()
-
-    with patch(
-        "matcha.commands.syn_flood_cmd._load_syn_flood_class", return_value=mock_cls
-    ):
-        runner = CliRunner()
-        result = runner.invoke(
-            cli,
-            ["syn-flood", "--target", "127.0.0.1", "--ports", "80,443,8080"],
-        )
-    assert result.exit_code == 0
-    _, kwargs = mock_cls.call_args
-    assert kwargs["ports"] == [80, 443, 8080]
-
-
-def test_cli_syn_flood_verbose():
-    """--verbose flag propagates to SYNFloodAttack."""
-    mock_cls = _mock_load_class()
-
-    with patch(
-        "matcha.commands.syn_flood_cmd._load_syn_flood_class", return_value=mock_cls
-    ):
-        runner = CliRunner()
-        result = runner.invoke(
-            cli,
-            ["-v", "syn-flood", "--target", "127.0.0.1", "--ports", "80"],
-        )
-    assert result.exit_code == 0
-    _, kwargs = mock_cls.call_args
-    assert kwargs["verbose"] is True
+    assert kwargs["target_port"] == 443
