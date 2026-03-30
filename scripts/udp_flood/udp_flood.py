@@ -97,7 +97,7 @@ class UDPFloodAttack:
     def __init__(
         self,
         target_ip: str,
-        ports: list[int],
+        ports=None,
         packet_count: int = 1000,
         rate: int = 100,
         payload_size: int = 512,
@@ -131,6 +131,12 @@ class UDPFloodAttack:
 
         # Set random ports flag
         self.random_ports = random_ports
+
+        # Normalize ports: accept int, str, or list
+        if ports is None:
+            ports = [80]
+        elif isinstance(ports, (int, str)):
+            ports = [int(p) for p in str(ports).split(",") if p.strip()]
 
         # Validate ports if not using random ports
         if not random_ports:

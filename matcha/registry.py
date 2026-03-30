@@ -117,6 +117,7 @@ _register(
         params=[
             ParamDef("target_ip", "str", True, None, "IP address of the target host"),
             ParamDef("gateway_ip", "str", True, None, "IP address of the network gateway"),
+            ParamDef("interface", "str", False, "eth0", "Network interface to use"),
             ParamDef("interval", "float", False, 1.0, "Seconds between spoofed ARP packets"),
         ],
     )
@@ -162,9 +163,10 @@ _register(
         params=[
             ParamDef("target_ip", "str", True, None, "IP address of the victim to flood"),
             ParamDef(
-                "dns_server", "str", False, "8.8.8.8", "Open DNS resolver to use for amplification"
+                "dns_servers", "str", False, "8.8.8.8", "Open DNS resolver to use for amplification"
             ),
-            ParamDef("count", "int", False, 1000, "Number of DNS queries to send"),
+            ParamDef("domain", "str", False, "example.com", "Domain to query"),
+            ParamDef("query_count", "int", False, 1000, "Number of DNS queries to send"),
         ],
     )
 )
@@ -178,8 +180,8 @@ _register(
         class_name="ICMPFloodAttack",
         params=[
             ParamDef("target_ip", "str", True, None, "IP address of the target host"),
-            ParamDef("count", "int", False, 1000, "Number of ICMP packets to send"),
-            ParamDef("size", "int", False, 64, "Payload size in bytes"),
+            ParamDef("packet_count", "int", False, 1000, "Number of ICMP packets to send"),
+            ParamDef("packet_size", "int", False, 64, "Payload size in bytes"),
         ],
     )
 )
@@ -208,9 +210,8 @@ _register(
         params=[
             ParamDef("target_ip", "str", True, None, "IP address of the target host"),
             ParamDef("gateway_ip", "str", True, None, "IP address of the network gateway"),
-            ParamDef(
-                "forward", "bool", False, True, "Enable IP forwarding to relay intercepted traffic"
-            ),
+            ParamDef("interface", "str", False, "eth0", "Network interface to use"),
+            ParamDef("capture_file", "str", False, None, "Optional path to write captured packets"),
         ],
     )
 )
@@ -223,8 +224,8 @@ _register(
         module_path="scripts.ntp_amplification.ntp_amplification",
         class_name="NTPAmplificationAttack",
         params=[
-            ParamDef("target_ip", "str", True, None, "IP address of the victim to flood"),
-            ParamDef("ntp_server", "str", True, None, "NTP server to use for amplification"),
+            ParamDef("victim_ip", "str", True, None, "IP address of the victim to flood"),
+            ParamDef("ntp_servers", "str", True, None, "NTP server to use for amplification"),
             ParamDef("count", "int", False, 1000, "Number of NTP requests to send"),
         ],
     )
@@ -239,7 +240,7 @@ _register(
         class_name="PingOfDeathAttack",
         params=[
             ParamDef("target_ip", "str", True, None, "IP address of the target host"),
-            ParamDef("count", "int", False, 100, "Number of oversized packets to send"),
+            ParamDef("packet_count", "int", False, 100, "Number of oversized packets to send"),
         ],
     )
 )
@@ -252,7 +253,7 @@ _register(
         module_path="scripts.smurf_attack.smurf_attack",
         class_name="SmurfAttack",
         params=[
-            ParamDef("target_ip", "str", True, None, "IP address of the victim"),
+            ParamDef("victim_ip", "str", True, None, "IP address of the victim"),
             ParamDef(
                 "broadcast_ip", "str", True, None, "Broadcast address to send ICMP requests to"
             ),
@@ -285,8 +286,8 @@ _register(
         class_name="UDPFloodAttack",
         params=[
             ParamDef("target_ip", "str", True, None, "IP address of the target host"),
-            ParamDef("target_port", "int", False, 53, "Target UDP port"),
-            ParamDef("count", "int", False, 1000, "Number of UDP packets to send"),
+            ParamDef("ports", "int", False, 80, "Target UDP port"),
+            ParamDef("packet_count", "int", False, 1000, "Number of UDP packets to send"),
         ],
     )
 )
@@ -301,8 +302,8 @@ _register(
         module_path="scripts.credential_harvester.credential_harvester",
         class_name="CredentialHarvester",
         params=[
-            ParamDef("target_url", "str", True, None, "URL of the login page to clone"),
-            ParamDef("listen_port", "int", False, 8080, "Port to serve the cloned page on"),
+            ParamDef("template", "str", False, "login-form", "Template name or URL of page to clone"),
+            ParamDef("port", "int", False, 8080, "Port to serve the cloned page on"),
         ],
     )
 )
@@ -315,8 +316,8 @@ _register(
         module_path="scripts.directory_traversal.directory_traversal",
         class_name="DirectoryTraversalAttack",
         params=[
-            ParamDef("target_url", "str", True, None, "Base URL of the target web application"),
-            ParamDef("depth", "int", False, 5, "Maximum traversal depth to attempt"),
+            ParamDef("url", "str", True, None, "Base URL of the target web application"),
+            ParamDef("param", "str", True, None, "Vulnerable query parameter name"),
         ],
     )
 )
@@ -329,9 +330,10 @@ _register(
         module_path="scripts.ftp_brute_force.ftp_brute_force",
         class_name="FTPBruteForceAttack",
         params=[
-            ParamDef("target_ip", "str", True, None, "IP address of the FTP server"),
+            ParamDef("host", "str", True, None, "IP address of the FTP server"),
+            ParamDef("port", "int", False, 21, "FTP port"),
             ParamDef("username", "str", False, "admin", "Username to brute force"),
-            ParamDef("wordlist", "str", True, None, "Path to the password wordlist file"),
+            ParamDef("passwords", "str", True, None, "Path to the password wordlist file"),
         ],
     )
 )
@@ -345,7 +347,7 @@ _register(
         class_name="HTTPDoSAttack",
         params=[
             ParamDef("target_url", "str", True, None, "URL of the target web server"),
-            ParamDef("threads", "int", False, 10, "Number of concurrent threads"),
+            ParamDef("num_connections", "int", False, 10, "Number of concurrent connections"),
         ],
     )
 )
@@ -358,7 +360,7 @@ _register(
         module_path="scripts.http_flood.http_flood",
         class_name="HTTPFloodAttack",
         params=[
-            ParamDef("target_url", "str", True, None, "URL of the target web server"),
+            ParamDef("url", "str", True, None, "URL of the target web server"),
             ParamDef("count", "int", False, 10000, "Number of HTTP requests to send"),
             ParamDef("threads", "int", False, 10, "Number of concurrent threads"),
         ],
@@ -373,9 +375,10 @@ _register(
         module_path="scripts.rdp_brute_force.rdp_brute_force",
         class_name="RDPBruteForceAttack",
         params=[
-            ParamDef("target_ip", "str", True, None, "IP address of the RDP server"),
+            ParamDef("host", "str", True, None, "IP address of the RDP server"),
+            ParamDef("port", "int", False, 3389, "RDP port"),
             ParamDef("username", "str", False, "administrator", "Username to brute force"),
-            ParamDef("wordlist", "str", True, None, "Path to the password wordlist file"),
+            ParamDef("passwords", "str", True, None, "Path to the password wordlist file"),
         ],
     )
 )
@@ -388,9 +391,8 @@ _register(
         module_path="scripts.slowloris.slowloris",
         class_name="SlowlorisAttack",
         params=[
-            ParamDef("target_ip", "str", True, None, "IP address of the target web server"),
-            ParamDef("target_port", "int", False, 80, "Target HTTP port"),
-            ParamDef("sockets", "int", False, 200, "Number of sockets to open"),
+            ParamDef("target_url", "str", True, None, "URL of the target web server (e.g. http://target)"),
+            ParamDef("sockets", "int", False, 150, "Number of sockets to open"),
         ],
     )
 )
@@ -404,7 +406,7 @@ _register(
         class_name="SQLInjectionAttack",
         params=[
             ParamDef("target_url", "str", True, None, "URL of the vulnerable web page"),
-            ParamDef("parameter", "str", True, None, "Vulnerable query parameter name"),
+            ParamDef("control_name", "str", False, "username", "Vulnerable query parameter name"),
         ],
     )
 )
@@ -418,8 +420,9 @@ _register(
         class_name="SSHBruteForceAttack",
         params=[
             ParamDef("target_ip", "str", True, None, "IP address of the SSH server"),
+            ParamDef("target_port", "int", False, 22, "SSH port"),
             ParamDef("username", "str", False, "root", "Username to brute force"),
-            ParamDef("wordlist", "str", True, None, "Path to the password wordlist file"),
+            ParamDef("passwords", "str", True, None, "Path to the password wordlist file"),
         ],
     )
 )
@@ -432,9 +435,7 @@ _register(
         module_path="scripts.ssl_strip.ssl_strip",
         class_name="SSLStripAttack",
         params=[
-            ParamDef("target_ip", "str", True, None, "IP address of the target host"),
-            ParamDef("gateway_ip", "str", True, None, "IP address of the network gateway"),
-            ParamDef("listen_port", "int", False, 10000, "Port for the SSL stripping proxy"),
+            ParamDef("interface", "str", False, "eth0", "Network interface to intercept traffic on"),
         ],
     )
 )
@@ -448,7 +449,9 @@ _register(
         class_name="VLANHoppingAttack",
         params=[
             ParamDef("interface", "str", True, None, "Network interface to use"),
-            ParamDef("target_vlan", "int", True, None, "VLAN ID to hop to"),
+            ParamDef("outer_vlan", "int", False, 10, "Outer (native) VLAN ID"),
+            ParamDef("inner_vlan", "int", False, 20, "Inner (target) VLAN ID to hop to"),
+            ParamDef("target_ip", "str", False, None, "Optional target IP on the inner VLAN"),
         ],
     )
 )
@@ -461,8 +464,8 @@ _register(
         module_path="scripts.xss.xss",
         class_name="XSSAttack",
         params=[
-            ParamDef("target_url", "str", True, None, "URL of the target web page"),
-            ParamDef("parameter", "str", True, None, "Vulnerable query parameter name"),
+            ParamDef("url", "str", True, None, "URL of the target web page"),
+            ParamDef("param", "str", True, None, "Vulnerable query parameter name"),
         ],
     )
 )
@@ -475,8 +478,7 @@ _register(
         module_path="scripts.xxe.xxe",
         class_name="XXEAttack",
         params=[
-            ParamDef("target_url", "str", True, None, "URL of the XML-accepting endpoint"),
-            ParamDef("payload_file", "str", False, None, "Path to a custom XXE payload file"),
+            ParamDef("url", "str", True, None, "URL of the XML-accepting endpoint"),
         ],
     )
 )
@@ -494,7 +496,7 @@ _register(
             ParamDef("pcap_file", "str", True, None, "Path to the PCAP file to replay"),
             ParamDef("interface", "str", True, None, "Network interface to replay traffic on"),
             ParamDef(
-                "speed", "float", False, 1.0, "Replay speed multiplier (1.0 = original speed)"
+                "rate", "float", False, 1.0, "Replay speed multiplier (1.0 = original speed)"
             ),
         ],
     )

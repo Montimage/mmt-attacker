@@ -52,6 +52,8 @@ class NTPAmplificationAttack:
     ):
         ipaddress.ip_address(victim_ip)
         self.victim_ip = victim_ip
+        if isinstance(ntp_servers, str):
+            ntp_servers = [s.strip() for s in ntp_servers.split(",") if s.strip()]
         self.ntp_servers = ntp_servers
         self.count = max(1, count)
         self.verbose = verbose

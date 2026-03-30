@@ -143,6 +143,10 @@ class DNSAmplificationAttack:
         except ValueError:
             raise ValueError(f"Invalid target IP address: {target_ip}")
 
+        # Normalize dns_servers: accept str or list
+        if isinstance(dns_servers, str):
+            dns_servers = [s.strip() for s in dns_servers.split(",") if s.strip()]
+
         # Validate DNS server IPs
         self.dns_servers = []
         for server in dns_servers:
