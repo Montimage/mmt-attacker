@@ -363,8 +363,11 @@ class TestMakeCommandExecution:
         _, kwargs = mock_cls.call_args
         assert kwargs["verbose_mode"] is False
 
-    def test_float_param_forwarded(self):
+    def test_float_param_forwarded(self, tmp_path):
         """Float params should be correctly typed."""
+        pcap = tmp_path / "test.pcap"
+        pcap.write_bytes(b"")
+
         entry = _float_entry()
         cmd = make_command(entry)
         group = _wrap_in_group(cmd)
@@ -374,7 +377,7 @@ class TestMakeCommandExecution:
             runner = CliRunner()
             runner.invoke(
                 group,
-                ["float-attack", "--pcap-file", "/tmp/test.pcap", "--speed", "2.5"],
+                ["float-attack", "--pcap-file", str(pcap), "--speed", "2.5"],
             )
 
         _, kwargs = mock_cls.call_args
@@ -430,6 +433,141 @@ class TestValidateParams:
         entry = _multi_required_entry()
         errors = validate_params(entry, {"target_url": None, "parameter": None})
         assert len(errors) == 2
+
+
+# ---------------------------------------------------------------------------
+# validate_params -- semantic validation
+# ---------------------------------------------------------------------------
+
+
+class TestSemanticValidation:
+    """Tests for IP, port, URL, file path, and network validation."""
+
+    def test_invalid_ip_reports_error(self):
+        entry = _simple_entry()
+        errors = validate_params(entry, {"target_ip": "not-an-ip", "count": 100})
+        assert len(errors) == 1
+        assert "Invalid IP" in errors[0]
+
+    def test_valid_ip_no_error(self):
+        entry = _simple_entry()
+        errors = validate_params(entry, {"target_ip": "192.168.1.1", "count": 100})
+        assert errors == []
+
+    def test_valid_ipv6_no_error(self):
+        entry = _simple_entry()
+        errors = validate_params(entry, {"target_ip": "::1", "count": 100})
+        assert errors == []
+
+    def test_invalid_url_scheme(self):
+        entry = _multi_required_entry()
+        errors = validate_params(
+            entry, {"target_url": "ftp://bad.example.com", "parameter": "id"}
+        )
+        assert len(errors) == 1
+        assert "Invalid URL scheme" in errors[0]
+
+    def test_invalid_url_missing_host(self):
+        entry = _multi_required_entry()
+        errors = validate_params(entry, {"target_url": "http://", "parameter": "id"})
+        assert len(errors) == 1
+        assert "missing hostname" in errors[0]
+
+    def test_valid_url_no_error(self):
+        entry = _multi_required_entry()
+        errors = validate_params(
+            entry, {"target_url": "https://example.com/login", "parameter": "id"}
+        )
+        assert errors == []
+
+    def test_invalid_port_too_high(self):
+        entry = AttackEntry(
+            name="port-test",
+            description="Test",
+            category="Network-layer",
+            module_path="scripts.fake.fake",
+            class_name="Fake",
+            params=[ParamDef("target_port", "int", True, None, "Port")],
+        )
+        errors = validate_params(entry, {"target_port": 99999})
+        assert len(errors) == 1
+        assert "Invalid port" in errors[0]
+
+    def test_valid_port_no_error(self):
+        entry = AttackEntry(
+            name="port-test",
+            description="Test",
+            category="Network-layer",
+            module_path="scripts.fake.fake",
+            class_name="Fake",
+            params=[ParamDef("target_port", "int", False, 80, "Port")],
+        )
+        errors = validate_params(entry, {"target_port": 443})
+        assert errors == []
+
+    def test_file_not_found(self):
+        entry = _float_entry()
+        errors = validate_params(
+            entry, {"pcap_file": "/nonexistent/file.pcap", "speed": 1.0}
+        )
+        assert len(errors) == 1
+        assert "File not found" in errors[0]
+
+    def test_valid_file(self, tmp_path):
+        pcap = tmp_path / "test.pcap"
+        pcap.write_bytes(b"")
+        entry = _float_entry()
+        errors = validate_params(entry, {"pcap_file": str(pcap), "speed": 1.0})
+        assert errors == []
+
+    def test_network_prefix_invalid(self):
+        entry = AttackEntry(
+            name="net-test",
+            description="Test",
+            category="Network-layer",
+            module_path="scripts.fake.fake",
+            class_name="Fake",
+            params=[ParamDef("target_prefix", "str", True, None, "Prefix")],
+        )
+        errors = validate_params(entry, {"target_prefix": "not-cidr"})
+        assert len(errors) == 1
+        assert "Invalid network" in errors[0]
+
+    def test_network_prefix_valid(self):
+        entry = AttackEntry(
+            name="net-test",
+            description="Test",
+            category="Network-layer",
+            module_path="scripts.fake.fake",
+            class_name="Fake",
+            params=[ParamDef("target_prefix", "str", True, None, "Prefix")],
+        )
+        errors = validate_params(entry, {"target_prefix": "192.168.0.0/24"})
+        assert errors == []
+
+    def test_optional_none_skips_semantic_validation(self):
+        """Optional params with None value should not be validated."""
+        entry = _float_entry()
+        errors = validate_params(entry, {"pcap_file": "/dev/null", "speed": None})
+        assert errors == []
+
+    def test_wordlist_param_validates_as_file(self):
+        entry = AttackEntry(
+            name="brute-test",
+            description="Test",
+            category="Application-layer",
+            module_path="scripts.fake.fake",
+            class_name="Fake",
+            params=[
+                ParamDef("target_ip", "str", True, None, "IP"),
+                ParamDef("wordlist", "str", True, None, "Wordlist file"),
+            ],
+        )
+        errors = validate_params(
+            entry, {"target_ip": "10.0.0.1", "wordlist": "/no/such/file.txt"}
+        )
+        assert len(errors) == 1
+        assert "File not found" in errors[0]
 
 
 # ---------------------------------------------------------------------------
