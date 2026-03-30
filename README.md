@@ -71,6 +71,15 @@ Or with wget:
 wget -qO- https://raw.githubusercontent.com/Montimage/mmt-attacker/main/install.sh | bash
 ```
 
+**Docker** (CLI-only, no Python setup required):
+
+```bash
+docker pull ghcr.io/montimage/mmt-attacker:latest
+docker run --rm ghcr.io/montimage/mmt-attacker:latest --help
+```
+
+See [docs/DOCKER.md](docs/DOCKER.md) for the full guide (pull, start, run attacks, PCAP replay).
+
 **From source:**
 
 ```bash
@@ -199,7 +208,7 @@ Unauthorized use may be illegal. See [PLAYBOOK](docs/PLAYBOOK.md) for detailed e
 - [x] CI/CD pipeline
 - [ ] Additional attack vectors
 - [ ] Enhanced reporting
-- [ ] Docker containerization
+- [x] Docker containerization (CLI-only image)
 - [ ] API integration
 
 ## Get Started

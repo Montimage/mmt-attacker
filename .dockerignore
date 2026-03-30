@@ -1,0 +1,32 @@
+# Frontend / Node
+frontend/
+node_modules/
+
+# Python environment & caches
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# Logs & captures
+logs/
+pcaps/
+*.log
+
+# Development & CI
+.github/
+.git/
+tests/
+docs/
+
+# Editor / OS
+.DS_Store
+.env
+*.swp
+*.swo
