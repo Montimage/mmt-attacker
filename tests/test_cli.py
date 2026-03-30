@@ -50,9 +50,11 @@ def test_verbose_sets_debug_logging():
 
 def test_output_default_is_text():
     """Default output format should be text."""
+    obj = {}
     runner = CliRunner()
-    result = runner.invoke(cli, [])
+    result = runner.invoke(cli, [], obj=obj)
     assert result.exit_code == 0
+    assert obj.get("output") == "text"
 
 
 def test_output_json():
@@ -71,13 +73,17 @@ def test_output_invalid_choice():
 
 def test_no_color_flag():
     """--no-color flag should be accepted and respected."""
+    obj = {}
     runner = CliRunner()
-    result = runner.invoke(cli, ["--no-color"])
+    result = runner.invoke(cli, ["--no-color"], obj=obj)
     assert result.exit_code == 0
+    assert obj.get("no_color") is True
 
 
 def test_no_color_env_var():
     """NO_COLOR env var should disable color."""
+    obj = {}
     runner = CliRunner(env={"NO_COLOR": "1"})
-    result = runner.invoke(cli, [])
+    result = runner.invoke(cli, [], obj=obj)
     assert result.exit_code == 0
+    assert obj.get("no_color") is True
