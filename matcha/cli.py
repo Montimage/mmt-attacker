@@ -8,6 +8,7 @@ import click
 
 from matcha import __version__
 from matcha.commands.factory import make_command
+from matcha.commands.completions_cmd import completions_cmd
 from matcha.commands.info_cmd import info_cmd
 from matcha.commands.list_cmd import list_cmd
 from matcha.registry import (
@@ -61,6 +62,7 @@ def cli(ctx, verbose, output, no_color):
         click.echo(ctx.get_help())
 
 
+cli.add_command(completions_cmd)
 cli.add_command(info_cmd)
 cli.add_command(list_cmd)
 
