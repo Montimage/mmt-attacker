@@ -8,7 +8,7 @@ constructor parameter definitions, and one-line descriptions.  Used by
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 
 # ---------------------------------------------------------------------------
@@ -58,6 +58,8 @@ _REGISTRY: Dict[str, AttackEntry] = {}
 
 def _register(entry: AttackEntry) -> None:
     """Add *entry* to the global registry (used at module load time)."""
+    if entry.name in _REGISTRY:
+        raise ValueError(f"Duplicate attack name: {entry.name!r}")
     _REGISTRY[entry.name] = entry
 
 
@@ -76,7 +78,7 @@ def get_attack(name: str) -> AttackEntry:
     try:
         return _REGISTRY[name]
     except KeyError:
-        raise KeyError(f"Unknown attack: {name!r}")
+        raise KeyError(f"Unknown attack: {name!r}") from None
 
 
 def list_attacks() -> Dict[str, List[AttackEntry]]:
