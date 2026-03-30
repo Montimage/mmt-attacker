@@ -79,6 +79,7 @@ docker run --rm ghcr.io/montimage/mmt-attacker:latest --help
 ```
 
 See [docs/DOCKER.md](docs/DOCKER.md) for the full guide (pull, start, run attacks, PCAP replay).
+See [docs/DEMO.md](docs/DEMO.md) for the two-container demo (attacker + target via `docker compose`).
 
 **From source:**
 
@@ -209,6 +210,7 @@ Unauthorized use may be illegal. See [PLAYBOOK](docs/PLAYBOOK.md) for detailed e
 - [ ] Additional attack vectors
 - [ ] Enhanced reporting
 - [x] Docker containerization (CLI-only image)
+- [x] Two-container attack simulation demo (attacker + target via docker compose)
 - [ ] API integration
 
 ## Get Started

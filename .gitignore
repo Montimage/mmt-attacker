@@ -73,6 +73,8 @@ docs/_build/
 
 # PyBuilder
 target/
+# Exclude the Docker target container from the PyBuilder ignore above
+!docker/target/
 
 # Jupyter Notebook
 .ipynb_checkpoints

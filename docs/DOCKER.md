@@ -2,6 +2,8 @@
 
 The `matcha` CLI is available as a Docker image that includes **only the CLI module** — no Node.js, no web frontend. It is the fastest way to run matcha in a sandboxed environment without touching your host Python installation.
 
+> **Two-container demo:** Want to see matcha attack a real target in an isolated environment? See [DEMO.md](DEMO.md) for the full two-container setup using `docker compose`.
+
 ## Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/) installed and running
