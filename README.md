@@ -52,16 +52,23 @@ Each attack inherits from `AttackBase`, which enforces argument parsing, input v
 
 **Prerequisites:** Python 3.8+ and root/sudo privileges (required for raw socket attacks)
 
-Clone the repository:
+**One-line install** (Linux / macOS):
 
 ```bash
-git clone https://github.com/montimage/mmt-attacker.git
-cd mmt-attacker
+curl -sSL https://raw.githubusercontent.com/Montimage/mmt-attacker/main/install.sh | bash
 ```
 
-Install:
+Or with wget:
 
 ```bash
+wget -qO- https://raw.githubusercontent.com/Montimage/mmt-attacker/main/install.sh | bash
+```
+
+**From source:**
+
+```bash
+git clone https://github.com/Montimage/mmt-attacker.git
+cd mmt-attacker
 pip install -e .
 ```
 
