@@ -88,9 +88,8 @@ bridge network.
 **Docker — CLI-only** (run against your own lab target):
 
 ```bash
-docker pull ghcr.io/montimage/mmt-attacker:latest
-docker run --rm --cap-add NET_ADMIN --cap-add NET_RAW \
-  ghcr.io/montimage/mmt-attacker:latest --help
+docker build -t matcha .
+docker run --rm --cap-add NET_ADMIN --cap-add NET_RAW matcha --help
 ```
 
 See [docs/DEMO.md](docs/DEMO.md) for the full two-container guide.

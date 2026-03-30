@@ -31,16 +31,15 @@ attacks and target observation commands.
 
 ### CLI-only container (no target)
 
-Pull the pre-built image and run against your own lab target:
+Build the image locally and run against your own lab target:
 
 ```bash
-docker pull ghcr.io/montimage/mmt-attacker:latest
+docker build -t matcha .
 
 docker run --rm \
   --cap-add NET_ADMIN \
   --cap-add NET_RAW \
-  ghcr.io/montimage/mmt-attacker:latest \
-  --help
+  matcha --help
 ```
 
 Run an attack:
@@ -50,8 +49,7 @@ docker run --rm \
   --cap-add NET_ADMIN \
   --cap-add NET_RAW \
   --network host \
-  ghcr.io/montimage/mmt-attacker:latest \
-  http-dos --target-url http://<target-ip> --threads 5
+  matcha http-dos --target-url http://<target-ip> --threads 5
 ```
 
 See [DOCKER.md](DOCKER.md) for the full CLI-only Docker guide (PCAP replay

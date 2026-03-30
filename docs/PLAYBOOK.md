@@ -91,7 +91,7 @@ docker compose ps
 
 ```
 NAME        IMAGE                                    STATUS    PORTS
-attacker    ghcr.io/montimage/mmt-attacker:latest   running
+attacker    mmt-attacker-attacker                    running
 target      mmt-attacker-target                     running   0.0.0.0:8080->80/tcp, ...
 ```
 
@@ -853,8 +853,7 @@ docker run --rm \
   --cap-add NET_ADMIN --cap-add NET_RAW \
   --network mmt-attacker_lab \
   -v /path/to/capture.pcap:/pcaps/capture.pcap \
-  ghcr.io/montimage/mmt-attacker:latest \
-  pcap-replay \
+  matcha pcap-replay \
     --pcap-file /pcaps/capture.pcap \
     --interface eth0 \
     --speed 2.0

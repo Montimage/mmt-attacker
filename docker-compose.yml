@@ -2,13 +2,13 @@
 # matcha two-container demo — attacker + target
 # ============================================================================
 # Usage:
-#   docker compose up --build -d
+#   docker compose up --build -d          # builds both attacker and target locally
 #   docker compose exec attacker matcha syn-flood --target-ip target --target-port 80 --count 200
 #   docker compose down
 #
-# The attacker container has the matcha CLI; the target container runs
-# lightweight HTTP, SSH, and FTP services. Both share an isolated bridge
-# network so attacks stay contained to this environment.
+# The attacker container is built from the root Dockerfile; the target
+# container is built from docker/target/Dockerfile. Both share an isolated
+# bridge network so attacks stay contained to this environment.
 # ============================================================================
 
 services:
@@ -17,7 +17,9 @@ services:
   # Attacker — matcha CLI image
   # --------------------------------------------------------------------------
   attacker:
-    image: ghcr.io/montimage/mmt-attacker:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     # Override the default entrypoint so the container stays alive for
     # exec-style usage (docker compose exec attacker matcha <attack>)
     entrypoint: ["tail", "-f", "/dev/null"]

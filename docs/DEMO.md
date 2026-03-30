@@ -47,7 +47,7 @@ docker compose ps
 
 ```
 NAME        IMAGE                                    STATUS    PORTS
-attacker    ghcr.io/montimage/mmt-attacker:latest   running
+attacker    mmt-attacker-attacker                    running
 target      mmt-attacker-target                     running   0.0.0.0:8080->80/tcp, ...
 ```
 
