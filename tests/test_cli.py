@@ -166,3 +166,51 @@ def test_network_attacks_missing_required_args():
         assert result.exit_code == 2, (
             f"{name} should exit 2 without required args, got {result.exit_code}"
         )
+
+
+# ---------------------------------------------------------------------------
+# Application-layer attack command smoke tests
+# ---------------------------------------------------------------------------
+
+APPLICATION_ATTACKS = [
+    "credential-harvester",
+    "directory-traversal",
+    "ftp-brute-force",
+    "http-dos",
+    "http-flood",
+    "rdp-brute-force",
+    "slowloris",
+    "sql-injection",
+    "ssh-brute-force",
+    "ssl-strip",
+    "vlan-hopping",
+    "xss",
+    "xxe",
+]
+
+
+def test_all_application_attacks_registered_as_subcommands():
+    """Every application-layer attack must appear as a CLI subcommand."""
+    runner = CliRunner()
+    result = runner.invoke(cli, ["--help"])
+    assert result.exit_code == 0
+    for name in APPLICATION_ATTACKS:
+        assert name in result.output, f"{name} not found in CLI help output"
+
+
+def test_application_attack_help_exits_zero():
+    """``matcha <attack> --help`` exits 0 for every application-layer attack."""
+    runner = CliRunner()
+    for name in APPLICATION_ATTACKS:
+        result = runner.invoke(cli, [name, "--help"])
+        assert result.exit_code == 0, f"{name} --help exited with {result.exit_code}"
+
+
+def test_application_attacks_missing_required_args():
+    """Application attacks with required args should exit 2 when called bare."""
+    runner = CliRunner()
+    for name in APPLICATION_ATTACKS:
+        result = runner.invoke(cli, [name])
+        assert result.exit_code == 2, (
+            f"{name} should exit 2 without required args, got {result.exit_code}"
+        )
