@@ -8,8 +8,6 @@ from typing import Any, Dict, List, Optional
 
 import click
 
-from matcha.commands.list_cmd import CATEGORIES
-
 # ---------------------------------------------------------------------------
 # Attack detail registry
 # ---------------------------------------------------------------------------
@@ -399,7 +397,7 @@ def _format_text(name: str, detail: Dict[str, Any]) -> str:
         )
         lines.append(f"    {' ' * 20} {param['help']}")
     lines.append("")
-    lines.append(f"Example:")
+    lines.append("Example:")
     lines.append(f"  {detail['example']}")
     return "\n".join(lines)
 
