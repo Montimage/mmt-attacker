@@ -1,6 +1,8 @@
 """Smoke tests for the matcha CLI."""
 
 import logging
+import subprocess
+import sys
 
 from click.testing import CliRunner
 
@@ -13,6 +15,35 @@ def test_version():
     result = runner.invoke(cli, ["--version"])
     assert result.exit_code == 0
     assert __version__ in result.output
+
+
+# ---------------------------------------------------------------------------
+# python -m matcha smoke tests
+# ---------------------------------------------------------------------------
+
+
+def test_python_m_matcha_help():
+    """``python -m matcha --help`` must exit 0 and show usage text."""
+    result = subprocess.run(
+        [sys.executable, "-m", "matcha", "--help"],
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    assert result.returncode == 0
+    assert "matcha" in result.stdout.lower()
+
+
+def test_python_m_matcha_version():
+    """``python -m matcha --version`` must exit 0 and print the version."""
+    result = subprocess.run(
+        [sys.executable, "-m", "matcha", "--version"],
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    assert result.returncode == 0
+    assert __version__ in result.stdout
 
 
 def test_help():
