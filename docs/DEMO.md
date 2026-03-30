@@ -47,7 +47,7 @@ docker compose ps
 
 ```
 NAME        IMAGE                                    STATUS    PORTS
-attacker    ghcr.io/montimage/mmt-attacker:latest   running
+attacker    mmt-attacker-attacker                    running
 target      mmt-attacker-target                     running   0.0.0.0:8080->80/tcp, ...
 ```
 
@@ -58,7 +58,7 @@ target      mmt-attacker-target                     running   0.0.0.0:8080->80/t
 curl http://localhost:8080
 
 # Or from inside the attacker container
-docker compose exec attacker sh -c "wget -qO- http://target"
+docker compose exec attacker curl -s http://target
 ```
 
 ---

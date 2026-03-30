@@ -33,9 +33,9 @@ Each attack inherits from `AttackBase`, which enforces argument parsing, input v
 
 | Layer | Attacks |
 |---|---|
-| **Network** | [ARP Spoofing](docs/PLAYBOOK.md#arp-spoofing), BGP Hijacking, DHCP Starvation, [DNS Amplification](docs/PLAYBOOK.md#dns-amplification-attack), ICMP Flood, MAC Flooding, MITM, NTP Amplification, [Ping of Death](docs/PLAYBOOK.md#ping-of-death-attack), Smurf, [SYN Flood](docs/PLAYBOOK.md#syn-flood-attack), UDP Flood |
-| **Application** | [Credential Harvester](docs/PLAYBOOK.md#credential-harvester-attack), Directory Traversal, FTP Brute Force, [HTTP DoS](docs/PLAYBOOK.md#http-dos-attack), HTTP Flood, RDP Brute Force, [Slowloris](docs/PLAYBOOK.md#slowloris-attack), [SQL Injection](docs/PLAYBOOK.md#sql-injection-attack), [SSH Brute Force](docs/PLAYBOOK.md#ssh-brute-force-attack), SSL Strip, VLAN Hopping, XSS, XXE |
-| **Replay** | [PCAP Replay](docs/PLAYBOOK.md#pcap-replay-attacks) |
+| **Network** | [ARP Spoofing](docs/PLAYBOOK.md#arp-spoofing), BGP Hijacking, DHCP Starvation, [DNS Amplification](docs/PLAYBOOK.md#dns-amplification), ICMP Flood, MAC Flooding, MITM, NTP Amplification, [Ping of Death](docs/PLAYBOOK.md#ping-of-death), Smurf, [SYN Flood](docs/PLAYBOOK.md#syn-flood), UDP Flood |
+| **Application** | [Credential Harvester](docs/PLAYBOOK.md#credential-harvester), Directory Traversal, FTP Brute Force, [HTTP DoS](docs/PLAYBOOK.md#http-dos), HTTP Flood, RDP Brute Force, [Slowloris](docs/PLAYBOOK.md#slowloris), [SQL Injection](docs/PLAYBOOK.md#sql-injection), [SSH Brute Force](docs/PLAYBOOK.md#ssh-brute-force), SSL Strip, VLAN Hopping, XSS, XXE |
+| **Replay** | [PCAP Replay](docs/PLAYBOOK.md#pcap-replay) |
 
 ## Key Features
 
@@ -71,15 +71,29 @@ Or with wget:
 wget -qO- https://raw.githubusercontent.com/Montimage/mmt-attacker/main/install.sh | bash
 ```
 
-**Docker** (CLI-only, no Python setup required):
+**Docker — two-container lab** (recommended, no host setup required):
 
 ```bash
-docker pull ghcr.io/montimage/mmt-attacker:latest
-docker run --rm ghcr.io/montimage/mmt-attacker:latest --help
+git clone https://github.com/Montimage/mmt-attacker.git
+cd mmt-attacker
+docker compose up --build -d
+docker compose exec attacker matcha syn-flood --target-ip target --target-port 80 --count 200
+docker compose down
 ```
 
-See [docs/DOCKER.md](docs/DOCKER.md) for the full guide (pull, start, run attacks, PCAP replay).
-See [docs/DEMO.md](docs/DEMO.md) for the two-container demo (attacker + target via `docker compose`).
+Starts an isolated lab with an **attacker** container (matcha CLI) and a
+**target** container (nginx + SSH + FTP). Attacks stay contained to the `lab`
+bridge network.
+
+**Docker — CLI-only** (run against your own lab target):
+
+```bash
+docker build -t matcha .
+docker run --rm --cap-add NET_ADMIN --cap-add NET_RAW matcha --help
+```
+
+See [docs/DEMO.md](docs/DEMO.md) for the full two-container guide.
+See [docs/DOCKER.md](docs/DOCKER.md) for the CLI-only Docker guide (PCAP replay, JSON output, etc.).
 
 **From source:**
 

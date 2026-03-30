@@ -39,11 +39,9 @@ FROM python:3.12-slim AS runtime
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
         libpcap0.8 \
-        tcpdump && \
-    rm -rf /var/lib/apt/lists/* && \
-    # Create a non-root user; attacks that need raw sockets are run with
-    # --cap-add NET_ADMIN --cap-add NET_RAW at container start time.
-    useradd --create-home --shell /bin/bash matcha
+        tcpdump \
+        curl && \
+    rm -rf /var/lib/apt/lists/*
 
 # Copy installed Python packages from the builder stage
 COPY --from=builder /install /usr/local
@@ -58,8 +56,8 @@ WORKDIR /app
 ENV PYTHONPATH=/app
 ENV PATH="/usr/local/bin:$PATH"
 
-# Switch to non-root user by default
-USER matcha
+# Run as root so raw-socket attacks work when NET_ADMIN/NET_RAW are granted
+USER root
 
 # Expose the matcha CLI as the container entrypoint
 ENTRYPOINT ["matcha"]
