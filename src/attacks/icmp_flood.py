@@ -1,13 +1,14 @@
 """ICMP Flood attack implementation"""
 
 import argparse
-import sys
-import os
 import logging
+import os
+import sys
 
 from .base import AttackBase
 
 logger = logging.getLogger(__name__)
+
 
 class IcmpFlood(AttackBase):
     """ICMP Flood (Ping Flood) attack implementation"""
@@ -17,20 +18,28 @@ class IcmpFlood(AttackBase):
 
     def add_arguments(self, parser: argparse.ArgumentParser) -> None:
         # Target configuration
-        target_group = parser.add_argument_group('Target Configuration')
-        target_group.add_argument('--target', required=True, help='Target IP address')
+        target_group = parser.add_argument_group("Target Configuration")
+        target_group.add_argument("--target", required=True, help="Target IP address")
 
         # Attack behavior
-        behavior_group = parser.add_argument_group('Attack Behavior')
-        behavior_group.add_argument('--count', type=int, default=1000, help='Number of packets to send')
-        behavior_group.add_argument('--rate', type=int, default=100, help='Packets per second')
-        behavior_group.add_argument('--size', type=int, default=64, help='Packet size in bytes (8-65500)')
-        behavior_group.add_argument('--spoof', action='store_true', default=True, help='Use random source IPs')
-        behavior_group.add_argument('--no-spoof', dest='spoof', action='store_false', help='Disable IP spoofing')
+        behavior_group = parser.add_argument_group("Attack Behavior")
+        behavior_group.add_argument(
+            "--count", type=int, default=1000, help="Number of packets to send"
+        )
+        behavior_group.add_argument("--rate", type=int, default=100, help="Packets per second")
+        behavior_group.add_argument(
+            "--size", type=int, default=64, help="Packet size in bytes (8-65500)"
+        )
+        behavior_group.add_argument(
+            "--spoof", action="store_true", default=True, help="Use random source IPs"
+        )
+        behavior_group.add_argument(
+            "--no-spoof", dest="spoof", action="store_false", help="Disable IP spoofing"
+        )
 
         # Monitoring
-        monitor_group = parser.add_argument_group('Monitoring')
-        monitor_group.add_argument('--verbose', action='store_true', help='Enable verbose output')
+        monitor_group = parser.add_argument_group("Monitoring")
+        monitor_group.add_argument("--verbose", action="store_true", help="Enable verbose output")
 
     def validate(self, args: argparse.Namespace) -> bool:
         # Validate target IP
@@ -53,8 +62,10 @@ class IcmpFlood(AttackBase):
 
     def run(self, args: argparse.Namespace) -> None:
         # Import the original attack script
-        scripts_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'scripts')
-        icmp_flood_path = os.path.join(scripts_dir, 'icmp_flood')
+        scripts_dir = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "scripts"
+        )
+        icmp_flood_path = os.path.join(scripts_dir, "icmp_flood")
 
         sys.path.insert(0, icmp_flood_path)
         try:
@@ -66,7 +77,7 @@ class IcmpFlood(AttackBase):
                 rate=args.rate,
                 packet_size=args.size,
                 spoof_ip=args.spoof,
-                verbose=args.verbose
+                verbose=args.verbose,
             )
 
             logger.info(f"Running ICMP flood attack against {args.target}")

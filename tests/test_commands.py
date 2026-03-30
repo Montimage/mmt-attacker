@@ -19,8 +19,7 @@ import pytest
 from click.testing import CliRunner
 
 from matcha.cli import cli
-from matcha.registry import all_attack_names, get_attack, list_attacks
-
+from matcha.registry import all_attack_names, get_attack
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -95,9 +94,7 @@ class TestHelpSmokeAllCommands:
     @pytest.mark.parametrize("name", ALL_ATTACKS, ids=ALL_ATTACKS)
     def test_help_exits_zero(self, name: str):
         result = runner.invoke(cli, [name, "--help"])
-        assert result.exit_code == 0, (
-            f"{name} --help exited {result.exit_code}: {result.output}"
-        )
+        assert result.exit_code == 0, f"{name} --help exited {result.exit_code}: {result.output}"
 
     @pytest.mark.parametrize("name", ALL_ATTACKS, ids=ALL_ATTACKS)
     def test_help_shows_all_options(self, name: str):
@@ -109,13 +106,11 @@ class TestHelpSmokeAllCommands:
             flag = _cli_flag(p.name)
             if p.type == "bool":
                 # bool params show as --flag/--no-flag
-                assert flag in result.output or f"--no-{p.name.replace('_', '-')}" in result.output, (
-                    f"{name}: {flag} not found in help output"
-                )
+                assert (
+                    flag in result.output or f"--no-{p.name.replace('_', '-')}" in result.output
+                ), f"{name}: {flag} not found in help output"
             else:
-                assert flag in result.output, (
-                    f"{name}: {flag} not found in help output"
-                )
+                assert flag in result.output, f"{name}: {flag} not found in help output"
 
     @pytest.mark.parametrize("name", ALL_ATTACKS, ids=ALL_ATTACKS)
     def test_help_shows_description(self, name: str):
@@ -125,9 +120,7 @@ class TestHelpSmokeAllCommands:
         assert result.exit_code == 0
         # Check first 40 chars of description appear (Click may wrap)
         snippet = entry.description[:40].lower()
-        assert snippet in result.output.lower(), (
-            f"{name}: description not in help output"
-        )
+        assert snippet in result.output.lower(), f"{name}: description not in help output"
 
 
 # ---------------------------------------------------------------------------
@@ -141,9 +134,7 @@ class TestMissingRequiredArgs:
     @pytest.mark.parametrize("name", ALL_ATTACKS, ids=ALL_ATTACKS)
     def test_missing_required_exits_2(self, name: str):
         result = runner.invoke(cli, [name])
-        assert result.exit_code == 2, (
-            f"{name} without args exited {result.exit_code}, expected 2"
-        )
+        assert result.exit_code == 2, f"{name} without args exited {result.exit_code}, expected 2"
 
 
 # ---------------------------------------------------------------------------
@@ -151,10 +142,7 @@ class TestMissingRequiredArgs:
 # ---------------------------------------------------------------------------
 
 
-_IP_ATTACKS = [
-    n for n in ALL_ATTACKS
-    if any(p.name.endswith("_ip") for p in get_attack(n).params)
-]
+_IP_ATTACKS = [n for n in ALL_ATTACKS if any(p.name.endswith("_ip") for p in get_attack(n).params)]
 
 _INVALID_IPS = [
     "not-an-ip",
@@ -168,7 +156,9 @@ class TestIPValidation:
     """Commands with IP params must reject invalid IPs."""
 
     @pytest.mark.parametrize("name", _IP_ATTACKS, ids=_IP_ATTACKS)
-    @pytest.mark.parametrize("bad_ip", _INVALID_IPS, ids=["text", "out-of-range", "alpha", "empty"])
+    @pytest.mark.parametrize(
+        "bad_ip", _INVALID_IPS, ids=["text", "out-of-range", "alpha", "empty"]
+    )
     def test_invalid_ip_rejected(self, name: str, bad_ip: str, tmp_path):
         entry = get_attack(name)
         # Find the first *_ip param and inject the bad value
@@ -181,9 +171,7 @@ class TestIPValidation:
 
         with patch("matcha.commands.factory.load_attack_class", return_value=_mock_load_class()):
             result = runner.invoke(cli, [name] + args)
-        assert result.exit_code != 0, (
-            f"{name} accepted invalid IP {bad_ip!r}"
-        )
+        assert result.exit_code != 0, f"{name} accepted invalid IP {bad_ip!r}"
 
 
 # ---------------------------------------------------------------------------
@@ -192,9 +180,9 @@ class TestIPValidation:
 
 
 _PORT_ATTACKS = [
-    n for n in ALL_ATTACKS
-    if any(p.name.endswith("_port") or p.name == "listen_port"
-           for p in get_attack(n).params)
+    n
+    for n in ALL_ATTACKS
+    if any(p.name.endswith("_port") or p.name == "listen_port" for p in get_attack(n).params)
 ]
 
 
@@ -205,8 +193,7 @@ class TestPortValidation:
     def test_port_too_high(self, name: str, tmp_path):
         entry = get_attack(name)
         port_param = next(
-            p for p in entry.params
-            if p.name.endswith("_port") or p.name == "listen_port"
+            p for p in entry.params if p.name.endswith("_port") or p.name == "listen_port"
         )
         args = _valid_args_for(name, tmp_path)
         flag = _cli_flag(port_param.name)
@@ -215,16 +202,13 @@ class TestPortValidation:
 
         with patch("matcha.commands.factory.load_attack_class", return_value=_mock_load_class()):
             result = runner.invoke(cli, [name] + args)
-        assert result.exit_code != 0, (
-            f"{name} accepted port 99999"
-        )
+        assert result.exit_code != 0, f"{name} accepted port 99999"
 
     @pytest.mark.parametrize("name", _PORT_ATTACKS, ids=_PORT_ATTACKS)
     def test_port_negative(self, name: str, tmp_path):
         entry = get_attack(name)
         port_param = next(
-            p for p in entry.params
-            if p.name.endswith("_port") or p.name == "listen_port"
+            p for p in entry.params if p.name.endswith("_port") or p.name == "listen_port"
         )
         args = _valid_args_for(name, tmp_path)
         flag = _cli_flag(port_param.name)
@@ -233,9 +217,7 @@ class TestPortValidation:
 
         with patch("matcha.commands.factory.load_attack_class", return_value=_mock_load_class()):
             result = runner.invoke(cli, [name] + args)
-        assert result.exit_code != 0, (
-            f"{name} accepted port -1"
-        )
+        assert result.exit_code != 0, f"{name} accepted port -1"
 
 
 # ---------------------------------------------------------------------------
@@ -244,8 +226,7 @@ class TestPortValidation:
 
 
 _URL_ATTACKS = [
-    n for n in ALL_ATTACKS
-    if any(p.name.endswith("_url") for p in get_attack(n).params)
+    n for n in ALL_ATTACKS if any(p.name.endswith("_url") for p in get_attack(n).params)
 ]
 
 
@@ -263,9 +244,7 @@ class TestURLValidation:
 
         with patch("matcha.commands.factory.load_attack_class", return_value=_mock_load_class()):
             result = runner.invoke(cli, [name] + args)
-        assert result.exit_code != 0, (
-            f"{name} accepted ftp:// URL"
-        )
+        assert result.exit_code != 0, f"{name} accepted ftp:// URL"
 
     @pytest.mark.parametrize("name", _URL_ATTACKS, ids=_URL_ATTACKS)
     def test_missing_host_rejected(self, name: str, tmp_path):
@@ -278,9 +257,7 @@ class TestURLValidation:
 
         with patch("matcha.commands.factory.load_attack_class", return_value=_mock_load_class()):
             result = runner.invoke(cli, [name] + args)
-        assert result.exit_code != 0, (
-            f"{name} accepted URL with no host"
-        )
+        assert result.exit_code != 0, f"{name} accepted URL with no host"
 
 
 # ---------------------------------------------------------------------------
@@ -289,9 +266,9 @@ class TestURLValidation:
 
 
 _FILE_ATTACKS = [
-    n for n in ALL_ATTACKS
-    if any(p.name.endswith("_file") or p.name == "wordlist"
-           for p in get_attack(n).params)
+    n
+    for n in ALL_ATTACKS
+    if any(p.name.endswith("_file") or p.name == "wordlist" for p in get_attack(n).params)
 ]
 
 
@@ -302,8 +279,7 @@ class TestFileValidation:
     def test_nonexistent_file_rejected(self, name: str, tmp_path):
         entry = get_attack(name)
         file_param = next(
-            p for p in entry.params
-            if p.name.endswith("_file") or p.name == "wordlist"
+            p for p in entry.params if p.name.endswith("_file") or p.name == "wordlist"
         )
         args = _valid_args_for(name, tmp_path)
         flag = _cli_flag(file_param.name)
@@ -312,9 +288,7 @@ class TestFileValidation:
 
         with patch("matcha.commands.factory.load_attack_class", return_value=_mock_load_class()):
             result = runner.invoke(cli, [name] + args)
-        assert result.exit_code != 0, (
-            f"{name} accepted non-existent file"
-        )
+        assert result.exit_code != 0, f"{name} accepted non-existent file"
 
 
 # ---------------------------------------------------------------------------
@@ -326,21 +300,31 @@ class TestNetworkValidation:
     """bgp-hijacking target_prefix must reject invalid CIDR."""
 
     def test_invalid_cidr_rejected(self):
-        result = runner.invoke(cli, [
-            "bgp-hijacking",
-            "--target-prefix", "not-cidr",
-            "--as-number", "100",
-        ])
+        result = runner.invoke(
+            cli,
+            [
+                "bgp-hijacking",
+                "--target-prefix",
+                "not-cidr",
+                "--as-number",
+                "100",
+            ],
+        )
         assert result.exit_code != 0
 
     def test_valid_cidr_accepted(self):
         mock_cls = _mock_load_class()
         with patch("matcha.commands.factory.load_attack_class", return_value=mock_cls):
-            result = runner.invoke(cli, [
-                "bgp-hijacking",
-                "--target-prefix", "10.0.0.0/8",
-                "--as-number", "100",
-            ])
+            result = runner.invoke(
+                cli,
+                [
+                    "bgp-hijacking",
+                    "--target-prefix",
+                    "10.0.0.0/8",
+                    "--as-number",
+                    "100",
+                ],
+            )
         assert result.exit_code == 0
 
 
@@ -356,9 +340,7 @@ class TestListIncludesAllAttacks:
         result = runner.invoke(cli, ["list"])
         assert result.exit_code == 0
         for name in ALL_ATTACKS:
-            assert name in result.output, (
-                f"{name} not found in 'matcha list' output"
-            )
+            assert name in result.output, f"{name} not found in 'matcha list' output"
 
     def test_list_json_contains_all_names(self):
         result = runner.invoke(cli, ["-o", "json", "list"])
@@ -366,9 +348,7 @@ class TestListIncludesAllAttacks:
         payload = json.loads(result.output)
         listed_names = {e["name"] for e in payload}
         for name in ALL_ATTACKS:
-            assert name in listed_names, (
-                f"{name} not found in JSON list output"
-            )
+            assert name in listed_names, f"{name} not found in JSON list output"
 
     def test_list_json_has_26_entries(self):
         result = runner.invoke(cli, ["-o", "json", "list"])
@@ -482,9 +462,7 @@ class TestMockedExecution:
 
         with patch("matcha.commands.factory.load_attack_class", return_value=mock_cls):
             result = runner.invoke(cli, [name] + args)
-        assert result.exit_code == 0, (
-            f"{name} failed: {result.output}"
-        )
+        assert result.exit_code == 0, f"{name} failed: {result.output}"
         mock_cls.return_value.execute.assert_called_once()
 
     @pytest.mark.parametrize("name", ALL_ATTACKS, ids=ALL_ATTACKS)
@@ -499,9 +477,5 @@ class TestMockedExecution:
         _, kwargs = mock_cls.call_args
         for p in entry.params:
             if p.required:
-                assert p.name in kwargs, (
-                    f"{name}: required param {p.name} not passed to class"
-                )
-                assert kwargs[p.name] is not None, (
-                    f"{name}: required param {p.name} is None"
-                )
+                assert p.name in kwargs, f"{name}: required param {p.name} not passed to class"
+                assert kwargs[p.name] is not None, f"{name}: required param {p.name} is None"

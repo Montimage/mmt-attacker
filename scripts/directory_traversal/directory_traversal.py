@@ -10,23 +10,27 @@ License: Proprietary
 Version: 1.0.0
 """
 
-import os, sys, argparse
-from typing import Dict, Any, List
+import argparse
+import os
+import sys
+from typing import Any
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 try:
     from logger import get_logger
 except ImportError:
     import logging
+
     def get_logger(name):
         logger = logging.getLogger(name)
         if not logger.handlers:
             handler = logging.StreamHandler()
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             logger.addHandler(handler)
             logger.setLevel(logging.INFO)
         return logger
+
 
 logger = get_logger(__name__)
 
@@ -50,7 +54,7 @@ DEFAULT_PAYLOADS = [
 class DirectoryTraversalAttack:
     """Directory traversal attack simulator."""
 
-    def __init__(self, url: str, param: str, payloads: List[str], verbose: bool = False):
+    def __init__(self, url: str, param: str, payloads: list[str], verbose: bool = False):
         self.url = url
         self.param = param
         self.payloads = payloads
@@ -82,7 +86,7 @@ class DirectoryTraversalAttack:
                 logger.debug(f"Error testing payload: {e}")
             return False
 
-    def execute(self) -> Dict[str, Any]:
+    def execute(self) -> dict[str, Any]:
         """Execute the directory traversal testing."""
         logger.info(f"Starting directory traversal testing with {len(self.payloads)} payloads")
 
@@ -92,7 +96,9 @@ class DirectoryTraversalAttack:
                 self.test_payload(payload)
 
             if self.found_vulnerabilities:
-                logger.warning(f"Found {len(self.found_vulnerabilities)} potential vulnerabilities")
+                logger.warning(
+                    f"Found {len(self.found_vulnerabilities)} potential vulnerabilities"
+                )
             else:
                 logger.info("No vulnerabilities detected")
 
@@ -104,7 +110,7 @@ class DirectoryTraversalAttack:
             stats = {
                 "attempts": self.attempts,
                 "vulnerabilities_found": len(self.found_vulnerabilities),
-                "payloads": self.found_vulnerabilities
+                "payloads": self.found_vulnerabilities,
             }
             return stats
 
@@ -126,7 +132,7 @@ def main():
         args = parse_arguments()
 
         if args.payloads:
-            with open(args.payloads, 'r') as f:
+            with open(args.payloads) as f:
                 payloads = [line.strip() for line in f if line.strip()]
         else:
             payloads = DEFAULT_PAYLOADS

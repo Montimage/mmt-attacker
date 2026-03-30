@@ -9,23 +9,27 @@ License: Proprietary
 Version: 1.0.0
 """
 
-import os, sys, argparse, socket
-from typing import Dict, Any, List
+import argparse
+import os
+import sys
+from typing import Any
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 try:
     from logger import get_logger
 except ImportError:
     import logging
+
     def get_logger(name):
         logger = logging.getLogger(name)
         if not logger.handlers:
             handler = logging.StreamHandler()
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             logger.addHandler(handler)
             logger.setLevel(logging.INFO)
         return logger
+
 
 logger = get_logger(__name__)
 
@@ -33,7 +37,9 @@ logger = get_logger(__name__)
 class RDPBruteForceAttack:
     """RDP brute force attack simulator."""
 
-    def __init__(self, host: str, port: int, username: str, passwords: List[str], verbose: bool = False):
+    def __init__(
+        self, host: str, port: int, username: str, passwords: list[str], verbose: bool = False
+    ):
         self.host = host
         self.port = port
         self.username = username
@@ -49,10 +55,14 @@ class RDPBruteForceAttack:
         logger.debug(f"Simulating RDP login attempt: {self.username}:{password}")
         return False  # Simulation always returns False
 
-    def execute(self) -> Dict[str, Any]:
+    def execute(self) -> dict[str, Any]:
         """Execute the brute force attack."""
-        logger.info(f"Starting RDP brute force simulation for user '{self.username}' with {len(self.passwords)} passwords")
-        logger.warning("Note: This is a simulation. Real RDP brute force requires specialized libraries.")
+        logger.info(
+            f"Starting RDP brute force simulation for user '{self.username}' with {len(self.passwords)} passwords"
+        )
+        logger.warning(
+            "Note: This is a simulation. Real RDP brute force requires specialized libraries."
+        )
 
         try:
             for i, password in enumerate(self.passwords, 1):
@@ -86,7 +96,7 @@ def main():
     print("=" * 80)
     try:
         args = parse_arguments()
-        with open(args.passwords, 'r') as f:
+        with open(args.passwords) as f:
             passwords = [line.strip() for line in f if line.strip()]
 
         attack = RDPBruteForceAttack(args.host, args.port, args.username, passwords, args.verbose)
