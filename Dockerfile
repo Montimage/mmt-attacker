@@ -44,8 +44,6 @@ RUN apt-get update -qq && \
     rm -rf /var/lib/apt/lists/* && \
     # Create a non-root user; attacks that need raw sockets are run with
     # --cap-add NET_ADMIN --cap-add NET_RAW at container start time.
-    useradd --create-home --shell /bin/bash matcha
-
 # Copy installed Python packages from the builder stage
 COPY --from=builder /install /usr/local
 
@@ -54,16 +52,13 @@ COPY --from=builder /install /usr/local
 COPY --from=builder /build/scripts/ /app/scripts/
 COPY --from=builder /build/utils/   /app/utils/
 
-# Ensure the matcha user can read all app files
-RUN chown -R matcha:matcha /app
-
 # Set working directory and PATH so matcha is found
 WORKDIR /app
 ENV PYTHONPATH=/app
 ENV PATH="/usr/local/bin:$PATH"
 
-# Switch to non-root user by default
-USER matcha
+# Run as root so raw-socket attacks work when NET_ADMIN/NET_RAW are granted
+USER root
 
 # Expose the matcha CLI as the container entrypoint
 ENTRYPOINT ["matcha"]
