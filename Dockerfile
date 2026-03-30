@@ -41,9 +41,8 @@ RUN apt-get update -qq && \
         libpcap0.8 \
         tcpdump \
         curl && \
-    rm -rf /var/lib/apt/lists/* && \
-    # Create a non-root user; attacks that need raw sockets are run with
-    # --cap-add NET_ADMIN --cap-add NET_RAW at container start time.
+    rm -rf /var/lib/apt/lists/*
+
 # Copy installed Python packages from the builder stage
 COPY --from=builder /install /usr/local
 
