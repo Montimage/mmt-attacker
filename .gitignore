@@ -137,3 +137,6 @@ yarn-error.log
 # Frontend build outputs
 frontend/dist/
 frontend/.vite/
+
+# Local tooling
+.gitissue/
