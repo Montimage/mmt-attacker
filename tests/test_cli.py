@@ -214,3 +214,48 @@ def test_application_attacks_missing_required_args():
         assert result.exit_code == 2, (
             f"{name} should exit 2 without required args, got {result.exit_code}"
         )
+
+
+# ---------------------------------------------------------------------------
+# Replay attack command smoke tests
+# ---------------------------------------------------------------------------
+
+REPLAY_ATTACKS = [
+    "pcap-replay",
+]
+
+
+def test_all_replay_attacks_registered_as_subcommands():
+    """Every replay attack must appear as a CLI subcommand."""
+    runner = CliRunner()
+    result = runner.invoke(cli, ["--help"])
+    assert result.exit_code == 0
+    for name in REPLAY_ATTACKS:
+        assert name in result.output, f"{name} not found in CLI help output"
+
+
+def test_replay_attack_help_exits_zero():
+    """``matcha <attack> --help`` exits 0 for every replay attack."""
+    runner = CliRunner()
+    for name in REPLAY_ATTACKS:
+        result = runner.invoke(cli, [name, "--help"])
+        assert result.exit_code == 0, f"{name} --help exited with {result.exit_code}"
+
+
+def test_pcap_replay_shows_expected_options():
+    """``matcha pcap-replay --help`` shows file, interface, speed options."""
+    runner = CliRunner()
+    result = runner.invoke(cli, ["pcap-replay", "--help"])
+    assert result.exit_code == 0
+    for flag in ["--pcap-file", "--interface", "--speed"]:
+        assert flag in result.output, f"{flag} not found in pcap-replay help"
+
+
+def test_replay_attacks_missing_required_args():
+    """Replay attacks with required args should exit 2 when called bare."""
+    runner = CliRunner()
+    for name in REPLAY_ATTACKS:
+        result = runner.invoke(cli, [name])
+        assert result.exit_code == 2, (
+            f"{name} should exit 2 without required args, got {result.exit_code}"
+        )
