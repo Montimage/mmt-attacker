@@ -231,7 +231,7 @@ class SSHBruteForceAttack:
             logger.error(f"Error loading passwords from file: {str(e)}")
             return False
 
-    def run(self) -> dict[str, Any]:
+    def execute(self) -> dict[str, Any]:
         """
         Execute the SSH brute force attack simulation.
 

