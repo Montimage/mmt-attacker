@@ -88,6 +88,59 @@ def test_output_default_is_text():
     assert obj.get("output") == "text"
 
 
+# ---------------------------------------------------------------------------
+# Shell completions command smoke tests
+# ---------------------------------------------------------------------------
+
+
+def test_completions_bash():
+    """``matcha completions bash`` prints bash activation command."""
+    runner = CliRunner()
+    result = runner.invoke(cli, ["completions", "bash"])
+    assert result.exit_code == 0
+    assert "_MATCHA_COMPLETE=bash_source" in result.output
+
+
+def test_completions_zsh():
+    """``matcha completions zsh`` prints zsh activation command."""
+    runner = CliRunner()
+    result = runner.invoke(cli, ["completions", "zsh"])
+    assert result.exit_code == 0
+    assert "_MATCHA_COMPLETE=zsh_source" in result.output
+
+
+def test_completions_fish():
+    """``matcha completions fish`` prints fish activation command."""
+    runner = CliRunner()
+    result = runner.invoke(cli, ["completions", "fish"])
+    assert result.exit_code == 0
+    assert "_MATCHA_COMPLETE=fish_source" in result.output
+
+
+def test_completions_invalid_shell():
+    """``matcha completions powershell`` should fail with exit code 2."""
+    runner = CliRunner()
+    result = runner.invoke(cli, ["completions", "powershell"])
+    assert result.exit_code == 2
+
+
+def test_completions_no_arg():
+    """``matcha completions`` without a shell arg should fail."""
+    runner = CliRunner()
+    result = runner.invoke(cli, ["completions"])
+    assert result.exit_code == 2
+
+
+def test_completions_help():
+    """``matcha completions --help`` exits 0 and lists shells."""
+    runner = CliRunner()
+    result = runner.invoke(cli, ["completions", "--help"])
+    assert result.exit_code == 0
+    assert "bash" in result.output
+    assert "zsh" in result.output
+    assert "fish" in result.output
+
+
 def test_output_json():
     """--output json should be accepted."""
     runner = CliRunner()
