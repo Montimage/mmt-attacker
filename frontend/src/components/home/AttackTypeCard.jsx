@@ -26,8 +26,8 @@ function AttackTypeCard({ attack }) {
     >
       {/* Icon and Badge */}
       <div className="flex items-start justify-between mb-4">
-        <div className="bg-slate-900 p-2.5 rounded-lg group-hover:bg-slate-800 transition-colors">
-          <Icon className="w-6 h-6 text-green-400" />
+        <div className="bg-green-50 border border-green-200 p-2.5 rounded-lg group-hover:bg-green-100 transition-colors">
+          <Icon className="w-6 h-6 text-green-600" />
         </div>
         <Badge variant="outline" className="text-xs">
           {attack.category}

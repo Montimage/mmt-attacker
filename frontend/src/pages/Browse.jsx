@@ -76,12 +76,12 @@ function Browse() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header Section */}
-      <div className="bg-slate-900 py-10">
+      <div className="bg-white border-b-2 border-gray-200 py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
             Browse Attacks
           </h1>
-          <p className="text-slate-400 max-w-3xl">
+          <p className="text-gray-500 max-w-3xl">
             Explore our comprehensive collection of attack simulations. Search, filter, and discover different types of cybersecurity attacks.
           </p>
         </div>
