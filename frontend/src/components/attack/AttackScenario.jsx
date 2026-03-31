@@ -98,14 +98,14 @@ function AttackScenario({ attackId, scenarios, onExecute, isExecuting, results }
           )}
         </div>
 
-        {/* Sub-Tabs: Configure | Python Command */}
+        {/* Sub-Tabs: Configure | CLI Command */}
         <div className="mb-6">
           <div className="flex border-b border-gray-300">
             <button
               onClick={() => setActiveTab('configure')}
               className={`px-6 py-3 font-medium text-sm transition-colors ${
                 activeTab === 'configure'
-                  ? 'text-green-900 border-b-2 border-green-900'
+                  ? 'text-green-700 border-b-2 border-green-700'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -115,16 +115,16 @@ function AttackScenario({ attackId, scenarios, onExecute, isExecuting, results }
               onClick={() => setActiveTab('command')}
               className={`px-6 py-3 font-medium text-sm transition-colors ${
                 activeTab === 'command'
-                  ? 'text-green-900 border-b-2 border-green-900'
+                  ? 'text-green-700 border-b-2 border-green-700'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              Python Command
+              CLI Command
             </button>
           </div>
         </div>
 
-        {/* Tab Content */}
+        {/* Tab Content — Configure or CLI Command */}
         {activeTab === 'configure' ? (
           <>
             {/* Parameters Form */}
@@ -167,7 +167,7 @@ function AttackScenario({ attackId, scenarios, onExecute, isExecuting, results }
             </div>
           </>
         ) : (
-          /* Python Command Display */
+          /* CLI Command Display */
           <CommandDisplay
             attackId={attackId}
             scenario={currentScenario}

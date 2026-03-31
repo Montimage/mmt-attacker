@@ -1,6 +1,6 @@
 /**
  * Command Generator Utility
- * Generates Python CLI commands for MMT-Attacker from attack parameters
+ * Generates matcha CLI commands for MMT-Attacker from attack parameters
  */
 
 /**
@@ -51,15 +51,15 @@ const formatParameter = (param, value) => {
 }
 
 /**
- * Generate Python command for executing an attack
+ * Generate matcha CLI command for executing an attack
  * @param {string} attackId - Attack identifier (e.g., 'arp-spoofing')
  * @param {Object} scenario - Scenario object with parameters
  * @param {Object} parameterValues - Current parameter values
- * @returns {string} - Complete Python command
+ * @returns {string} - Complete matcha CLI command
  */
 export const generatePythonCommand = (attackId, scenario, parameterValues = {}) => {
   // Start with base command
-  let command = `python src/cli.py ${attackId}`
+  let command = `matcha ${attackId}`
 
   // Process each parameter
   const args = []
