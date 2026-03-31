@@ -119,7 +119,9 @@ _register(
             ParamDef("gateway_ip", "str", True, None, "IP address of the network gateway"),
             ParamDef("interface", "str", False, "eth0", "Network interface to use"),
             ParamDef("interval", "float", False, 1.0, "Seconds between spoofed ARP packets"),
-            ParamDef("count", "int", False, 50, "Number of ARP packet pairs to send (0 for infinite)"),
+            ParamDef(
+                "count", "int", False, 50, "Number of ARP packet pairs to send (0 for infinite)"
+            ),
         ],
     )
 )
