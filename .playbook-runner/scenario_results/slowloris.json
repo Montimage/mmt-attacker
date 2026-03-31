@@ -1,17 +1,12 @@
 {
   "name": "slowloris",
   "status": "PASS",
-  "exit_code": 124,
-  "elapsed_s": 30.0,
-  "stdout": "",
-  "stderr": "Traceback (most recent call last):\n  ...\nsubprocess.TimeoutExpired: Command '['/usr/local/bin/python3.12', '/app/scripts/slowloris/slowloris.py', 'target', '-p', '80', '-s', '50']' timed out after 30 seconds",
-  "has_traceback": true,
+  "exit_code": 0,
+  "elapsed_s": 32.5,
+  "stdout": "Slowloris attack completed (ran for configured duration).\n\n╔══ SLOWLORIS ═════════════════════════════════════════════════════════╗\n║                                                                      ║\n║  Target                    target                                    ║\n║  Port                      80                                        ║\n║  Sockets                   50                                        ║\n║  Exit Code                 0                                         ║\n║                                                                      ║\n╠══ RESULT ════════════════════════════════════════════════════════════╣\n║                                                                      ║\n║  ✔  SUCCESS                                                          ║\n║                                                                      ║\n╠══ WHAT HAPPENED ═════════════════════════════════════════════════════╣\n║                                                                      ║\n║  Attack execution completed.                                         ║\n║                                                                      ║\n╠══ ABOUT THIS ATTACK ═════════════════════════════════════════════════╣\n║                                                                      ║\n║  Perform Slowloris attack by opening many connections and sending    ║\n║  partial HTTP requests to keep them open.                            ║\n║                                                                      ║\n║  Category                  Application-layer                         ║\n║                                                                      ║\n╚══════════════════════════════════════════════════════════════════════╝",
+  "stderr": "",
+  "has_traceback": false,
   "has_output": true,
-  "timed_out": true,
-  "warnings": [
-    "The matcha CLI raises an unhandled subprocess.TimeoutExpired traceback when the inner subprocess hits its 30s timeout.",
-    "Slowloris output goes to subprocess stderr (capture_output=True) and is not forwarded to the CLI stderr — only available on TimeoutExpired.stderr bytes.",
-    "Despite the traceback, the attack DID execute: verbose subprocess run confirms sockets were opened and keep-alive headers sent before timeout."
-  ],
-  "note": "Slowloris ran for 30s as expected (infinite loop by design). A direct subprocess invocation with verbose flag confirmed: '[09:16:57] Attacking target with 5 sockets.', '[09:16:57] Creating sockets...', '[09:16:57] Sending keep-alive headers...', '[09:16:57] Socket count: 5'. Marked PASS per special rule: process ran for 30s and produced log output showing sockets were opened/maintained."
+  "timed_out": false,
+  "note": "Fix applied: copied updated slowloris.py (with subprocess.TimeoutExpired catch) into the container at /app/scripts/slowloris/slowloris.py. After the fix, the attack ran for 30s, caught the timeout cleanly, printed output, and exited with code 0."
 }

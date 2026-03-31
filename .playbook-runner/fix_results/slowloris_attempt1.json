@@ -1,17 +1,14 @@
 {
   "scenario_name": "slowloris",
   "attempt": 1,
-  "diagnosis": "Playbook passes --connections but the slowloris registry entry only declared 'sockets' with no alias; Click rejected --connections as an unknown option",
-  "root_cause_category": "cli-flag-mismatch",
+  "diagnosis": "The SlowlorisAttack.execute() method in scripts/slowloris/slowloris.py calls subprocess.run(..., timeout=30) to run the inner slowloris subprocess, but does not catch subprocess.TimeoutExpired. Since the slowloris attack is designed to run indefinitely (infinite loop in main()), the 30-second timeout always fires. The uncaught TimeoutExpired exception propagates as a traceback, causing exit code 1 instead of a clean exit.",
+  "root_cause_category": "missing_exception_handler",
   "files_changed": [
-    {
-      "path": "matcha/registry.py",
-      "description": "Added aliases=(\"--connections\",) to the 'sockets' ParamDef in the slowloris AttackEntry so --connections is accepted as an alias",
-      "lines_changed": "413"
-    }
+    "scripts/slowloris/slowloris.py"
   ],
-  "requires_rebuild": true,
+  "fix_summary": "Wrapped the subprocess.run call in SlowlorisAttack.execute() in a try/except block that catches subprocess.TimeoutExpired. On timeout, the method prints a completion message and returns exit_code 0, since the attack ran for the configured duration.",
+  "requires_rebuild": false,
   "requires_target_restart": false,
-  "confidence": "high",
-  "notes": ""
+  "confidence": 0.98,
+  "notes": "The fix is minimal — only adds a TimeoutExpired handler. All other behavior (normal exit, other exceptions) is unchanged. The timeout is expected behavior for a Slowloris attack since it runs an infinite loop; timing out simply means the attack ran for the allotted time."
 }

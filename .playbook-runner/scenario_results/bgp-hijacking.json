@@ -1,9 +1,12 @@
 {
   "name": "bgp-hijacking",
+  "section": "Network-Layer",
   "status": "PASS",
   "exit_code": 0,
   "elapsed_s": 0.43,
-  "stdout": "2026-03-31 08:40:40,597 - scripts.bgp_hijacking.bgp_hijacking - INFO - Initialized BGP hijacking simulation for prefix 1.2.3.0/24\n2026-03-31 08:40:40,597 - scripts.bgp_hijacking.bgp_hijacking - INFO - BGP hijacking simulation would:\n2026-03-31 08:40:40,597 - scripts.bgp_hijacking.bgp_hijacking - INFO - 1. Announce prefix 1.2.3.0/24 from AS65000\n2026-03-31 08:40:40,597 - scripts.bgp_hijacking.bgp_hijacking - INFO - 2. Advertise more specific route\n2026-03-31 08:40:40,597 - scripts.bgp_hijacking.bgp_hijacking - INFO - 3. Attract traffic meant for legitimate AS\n2026-03-31 08:40:40,597 - scripts.bgp_hijacking.bgp_hijacking - WARNING - Real implementation requires BGP router access and configuration\n\n[Rich table output: BGP-HIJACKING SUCCESS]",
+  "is_simulation": true,
+  "command": "docker compose exec attacker matcha bgp-hijacking --target-prefix 1.2.3.0/24 --as-number 65000",
+  "stdout": "2026-03-31 11:23:34,119 - scripts.bgp_hijacking.bgp_hijacking - INFO - Initialized BGP hijacking simulation for prefix 1.2.3.0/24\n2026-03-31 11:23:34,119 - scripts.bgp_hijacking.bgp_hijacking - INFO - BGP hijacking simulation would:\n2026-03-31 11:23:34,119 - scripts.bgp_hijacking.bgp_hijacking - INFO - 1. Announce prefix 1.2.3.0/24 from AS65000\n2026-03-31 11:23:34,119 - scripts.bgp_hijacking.bgp_hijacking - INFO - 2. Advertise more specific route\n2026-03-31 11:23:34,119 - scripts.bgp_hijacking.bgp_hijacking - INFO - 3. Attract traffic meant for legitimate AS\n2026-03-31 11:23:34,119 - scripts.bgp_hijacking.bgp_hijacking - WARNING - Real implementation requires BGP router access and configuration\n\n[Rich box: BGP-HIJACKING SUCCESS - This attack was simulated, no real network traffic was generated. Category: Network-layer]",
   "stderr": "",
   "has_traceback": false,
   "has_output": true,
@@ -11,5 +14,6 @@
   "warnings": [
     "Real implementation requires BGP router access and configuration"
   ],
-  "note": "Simulation scenario — no real BGP traffic generated"
+  "note": "Simulation scenario — no real BGP traffic generated",
+  "timestamp": "2026-03-31T11:23:34"
 }

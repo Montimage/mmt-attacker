@@ -1,9 +1,11 @@
 {
   "name": "smurf-attack",
+  "section": "Network-Layer",
+  "command": "docker compose exec attacker matcha smurf-attack --victim-ip 172.20.0.2 --broadcast-ip 172.20.0.255 --count 10",
   "status": "PASS",
   "exit_code": 0,
-  "elapsed_s": 21.584,
-  "stdout": "2026-03-31 08:55:33,904 - scripts.smurf_attack.smurf_attack - INFO - Initialized Smurf attack: victim=172.20.0.2, broadcast=172.20.0.255\n2026-03-31 08:55:33,904 - scripts.smurf_attack.smurf_attack - INFO - Starting Smurf attack: sending 10 packets\nProgress: 1/10 ... 10/10 packets\n2026-03-31 08:55:54,604 - scripts.smurf_attack.smurf_attack - INFO - Smurf attack completed\n2026-03-31 08:55:54,604 - scripts.smurf_attack.smurf_attack - INFO - Sent 10 packets in 20.70s\n[RESULT TABLE: SUCCESS, Packets Sent: 10, Duration: 20.7001s]",
+  "elapsed_s": 20.75,
+  "stdout": "Initialized Smurf attack: victim=172.20.0.2, broadcast=172.20.0.255\nStarting Smurf attack: sending 10 packets\nProgress: 1/10 ... 10/10 packets\nSmurf attack completed\nSent 10 packets in 20.75s\n[RESULT TABLE: SUCCESS, Packets Sent: 10, Duration: 20.7539s]",
   "stderr": "",
   "has_traceback": false,
   "has_output": true,
@@ -11,5 +13,11 @@
   "warnings": [
     "MAC address to reach destination not found. Using broadcast. (repeated per packet - scapy layer-2 resolution warning, non-fatal)"
   ],
-  "note": ""
+  "details": {
+    "packets_sent": 10,
+    "victim_ip": "172.20.0.2",
+    "broadcast_ip": "172.20.0.255",
+    "result": "SUCCESS"
+  },
+  "timestamp": "2026-03-31T11:23:48"
 }

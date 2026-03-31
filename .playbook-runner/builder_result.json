@@ -1,1 +1,9 @@
-{ "action": "teardown", "success": true }
+{
+  "action": "startup",
+  "success": true,
+  "target_ip": "172.20.0.2",
+  "gateway_ip": "172.20.0.1",
+  "broadcast_ip": "172.20.0.255",
+  "target_reachable": true,
+  "error": null
+}
