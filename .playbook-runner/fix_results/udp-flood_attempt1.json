@@ -1,0 +1,22 @@
+{
+  "scenario_name": "udp-flood",
+  "attempt": 1,
+  "diagnosis": "Registry param for udp-flood was named 'ports', generating --ports CLI flag. Playbook passes --target-port. Renamed param to 'target_port' so the factory generates --target-port; updated UDPFloodAttack.__init__ to match.",
+  "root_cause_category": "cli-flag-mismatch",
+  "files_changed": [
+    {
+      "path": "matcha/registry.py",
+      "description": "Renamed ParamDef 'ports' to 'target_port' in the udp-flood registration so the CLI generates --target-port instead of --ports",
+      "lines_changed": "297"
+    },
+    {
+      "path": "scripts/udp_flood/udp_flood.py",
+      "description": "Renamed constructor parameter 'ports' to 'target_port' in UDPFloodAttack.__init__ and added a local 'ports' alias for internal use to match the new registry param name",
+      "lines_changed": "100,113,136"
+    }
+  ],
+  "requires_rebuild": true,
+  "requires_target_restart": false,
+  "confidence": "high",
+  "notes": ""
+}

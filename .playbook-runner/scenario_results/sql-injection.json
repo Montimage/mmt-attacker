@@ -1,0 +1,15 @@
+{
+  "name": "sql-injection",
+  "status": "PASS",
+  "exit_code": 0,
+  "elapsed_s": 0.9,
+  "stdout": "2026-03-31 08:40:30,309 - scripts.sql_injection.sql_injection - INFO - Validating target URL: http://target/login.php\n2026-03-31 08:40:30,313 - scripts.sql_injection.sql_injection - ERROR - Error accessing http://target/login.php: HTTP Error 404: Not Found\n2026-03-31 08:40:30,313 - scripts.sql_injection.sql_injection - WARNING - Target validation failed (target may not have SQL endpoint) — running probes anyway\n2026-03-31 08:40:30,313 - scripts.sql_injection.sql_injection - INFO - Executing attack with payload: ' OR '1'='1\n2026-03-31 08:40:30,314 - scripts.sql_injection.sql_injection - ERROR - HTTP error during attack: HTTP Error 404: Not Found\n2026-03-31 08:40:30,314 - scripts.sql_injection.sql_injection - INFO - Executing attack with payload: ' OR 1=1--\n2026-03-31 08:40:30,314 - scripts.sql_injection.sql_injection - ERROR - HTTP error during attack: HTTP Error 404: Not Found\n2026-03-31 08:40:30,314 - scripts.sql_injection.sql_injection - INFO - Executing attack with payload: ' UNION SELECT NULL--\n2026-03-31 08:40:30,315 - scripts.sql_injection.sql_injection - ERROR - HTTP error during attack: HTTP Error 404: Not Found\n2026-03-31 08:40:30,315 - scripts.sql_injection.sql_injection - INFO - Executing attack with payload: '; DROP TABLE users--\n2026-03-31 08:40:30,316 - scripts.sql_injection.sql_injection - ERROR - HTTP error during attack: HTTP Error 404: Not Found\n2026-03-31 08:40:30,316 - scripts.sql_injection.sql_injection - INFO - Executing attack with payload: 1' AND SLEEP(2)--\n2026-03-31 08:40:30,317 - scripts.sql_injection.sql_injection - ERROR - HTTP error during attack: HTTP Error 404: Not Found\n2026-03-31 08:40:30,317 - scripts.sql_injection.sql_injection - INFO - SQL injection probe completed: 5 payloads tested against http://target/login.php",
+  "stderr": "",
+  "has_traceback": false,
+  "has_output": true,
+  "timed_out": false,
+  "warnings": [
+    "Target returned HTTP 404 for http://target/login.php — probes ran anyway per tool behavior"
+  ],
+  "note": "Tool exited 0 and produced full structured output. Target URL returned 404 for all payloads (0/5 successful attacks), but the matcha tool completed its probe cycle cleanly."
+}

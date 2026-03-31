@@ -22,12 +22,12 @@ function AttackTypeCard({ attack }) {
   return (
     <div
       onClick={handleClick}
-      className="bg-white border-2 border-gray-300 rounded-lg shadow-custom-md p-6 hover:shadow-custom-lg hover:border-gray-500 hover:-translate-y-1 transition-all duration-200 cursor-pointer group"
+      className="bg-white border border-gray-200 rounded-xl shadow-custom p-5 hover:shadow-custom-lg hover:border-green-400 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer group"
     >
       {/* Icon and Badge */}
       <div className="flex items-start justify-between mb-4">
-        <div className="bg-gray-100 p-3 rounded-lg border-2 border-gray-400 group-hover:bg-gray-200 group-hover:border-gray-500 transition-colors shadow-custom">
-          <Icon className="w-8 h-8 text-black" />
+        <div className="bg-green-50 border border-green-200 p-2.5 rounded-lg group-hover:bg-green-100 transition-colors">
+          <Icon className="w-6 h-6 text-green-600" />
         </div>
         <Badge variant="outline" className="text-xs">
           {attack.category}
@@ -35,23 +35,23 @@ function AttackTypeCard({ attack }) {
       </div>
 
       {/* Title */}
-      <h3 className="text-xl font-bold text-black mb-2 transition-colors">
+      <h3 className="text-base font-bold text-slate-800 mb-1.5 group-hover:text-green-700 transition-colors">
         {attack.name}
       </h3>
 
       {/* Description */}
-      <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+      <p className="text-gray-500 text-sm mb-4 line-clamp-2">
         {attack.description}
       </p>
 
       {/* Key Features Preview */}
       {attack.keyFeatures && attack.keyFeatures.length > 0 && (
         <div className="mb-4">
-          <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Key Features:</p>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Key Features:</p>
           <ul className="space-y-1">
             {attack.keyFeatures.slice(0, 2).map((feature, index) => (
-              <li key={index} className="text-sm text-gray-600 flex items-start">
-                <span className="text-black mr-2">•</span>
+              <li key={index} className="text-xs text-gray-600 flex items-start">
+                <span className="text-green-500 mr-1.5 mt-0.5">•</span>
                 <span className="line-clamp-1">{feature}</span>
               </li>
             ))}
@@ -60,13 +60,13 @@ function AttackTypeCard({ attack }) {
       )}
 
       {/* Scenarios Count */}
-      <div className="flex items-center justify-between pt-4 border-t border-gray-300">
-        <span className="text-sm text-gray-600 font-medium">
+      <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+        <span className="text-xs text-gray-400">
           {attack.scenarios.length} scenario{attack.scenarios.length !== 1 ? 's' : ''}
         </span>
-        <div className="flex items-center space-x-2 text-black font-semibold text-sm group-hover:translate-x-1 transition-transform">
+        <div className="flex items-center space-x-1 text-green-600 font-medium text-sm group-hover:translate-x-1 transition-transform">
           <span>Learn More</span>
-          <ArrowRight className="w-4 h-4" />
+          <ArrowRight className="w-3.5 h-3.5" />
         </div>
       </div>
     </div>

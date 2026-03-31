@@ -1,0 +1,13 @@
+{
+  "name": "ssh-brute-force",
+  "status": "PASS",
+  "exit_code": 0,
+  "elapsed_s": 8,
+  "stdout": "╔══ SSH-BRUTE-FORCE ═══════════════════════════════════════════════════╗\n║  Target                    172.20.0.2:22                             ║\n║  Username                  demo                                      ║\n║  Attempts                  3                                         ║\n║  Passwords Loaded          3                                         ║\n║  Successful                yes                                       ║\n║  Successful Password       password123                               ║\n║  Duration Seconds          7.8103                                    ║\n║  Attempts Per Second       0.3841                                    ║\n╠══ RESULT ════════════════════════════════════════════════════════════╣\n║  ✔  SUCCESS                                                          ║\n╠══ WHAT HAPPENED ═════════════════════════════════════════════════════╣\n║  Tried 3 credential(s) — valid password found: 'password123'.        ║\n╚══════════════════════════════════════════════════════════════════════╝",
+  "stderr": "INFO - Initialized SSH brute force attack simulation against 172.20.0.2:22\nINFO - Starting SSH brute force attack simulation against 172.20.0.2:22\nINFO - Using username: demo\nINFO - Loaded 3 passwords to try\nINFO - [-] Failed login attempt 1/3: admin\nINFO - [-] Failed login attempt 2/3: root\nINFO - [+] Success! Found valid credentials - Username: demo, Password: password123\nINFO - Status: SUCCESS - Valid password found: password123",
+  "has_traceback": false,
+  "has_output": true,
+  "timed_out": false,
+  "warnings": [],
+  "note": "Fixed script deployed via docker cp (container lacked the isinstance(passwords,str) fix). Attack succeeded: valid password 'password123' found for user 'demo' on 172.20.0.2:22."
+}

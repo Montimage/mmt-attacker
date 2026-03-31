@@ -1,16 +1,16 @@
 /**
  * CommandDisplay Component
- * Displays generated Python CLI command with copy functionality
+ * Displays generated matcha CLI command with copy functionality
  */
 
 import React, { useState } from 'react'
-import { generatePythonCommand, getParameterMapping } from '../../utils/commandGenerator'
+import { generateCommand, getParameterMapping } from '../../utils/commandGenerator'
 
 const CommandDisplay = ({ attackId, scenario, parameterValues }) => {
   const [copied, setCopied] = useState(false)
 
   // Generate the command
-  const command = generatePythonCommand(attackId, scenario, parameterValues)
+  const command = generateCommand(attackId, scenario, parameterValues)
 
   // Get parameter mapping for reference
   const paramMapping = getParameterMapping(scenario)
@@ -33,7 +33,7 @@ const CommandDisplay = ({ attackId, scenario, parameterValues }) => {
       {/* Command Display */}
       <div>
         <div className="flex justify-between items-center mb-3">
-          <h3 className="text-lg font-semibold text-gray-800">Python Command</h3>
+          <h3 className="text-lg font-semibold text-gray-800">CLI Command</h3>
           <button
             onClick={handleCopy}
             className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
@@ -73,8 +73,7 @@ const CommandDisplay = ({ attackId, scenario, parameterValues }) => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <p>
-            Run this command from the mmt-attacker root directory. Make sure you have activated
-            your Python virtual environment and installed all requirements.
+            Install with <code className="bg-gray-100 px-1 rounded font-mono text-xs">pip install mmt-attacker</code> then run this command directly in your terminal. The <code className="bg-gray-100 px-1 rounded font-mono text-xs">matcha</code> command is available after installation.
           </p>
         </div>
       </div>

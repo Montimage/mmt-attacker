@@ -9,6 +9,10 @@
   --shadow-custom-lg: 0 8px 16px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
   --shadow-custom-xl: 0 12px 24px rgba(0, 0, 0, 0.18), 0 6px 12px rgba(0, 0, 0, 0.12);
 
+  /* Glow shadow for accent elements */
+  --shadow-glow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+  --shadow-glow-lg: 0 0 20px rgba(34, 197, 94, 0.15), 0 4px 16px rgba(0, 0, 0, 0.2);
+
   /* Inset shadow for pressed/input effects */
   --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -24,7 +28,7 @@
   }
 
   body {
-    @apply antialiased;
+    @apply antialiased bg-gray-50;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
       'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
       sans-serif;
@@ -39,45 +43,50 @@
 @layer components {
   /* Card base style with enhanced 3D effect */
   .card {
-    @apply bg-white border-2 border-gray-300 rounded-lg shadow-custom-md p-6;
+    @apply bg-white border border-gray-200 rounded-xl shadow-custom-md p-6;
   }
 
   .card-hover {
-    @apply hover:shadow-custom-lg hover:border-gray-400 hover:-translate-y-0.5 transition-all duration-200;
+    @apply hover:shadow-custom-lg hover:border-green-400 hover:-translate-y-0.5 transition-all duration-200;
   }
 
   /* Button base styles with enhanced 3D effect */
   .btn-primary {
-    @apply bg-white text-gray-900 px-6 py-3 rounded-lg border-2 border-gray-900 shadow-custom-md hover:shadow-custom-lg hover:border-black hover:-translate-y-0.5 transition-all duration-200 font-semibold;
+    @apply bg-green-600 text-white px-6 py-3 rounded-lg border border-green-700 shadow-custom-md hover:bg-green-500 hover:shadow-custom-lg hover:-translate-y-0.5 transition-all duration-200 font-semibold;
   }
 
   .btn-secondary {
-    @apply bg-white text-gray-900 px-6 py-3 rounded-lg border-2 border-gray-400 shadow-custom hover:border-gray-600 hover:shadow-custom-md hover:-translate-y-0.5 transition-all duration-200 font-medium;
+    @apply bg-white text-gray-800 px-6 py-3 rounded-lg border border-gray-300 shadow-custom hover:border-gray-500 hover:shadow-custom-md hover:-translate-y-0.5 transition-all duration-200 font-medium;
   }
 
-  /* Terminal style with enhanced border */
+  /* Terminal style */
   .terminal {
-    @apply bg-black text-white font-mono p-4 rounded-lg border-2 border-gray-700 shadow-custom-md overflow-auto;
+    @apply bg-gray-950 text-green-400 font-mono p-4 rounded-xl border border-gray-700 shadow-custom-md overflow-auto;
   }
 }
 
-/* CSS variables for easy theming - using white, gray, black, and green */
+/* CSS variables for easy theming */
 :root {
-  /* Green shades for highlights only */
-  --color-highlight-green: #16a34a;
-  --color-highlight-green-dark: #15803d;
-  --color-highlight-green-darker: #14532d;
+  /* Green accent palette */
+  --color-accent: #22c55e;
+  --color-accent-dark: #16a34a;
+  --color-accent-darker: #15803d;
 
-  /* Grayscale palette */
+  /* Dark surface palette */
+  --color-surface-dark: #0f172a;
+  --color-surface-dark-2: #1e293b;
+  --color-surface-dark-3: #334155;
+
+  /* Grayscale */
   --color-background-white: #ffffff;
-  --color-background-light: #f9fafb;
-  --color-background-gray: #f3f4f6;
-  --color-border-light: #e5e7eb;
-  --color-border-medium: #d1d5db;
-  --color-border-dark: #9ca3af;
-  --color-text-black: #111827;
-  --color-text-gray: #6b7280;
-  --color-text-light: #9ca3af;
+  --color-background-light: #f8fafc;
+  --color-background-gray: #f1f5f9;
+  --color-border-light: #e2e8f0;
+  --color-border-medium: #cbd5e1;
+  --color-border-dark: #94a3b8;
+  --color-text-black: #0f172a;
+  --color-text-gray: #64748b;
+  --color-text-light: #94a3b8;
 }
 
 /* Custom animations */

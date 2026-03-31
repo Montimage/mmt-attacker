@@ -1,0 +1,17 @@
+{
+  "scenario_name": "slowloris",
+  "attempt": 1,
+  "diagnosis": "Playbook passes --connections but the slowloris registry entry only declared 'sockets' with no alias; Click rejected --connections as an unknown option",
+  "root_cause_category": "cli-flag-mismatch",
+  "files_changed": [
+    {
+      "path": "matcha/registry.py",
+      "description": "Added aliases=(\"--connections\",) to the 'sockets' ParamDef in the slowloris AttackEntry so --connections is accepted as an alias",
+      "lines_changed": "413"
+    }
+  ],
+  "requires_rebuild": true,
+  "requires_target_restart": false,
+  "confidence": "high",
+  "notes": ""
+}

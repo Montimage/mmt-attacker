@@ -1,0 +1,15 @@
+{
+  "name": "smurf-attack",
+  "status": "PASS",
+  "exit_code": 0,
+  "elapsed_s": 21.584,
+  "stdout": "2026-03-31 08:55:33,904 - scripts.smurf_attack.smurf_attack - INFO - Initialized Smurf attack: victim=172.20.0.2, broadcast=172.20.0.255\n2026-03-31 08:55:33,904 - scripts.smurf_attack.smurf_attack - INFO - Starting Smurf attack: sending 10 packets\nProgress: 1/10 ... 10/10 packets\n2026-03-31 08:55:54,604 - scripts.smurf_attack.smurf_attack - INFO - Smurf attack completed\n2026-03-31 08:55:54,604 - scripts.smurf_attack.smurf_attack - INFO - Sent 10 packets in 20.70s\n[RESULT TABLE: SUCCESS, Packets Sent: 10, Duration: 20.7001s]",
+  "stderr": "",
+  "has_traceback": false,
+  "has_output": true,
+  "timed_out": false,
+  "warnings": [
+    "MAC address to reach destination not found. Using broadcast. (repeated per packet - scapy layer-2 resolution warning, non-fatal)"
+  ],
+  "note": ""
+}
