@@ -63,10 +63,10 @@ function AttackScenario({ attackId, scenarios, onExecute, isExecuting, results }
   }
 
   return (
-    <div className="bg-white border-2 border-gray-200 rounded-lg shadow-custom">
+    <div className="bg-white border border-gray-200 rounded-xl shadow-custom-md overflow-hidden">
       {/* Scenario Tabs */}
       {scenarios.length > 1 && (
-        <div className="flex border-b-2 border-gray-200 overflow-x-auto">
+        <div className="flex border-b border-gray-200 overflow-x-auto bg-gray-50">
           {scenarios.map((scenario, index) => (
             <button
               key={scenario.id}
@@ -76,10 +76,10 @@ function AttackScenario({ attackId, scenarios, onExecute, isExecuting, results }
                 setErrors({})
                 setActiveTab('configure')
               }}
-              className={`flex-1 px-6 py-4 font-medium text-sm transition-colors whitespace-nowrap ${
+              className={`flex-1 px-6 py-3.5 font-medium text-sm transition-colors whitespace-nowrap ${
                 activeScenario === index
-                  ? 'bg-green-900 text-white border-b-4 border-green-900'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                  ? 'bg-white text-green-700 border-b-2 border-green-600 shadow-sm'
+                  : 'text-gray-500 hover:bg-white hover:text-gray-900'
               }`}
             >
               {scenario.name}
