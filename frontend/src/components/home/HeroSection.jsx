@@ -48,7 +48,7 @@ function HeroSection() {
               ].map(({ Icon, label, desc }) => (
                 <div
                   key={label}
-                  className="bg-slate-800 border border-slate-700 rounded-xl p-5 hover:border-green-500 hover:bg-slate-750 transition-all duration-200 group"
+                  className="bg-slate-800 border border-slate-700 rounded-xl p-5 hover:border-green-500 hover:bg-slate-700 transition-all duration-200 group"
                 >
                   <Icon className="w-8 h-8 text-green-400 mx-auto mb-3 group-hover:scale-110 transition-transform" />
                   <h3 className="font-semibold text-white mb-1 text-sm">{label}</h3>
