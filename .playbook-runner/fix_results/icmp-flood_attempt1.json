@@ -1,0 +1,27 @@
+{
+  "scenario_name": "icmp-flood",
+  "attempt": 1,
+  "diagnosis": "Registry param name 'packet_count' generated '--packet-count' CLI flag, but the playbook passes '--count'. Renamed the param to 'count' in the registry and updated the ICMPFloodAttack constructor accordingly.",
+  "root_cause_category": "cli-flag-mismatch",
+  "files_changed": [
+    {
+      "path": "matcha/registry.py",
+      "description": "Renamed ParamDef 'packet_count' to 'count' in the icmp-flood entry so the generated CLI flag becomes '--count'",
+      "lines_changed": "187"
+    },
+    {
+      "path": "scripts/icmp_flood/icmp_flood.py",
+      "description": "Renamed constructor parameter 'packet_count' to 'count'; updated internal reference and verbose log line to use the new name. Updated main() instantiation to pass count= instead of packet_count=.",
+      "lines_changed": "95, 121, 137, 329"
+    },
+    {
+      "path": "src/attacks/icmp_flood.py",
+      "description": "Updated ICMPFloodAttack instantiation inside run() to pass count= instead of packet_count=",
+      "lines_changed": "76"
+    }
+  ],
+  "requires_rebuild": true,
+  "requires_target_restart": false,
+  "confidence": "high",
+  "notes": ""
+}

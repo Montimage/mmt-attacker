@@ -1,0 +1,17 @@
+{
+  "scenario_name": "ntp-amplification",
+  "attempt": 1,
+  "diagnosis": "CLI option --victim not recognised because the registry param is named victim_ip (→ --victim-ip); playbook passes --victim which has no alias defined",
+  "root_cause_category": "cli-flag-mismatch",
+  "files_changed": [
+    {
+      "path": "matcha/registry.py",
+      "description": "Added aliases=(\"--victim\",) to the victim_ip ParamDef for the ntp-amplification entry so --victim is accepted as an alias for --victim-ip",
+      "lines_changed": "237"
+    }
+  ],
+  "requires_rebuild": true,
+  "requires_target_restart": false,
+  "confidence": "high",
+  "notes": ""
+}

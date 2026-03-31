@@ -1,0 +1,13 @@
+{
+  "name": "pcap-replay",
+  "status": "SKIP",
+  "exit_code": null,
+  "elapsed_s": 0,
+  "stdout": "",
+  "stderr": "",
+  "has_traceback": false,
+  "has_output": false,
+  "timed_out": false,
+  "warnings": [],
+  "note": "PCAP file /pcaps/capture.pcap does not exist in the attacker container. Skipping pcap-replay scenario."
+}

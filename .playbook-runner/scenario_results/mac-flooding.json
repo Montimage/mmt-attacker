@@ -1,0 +1,13 @@
+{
+  "name": "mac-flooding",
+  "status": "PASS",
+  "exit_code": 0,
+  "elapsed_s": 22.36,
+  "stdout": "2026-03-31 08:40:43,725 - scripts.mac_flooding.mac_flooding - INFO - Initialized MAC flooding attack on eth0\n2026-03-31 08:40:43,725 - scripts.mac_flooding.mac_flooding - INFO - Starting MAC flooding attack: 500 frames at 100/sec\n2026-03-31 08:40:45,976 - scripts.mac_flooding.mac_flooding - INFO - Progress: 50/500 frames\n2026-03-31 08:40:48,189 - scripts.mac_flooding.mac_flooding - INFO - Progress: 100/500 frames\n2026-03-31 08:40:50,423 - scripts.mac_flooding.mac_flooding - INFO - Progress: 150/500 frames\n2026-03-31 08:40:52,613 - scripts.mac_flooding.mac_flooding - INFO - Progress: 200/500 frames\n2026-03-31 08:40:54,857 - scripts.mac_flooding.mac_flooding - INFO - Progress: 250/500 frames\n2026-03-31 08:40:57,188 - scripts.mac_flooding.mac_flooding - INFO - Progress: 300/500 frames\n2026-03-31 08:40:59,410 - scripts.mac_flooding.mac_flooding - INFO - Progress: 350/500 frames\n2026-03-31 08:41:01,716 - scripts.mac_flooding.mac_flooding - INFO - Progress: 400/500 frames\n2026-03-31 08:41:03,438 - scripts.mac_flooding.mac_flooding - INFO - Progress: 450/500 frames\n2026-03-31 08:41:05,198 - scripts.mac_flooding.mac_flooding - INFO - Progress: 500/500 frames\n2026-03-31 08:41:05,209 - scripts.mac_flooding.mac_flooding - INFO - MAC flooding completed\n2026-03-31 08:41:05,209 - scripts.mac_flooding.mac_flooding - INFO - Sent 500 frames in 21.48s\n[rich panel: Frames Sent=500, Duration=21.4836s, RESULT=SUCCESS, Category=Network-layer]",
+  "stderr": "",
+  "has_traceback": false,
+  "has_output": true,
+  "timed_out": false,
+  "warnings": [],
+  "note": "Sent 500 MAC flooding frames on eth0 in 21.48s at ~23.3 pkt/s. Attack completed successfully within the 30s timeout."
+}
