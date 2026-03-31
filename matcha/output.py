@@ -243,7 +243,6 @@ def _interpret_result(data: dict[str, Any], entry: AttackEntry | None) -> dict[s
             "successful_attacks",
             "credentials_captured",
             "poison_packets_sent",
-            "requests_sent",
         )
         work_done = any(int(data.get(k, 0) or 0) > 0 for k in work_keys)
 
@@ -265,7 +264,8 @@ def _interpret_result(data: dict[str, Any], entry: AttackEntry | None) -> dict[s
         if brute_found_key:
             reason = ""  # found a password = attack goal achieved
         elif succeeded and not brute_found_key:
-            # Ran fine but no credential cracked
+            # Ran fine but no credential cracked — goal not met
+            succeeded = False
             reason = "No valid credential found in the provided wordlist"
 
     # --- Build narrative -------------------------------------------------

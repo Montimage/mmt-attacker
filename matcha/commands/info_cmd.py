@@ -375,21 +375,21 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
         "category": "Application-layer",
         "parameters": [
             {
-                "name": "target_url",
+                "name": "url",
                 "type": "str",
                 "default": None,
                 "required": True,
                 "help": "Base URL of the target web application",
             },
             {
-                "name": "depth",
-                "type": "int",
-                "default": 5,
-                "required": False,
-                "help": "Maximum traversal depth to attempt",
+                "name": "param",
+                "type": "str",
+                "default": None,
+                "required": True,
+                "help": "Vulnerable query parameter name",
             },
         ],
-        "example": "matcha run directory-traversal --target-url http://example.com/page?file=test",
+        "example": "matcha run directory-traversal --url http://example.com/page --param file",
     },
     "ftp-brute-force": {
         "description": "Perform FTP brute force attack by trying common username and "
@@ -440,14 +440,14 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "URL of the target web server",
             },
             {
-                "name": "threads",
+                "name": "num_connections",
                 "type": "int",
                 "default": 10,
                 "required": False,
-                "help": "Number of concurrent threads",
+                "help": "Number of concurrent connections",
             },
         ],
-        "example": "matcha run http-dos --target-url http://example.com --threads 20",
+        "example": "matcha run http-dos --target-url http://example.com --num-connections 20",
     },
     "http-flood": {
         "description": "Perform HTTP flood attack by sending a high volume of HTTP "
@@ -455,7 +455,7 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
         "category": "Application-layer",
         "parameters": [
             {
-                "name": "target_url",
+                "name": "url",
                 "type": "str",
                 "default": None,
                 "required": True,
@@ -476,7 +476,7 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "Number of concurrent threads",
             },
         ],
-        "example": "matcha run http-flood --target-url http://example.com --count 5000",
+        "example": "matcha run http-flood --url http://example.com --count 5000",
     },
     "rdp-brute-force": {
         "description": "Perform RDP brute force attack by trying common credentials "
@@ -600,28 +600,14 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
         "category": "Application-layer",
         "parameters": [
             {
-                "name": "target_ip",
+                "name": "interface",
                 "type": "str",
-                "default": None,
-                "required": True,
-                "help": "IP address of the target host",
-            },
-            {
-                "name": "gateway_ip",
-                "type": "str",
-                "default": None,
-                "required": True,
-                "help": "IP address of the network gateway",
-            },
-            {
-                "name": "listen_port",
-                "type": "int",
-                "default": 10000,
+                "default": "eth0",
                 "required": False,
-                "help": "Port for the SSL stripping proxy",
+                "help": "Network interface to intercept traffic on",
             },
         ],
-        "example": "matcha run ssl-strip --target-ip 192.168.1.10 --gateway-ip 192.168.1.1",
+        "example": "matcha run ssl-strip --interface eth0",
     },
     "vlan-hopping": {
         "description": "Perform VLAN hopping attack to gain access to traffic on "
@@ -636,14 +622,28 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "Network interface to use",
             },
             {
-                "name": "target_vlan",
+                "name": "outer_vlan",
                 "type": "int",
+                "default": 10,
+                "required": False,
+                "help": "Outer (native) VLAN ID",
+            },
+            {
+                "name": "inner_vlan",
+                "type": "int",
+                "default": 20,
+                "required": False,
+                "help": "Inner (target) VLAN ID to hop to",
+            },
+            {
+                "name": "target_ip",
+                "type": "str",
                 "default": None,
-                "required": True,
-                "help": "VLAN ID to hop to",
+                "required": False,
+                "help": "Optional target IP on the inner VLAN",
             },
         ],
-        "example": "matcha run vlan-hopping --interface eth0 --target-vlan 100",
+        "example": "matcha run vlan-hopping --interface eth0 --inner-vlan 20",
     },
     "xss": {
         "description": "Perform XSS vulnerability testing by injecting JavaScript "
@@ -710,7 +710,7 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "Network interface to replay traffic on",
             },
             {
-                "name": "speed",
+                "name": "rate",
                 "type": "float",
                 "default": 1.0,
                 "required": False,

@@ -128,7 +128,9 @@ class TestHelpSmokeAllCommands:
 # ---------------------------------------------------------------------------
 
 
-_ALL_OPTIONAL_ATTACKS = [n for n in ALL_ATTACKS if not any(p.required for p in get_attack(n).params)]
+_ALL_OPTIONAL_ATTACKS = [
+    n for n in ALL_ATTACKS if not any(p.required for p in get_attack(n).params)
+]
 _ATTACKS_WITH_REQUIRED = [n for n in ALL_ATTACKS if n not in _ALL_OPTIONAL_ATTACKS]
 
 
