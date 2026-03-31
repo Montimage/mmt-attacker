@@ -223,7 +223,7 @@ graph LR
 docker compose exec attacker \
   matcha icmp-flood \
     --target-ip $TARGET_IP \
-    --count 1000
+    --count 500
 ```
 
 **Key parameters:**
@@ -409,7 +409,8 @@ graph TB
 docker compose exec attacker \
   matcha mac-flooding \
     --interface eth0 \
-    --count 5000
+    --count 2000 \
+    --rate 500
 ```
 
 **Key parameters:**

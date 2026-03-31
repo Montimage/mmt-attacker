@@ -24,7 +24,7 @@ class IcmpFlood(AttackBase):
         # Attack behavior
         behavior_group = parser.add_argument_group("Attack Behavior")
         behavior_group.add_argument(
-            "--count", type=int, default=1000, help="Number of packets to send"
+            "--count", type=int, default=500, help="Number of packets to send"
         )
         behavior_group.add_argument("--rate", type=int, default=100, help="Packets per second")
         behavior_group.add_argument(

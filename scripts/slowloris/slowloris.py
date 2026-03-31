@@ -254,14 +254,23 @@ class SlowlorisAttack:
         ]
         if self.verbose:
             cmd.append("-v")
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
-        if result.stdout:
-            print(result.stdout)
-        if result.stderr:
-            print(result.stderr)
-        return {
-            "target": self.host,
-            "port": self.port,
-            "sockets": self.sockets,
-            "exit_code": result.returncode,
-        }
+        try:
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+            if result.stdout:
+                print(result.stdout)
+            if result.stderr:
+                print(result.stderr)
+            return {
+                "target": self.host,
+                "port": self.port,
+                "sockets": self.sockets,
+                "exit_code": result.returncode,
+            }
+        except subprocess.TimeoutExpired:
+            print(f"Slowloris attack completed (ran for configured duration).")
+            return {
+                "target": self.host,
+                "port": self.port,
+                "sockets": self.sockets,
+                "exit_code": 0,
+            }

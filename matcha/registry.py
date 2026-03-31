@@ -202,7 +202,8 @@ _register(
         class_name="MACFloodingAttack",
         params=[
             ParamDef("interface", "str", True, None, "Network interface to use"),
-            ParamDef("count", "int", False, 500, "Number of frames to send"),
+            ParamDef("count", "int", False, 2000, "Number of frames to send"),
+            ParamDef("rate", "int", False, 500, "Frames per second"),
         ],
     )
 )
