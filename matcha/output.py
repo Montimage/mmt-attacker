@@ -24,16 +24,16 @@ if TYPE_CHECKING:
 # ANSI palette  (electric cyan / amber / slate)
 # ---------------------------------------------------------------------------
 
-_R     = "\033[0m"
-_BOLD  = "\033[1m"
-_DIM   = "\033[2m"
+_R = "\033[0m"
+_BOLD = "\033[1m"
+_DIM = "\033[2m"
 
-_CYAN  = "\033[38;5;51m"
-_TEAL  = "\033[38;5;37m"
+_CYAN = "\033[38;5;51m"
+_TEAL = "\033[38;5;37m"
 _AMBER = "\033[38;5;214m"
 _GREEN = "\033[38;5;82m"
-_RED   = "\033[38;5;196m"
-_GREY  = "\033[38;5;240m"
+_RED = "\033[38;5;196m"
+_GREY = "\033[38;5;240m"
 _WHITE = "\033[38;5;252m"
 _LBLUE = "\033[38;5;117m"
 
@@ -58,9 +58,9 @@ def _vis(s: str) -> int:
 # Box layout constants
 # ---------------------------------------------------------------------------
 
-_W       = 70   # inner content width (between the two ║ borders)
-_LABEL_W = 24   # label column width
-_SEP     = 2    # gap between label and value columns
+_W = 70  # inner content width (between the two ║ borders)
+_LABEL_W = 24  # label column width
+_SEP = 2  # gap between label and value columns
 _VALUE_W = _W - _LABEL_W - _SEP - 4  # usable value width (2 left + 2 right margin)
 
 
@@ -100,9 +100,7 @@ def _box_divider(label: str) -> str:
     vis = _vis(label)
     right = _W - vis - 4
     return (
-        _c(_GREY, "╠══ ")
-        + _c(_AMBER + _BOLD, label)
-        + _c(_GREY, " " + "═" * max(right, 0) + "╣")
+        _c(_GREY, "╠══ ") + _c(_AMBER + _BOLD, label) + _c(_GREY, " " + "═" * max(right, 0) + "╣")
     )
 
 
@@ -220,53 +218,60 @@ def _interpret_result(data: dict[str, Any], entry: AttackEntry | None) -> dict[s
     # heuristics based on packet/request counts.
 
     explicit_success = data.get("success")
-    error_msg        = data.get("error", "")
-    simulated        = data.get("simulated", False)
+    error_msg = data.get("error", "")
+    simulated = data.get("simulated", False)
 
     if error_msg:
         succeeded = False
         reason = str(error_msg)
     elif explicit_success is not None:
         succeeded = bool(explicit_success)
-        reason    = "" if succeeded else "Attack reported failure (no detail provided)"
+        reason = "" if succeeded else "Attack reported failure (no detail provided)"
     elif simulated:
         # Scripts that only simulate (BGP hijacking, SSL strip) always "succeed"
         succeeded = True
-        reason    = ""
+        reason = ""
     else:
         # Heuristic: if any meaningful work metric > 0, consider it a success
         work_keys = (
-            "packets_sent", "requests_sent", "frames_sent", "fragments_sent",
-            "attempts", "vulnerabilities_found", "successful_attacks",
-            "credentials_captured", "poison_packets_sent", "requests_sent",
+            "packets_sent",
+            "requests_sent",
+            "frames_sent",
+            "fragments_sent",
+            "attempts",
+            "vulnerabilities_found",
+            "successful_attacks",
+            "credentials_captured",
+            "poison_packets_sent",
+            "requests_sent",
         )
         work_done = any(int(data.get(k, 0) or 0) > 0 for k in work_keys)
 
         # exit_code = 0 for subprocess-based attacks (slowloris)
         if "exit_code" in data:
             succeeded = data["exit_code"] == 0
-            reason    = "" if succeeded else f"Process exited with code {data['exit_code']}"
+            reason = "" if succeeded else f"Process exited with code {data['exit_code']}"
         elif work_done:
             succeeded = True
-            reason    = ""
+            reason = ""
         else:
             succeeded = False
-            reason    = "No work was performed — check permissions and target reachability"
+            reason = "No work was performed — check permissions and target reachability"
 
     # Brute-force attacks: distinguish "ran fine" from "credential found"
     brute_found_key = data.get("successful_password") or data.get("password")
     if "attempts" in data and "passwords_loaded" in data:
         # SSH / FTP brute force
         if brute_found_key:
-            reason = ""   # found a password = attack goal achieved
+            reason = ""  # found a password = attack goal achieved
         elif succeeded and not brute_found_key:
             # Ran fine but no credential cracked
             reason = "No valid credential found in the provided wordlist"
 
     # --- Build narrative -------------------------------------------------
-    packets  = data.get("packets_sent", data.get("requests_sent", data.get("frames_sent")))
+    packets = data.get("packets_sent", data.get("requests_sent", data.get("frames_sent")))
     duration = data.get("duration_seconds", data.get("duration"))
-    target   = data.get("target_ip", data.get("target_url", data.get("target", "")))
+    target = data.get("target_ip", data.get("target_url", data.get("target", "")))
 
     parts: list[str] = []
 
@@ -371,7 +376,7 @@ def _format_text(data: dict[str, Any], entry: AttackEntry | None = None) -> str:
 
     # Title: attack name + target
     attack_name = (entry.name if entry else data.get("attack", data.get("name", ""))).upper()
-    target      = data.get("target_ip", data.get("target_url", ""))
+    target = data.get("target_ip", data.get("target_url", ""))
     title_parts = [p for p in [attack_name, str(target).upper()] if p]
     title = "  ·  ".join(title_parts) if title_parts else "RESULTS"
 
@@ -432,13 +437,13 @@ def format_attack_list(categories: list[dict[str, Any]]) -> str:
 
     for cat in categories:
         cat_name = cat["category"]
-        attacks  = cat.get("attacks", [])
+        attacks = cat.get("attacks", [])
         lines.append(_box_divider(f"{cat_name}  ({len(attacks)})"))
         for atk in attacks:
             name_col = _c(_CYAN, atk["name"].ljust(_NAME_W))
             desc = atk["description"]
             if len(desc) > _DESC_W:
-                desc = desc[:_DESC_W - 1] + "…"
+                desc = desc[: _DESC_W - 1] + "…"
             desc_col = _c(_DIM + _WHITE, desc.ljust(_DESC_W))
             lines.append(_c(_GREY, "║") + "  " + name_col + desc_col + "  " + _c(_GREY, "║"))
         lines.append(_box_blank())
@@ -477,8 +482,8 @@ def format_attack_info(name: str, detail: dict[str, Any]) -> str:
 
     for param in detail.get("parameters", []):
         req_tag = _c(_RED, "required") if param["required"] else _c(_GREY, "optional")
-        flag    = _c(_CYAN, f"--{param['name'].replace('_', '-')}")
-        type_s  = _c(_DIM + _WHITE, param["type"])
+        flag = _c(_CYAN, f"--{param['name'].replace('_', '-')}")
+        type_s = _c(_DIM + _WHITE, param["type"])
         lines.append(_box_row(flag, f"{type_s}  {req_tag}"))
         if param.get("default") is not None and not param["required"]:
             lines.append(_box_row("", _c(_DIM + _WHITE, f"default: {param['default']}")))

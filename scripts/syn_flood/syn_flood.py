@@ -302,8 +302,12 @@ class SYNFloodAttack:
         Args:
             stats (Dict[str, Any]): Statistics from _get_statistics()
         """
-        logger.info("SYN Flood complete — target=%s  packets=%s  duration=%.2fs",
-                    stats["target_ip"], stats["packets_sent"], stats["duration_seconds"])
+        logger.info(
+            "SYN Flood complete — target=%s  packets=%s  duration=%.2fs",
+            stats["target_ip"],
+            stats["packets_sent"],
+            stats["duration_seconds"],
+        )
 
 
 def parse_port_list(port_str: str) -> list[int]:

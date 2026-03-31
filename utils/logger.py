@@ -32,31 +32,31 @@ import sys
 # ANSI colour codes (terminal only)
 # ---------------------------------------------------------------------------
 
-_RESET  = "\033[0m"
-_BOLD   = "\033[1m"
-_DIM    = "\033[2m"
+_RESET = "\033[0m"
+_BOLD = "\033[1m"
+_DIM = "\033[2m"
 
 # Palette: charcoal/slate + electric cyan + amber + red
-_CYAN   = "\033[38;5;51m"
-_AMBER  = "\033[38;5;214m"
-_RED    = "\033[38;5;196m"
-_GREEN  = "\033[38;5;82m"
-_GREY   = "\033[38;5;245m"
-_WHITE  = "\033[38;5;252m"
+_CYAN = "\033[38;5;51m"
+_AMBER = "\033[38;5;214m"
+_RED = "\033[38;5;196m"
+_GREEN = "\033[38;5;82m"
+_GREY = "\033[38;5;245m"
+_WHITE = "\033[38;5;252m"
 
 _LEVEL_COLORS = {
-    "DEBUG":    _GREY,
-    "INFO":     _CYAN,
-    "WARNING":  _AMBER,
-    "ERROR":    _RED,
+    "DEBUG": _GREY,
+    "INFO": _CYAN,
+    "WARNING": _AMBER,
+    "ERROR": _RED,
     "CRITICAL": f"{_BOLD}{_RED}",
 }
 
 _LEVEL_LABELS = {
-    "DEBUG":    "DBG",
-    "INFO":     "INF",
-    "WARNING":  "WRN",
-    "ERROR":    "ERR",
+    "DEBUG": "DBG",
+    "INFO": "INF",
+    "WARNING": "WRN",
+    "ERROR": "ERR",
     "CRITICAL": "CRT",
 }
 
@@ -72,7 +72,7 @@ class _ColourFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:  # noqa: A003
         level = record.levelname
         colour = _LEVEL_COLORS.get(level, _WHITE)
-        label  = _LEVEL_LABELS.get(level, level[:3])
+        label = _LEVEL_LABELS.get(level, level[:3])
 
         # Short module name (last two segments)
         module = record.name
@@ -116,17 +116,17 @@ DEFAULT_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 LOG_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "logs")
 os.makedirs(LOG_DIR, exist_ok=True)
 
-LOG_FILE       = os.path.join(LOG_DIR, "mmt-attacker.log")
+LOG_FILE = os.path.join(LOG_DIR, "mmt-attacker.log")
 ERROR_LOG_FILE = os.path.join(LOG_DIR, "mmt-attacker-error.log")
 
 # ---------------------------------------------------------------------------
 # Global state
 # ---------------------------------------------------------------------------
 
-_log_level      = DEFAULT_LOG_LEVEL
-_log_format     = DEFAULT_LOG_FORMAT
-_date_format    = DEFAULT_DATE_FORMAT
-_log_to_file    = True
+_log_level = DEFAULT_LOG_LEVEL
+_log_format = DEFAULT_LOG_FORMAT
+_date_format = DEFAULT_DATE_FORMAT
+_log_to_file = True
 _log_to_console = True
 
 _loggers: dict[str, logging.Logger] = {}
@@ -153,13 +153,20 @@ def configure_logging(
     global _log_level, _log_format, _date_format, _log_to_file, _log_to_console
     global LOG_FILE, ERROR_LOG_FILE
 
-    if level           is not None: _log_level      = level
-    if log_format      is not None: _log_format     = log_format
-    if date_format     is not None: _date_format    = date_format
-    if log_to_file     is not None: _log_to_file    = log_to_file
-    if log_to_console  is not None: _log_to_console = log_to_console
-    if log_file        is not None: LOG_FILE        = log_file
-    if error_log_file  is not None: ERROR_LOG_FILE  = error_log_file
+    if level is not None:
+        _log_level = level
+    if log_format is not None:
+        _log_format = log_format
+    if date_format is not None:
+        _date_format = date_format
+    if log_to_file is not None:
+        _log_to_file = log_to_file
+    if log_to_console is not None:
+        _log_to_console = log_to_console
+    if log_file is not None:
+        LOG_FILE = log_file
+    if error_log_file is not None:
+        ERROR_LOG_FILE = error_log_file
 
     for logger_name, logger in _loggers.items():
         _configure_logger(logger, logger_name)
