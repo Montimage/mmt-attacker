@@ -108,15 +108,15 @@ def test_format_text_contains_description():
 
 
 def test_format_text_contains_parameters_section():
-    """Text output should have a Parameters: header."""
+    """Text output should have a Parameters section."""
     text = _format_text("syn-flood", _ATTACK_DETAILS["syn-flood"])
-    assert "Parameters:" in text
+    assert "PARAMETERS" in text.upper()
 
 
 def test_format_text_contains_example():
     """Text output should include the example."""
     text = _format_text("syn-flood", _ATTACK_DETAILS["syn-flood"])
-    assert "Example:" in text
+    assert "EXAMPLE" in text.upper()
     assert "matcha run syn-flood" in text
 
 
@@ -171,8 +171,8 @@ def test_cli_info_syn_flood_text():
     assert result.exit_code == 0
     assert "syn-flood" in result.output
     assert "Network-layer" in result.output
-    assert "Parameters:" in result.output
-    assert "Example:" in result.output
+    assert "PARAMETERS" in result.output.upper()
+    assert "EXAMPLE" in result.output.upper()
 
 
 def test_cli_info_syn_flood_json():

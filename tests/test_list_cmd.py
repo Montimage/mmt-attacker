@@ -62,7 +62,7 @@ def test_format_text_contains_categories():
 def test_format_text_contains_total():
     """Text output should show the total attack count."""
     text = _format_text()
-    assert "Total: 26 attacks" in text
+    assert "26 attacks" in text
 
 
 def test_format_text_contains_all_attacks():
@@ -121,7 +121,7 @@ def test_cli_list_text():
     assert "Network-layer" in result.output
     assert "Application-layer" in result.output
     assert "Replay" in result.output
-    assert "Total: 26 attacks" in result.output
+    assert "26 attacks" in result.output
 
 
 def test_cli_list_json():

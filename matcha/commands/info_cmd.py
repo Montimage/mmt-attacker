@@ -39,11 +39,25 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "IP address of the network gateway",
             },
             {
+                "name": "interface",
+                "type": "str",
+                "default": "eth0",
+                "required": False,
+                "help": "Network interface to use",
+            },
+            {
                 "name": "interval",
                 "type": "float",
                 "default": 1.0,
                 "required": False,
                 "help": "Seconds between spoofed ARP packets",
+            },
+            {
+                "name": "count",
+                "type": "int",
+                "default": 50,
+                "required": False,
+                "help": "Number of ARP packet pairs to send (0 for infinite)",
             },
         ],
         "example": "matcha run arp-spoof --target-ip 192.168.1.10 --gateway-ip 192.168.1.1",
@@ -105,21 +119,28 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "IP address of the victim to flood",
             },
             {
-                "name": "dns_server",
+                "name": "dns_servers",
                 "type": "str",
                 "default": "8.8.8.8",
                 "required": False,
                 "help": "Open DNS resolver to use for amplification",
             },
             {
-                "name": "count",
+                "name": "domain",
+                "type": "str",
+                "default": "example.com",
+                "required": False,
+                "help": "Domain to query",
+            },
+            {
+                "name": "query_count",
                 "type": "int",
                 "default": 1000,
                 "required": False,
                 "help": "Number of DNS queries to send",
             },
         ],
-        "example": "matcha run dns-amplification --target-ip 192.168.1.10 --dns-server 8.8.8.8",
+        "example": "matcha run dns-amplification --target-ip 192.168.1.10 --dns-servers 8.8.8.8",
     },
     "icmp-flood": {
         "description": "Perform ICMP flood attack (Ping Flood) by sending a large "
@@ -136,12 +157,12 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
             {
                 "name": "count",
                 "type": "int",
-                "default": 1000,
+                "default": 500,
                 "required": False,
                 "help": "Number of ICMP packets to send",
             },
             {
-                "name": "size",
+                "name": "packet_size",
                 "type": "int",
                 "default": 64,
                 "required": False,
@@ -165,7 +186,7 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
             {
                 "name": "count",
                 "type": "int",
-                "default": 10000,
+                "default": 500,
                 "required": False,
                 "help": "Number of frames to send",
             },
@@ -192,11 +213,18 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "IP address of the network gateway",
             },
             {
-                "name": "forward",
-                "type": "bool",
-                "default": True,
+                "name": "interface",
+                "type": "str",
+                "default": "eth0",
                 "required": False,
-                "help": "Enable IP forwarding to relay intercepted traffic",
+                "help": "Network interface to use",
+            },
+            {
+                "name": "capture_file",
+                "type": "str",
+                "default": None,
+                "required": False,
+                "help": "Optional path to write captured packets",
             },
         ],
         "example": "matcha run mitm --target-ip 192.168.1.10 --gateway-ip 192.168.1.1",
@@ -207,14 +235,14 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
         "category": "Network-layer",
         "parameters": [
             {
-                "name": "target_ip",
+                "name": "victim_ip",
                 "type": "str",
                 "default": None,
                 "required": True,
                 "help": "IP address of the victim to flood",
             },
             {
-                "name": "ntp_server",
+                "name": "ntp_servers",
                 "type": "str",
                 "default": None,
                 "required": True,
@@ -228,7 +256,7 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "Number of NTP requests to send",
             },
         ],
-        "example": "matcha run ntp-amplification --target-ip 192.168.1.10 --ntp-server 10.0.0.1",
+        "example": "matcha run ntp-amplification --victim-ip 192.168.1.10 --ntp-servers 10.0.0.1",
     },
     "ping-of-death": {
         "description": "Perform Ping of Death attack by sending oversized ICMP packets "
@@ -258,7 +286,7 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
         "category": "Network-layer",
         "parameters": [
             {
-                "name": "target_ip",
+                "name": "victim_ip",
                 "type": "str",
                 "default": None,
                 "required": True,
@@ -279,7 +307,7 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "Number of ICMP packets to send",
             },
         ],
-        "example": "matcha run smurf-attack --target-ip 192.168.1.10 --broadcast-ip 192.168.1.255",
+        "example": "matcha run smurf-attack --victim-ip 192.168.1.10 --broadcast-ip 192.168.1.255",
     },
     "syn-flood": {
         "description": "Perform SYN flood attack by sending a large number of TCP SYN "
@@ -346,21 +374,21 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
         "category": "Application-layer",
         "parameters": [
             {
-                "name": "target_url",
+                "name": "template",
                 "type": "str",
-                "default": None,
-                "required": True,
-                "help": "URL of the login page to clone",
+                "default": "login-form",
+                "required": False,
+                "help": "Template name or URL of page to clone",
             },
             {
-                "name": "listen_port",
+                "name": "port",
                 "type": "int",
                 "default": 8080,
                 "required": False,
                 "help": "Port to serve the cloned page on",
             },
         ],
-        "example": "matcha run credential-harvester --target-url https://example.com/login",
+        "example": "matcha run credential-harvester --template https://example.com/login",
     },
     "directory-traversal": {
         "description": "Perform directory traversal attack to access files outside "
@@ -368,21 +396,21 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
         "category": "Application-layer",
         "parameters": [
             {
-                "name": "target_url",
+                "name": "url",
                 "type": "str",
                 "default": None,
                 "required": True,
                 "help": "Base URL of the target web application",
             },
             {
-                "name": "depth",
-                "type": "int",
-                "default": 5,
-                "required": False,
-                "help": "Maximum traversal depth to attempt",
+                "name": "param",
+                "type": "str",
+                "default": None,
+                "required": True,
+                "help": "Vulnerable query parameter name",
             },
         ],
-        "example": "matcha run directory-traversal --target-url http://example.com/page?file=test",
+        "example": "matcha run directory-traversal --url http://example.com/page --param file",
     },
     "ftp-brute-force": {
         "description": "Perform FTP brute force attack by trying common username and "
@@ -390,11 +418,18 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
         "category": "Application-layer",
         "parameters": [
             {
-                "name": "target_ip",
+                "name": "host",
                 "type": "str",
                 "default": None,
                 "required": True,
                 "help": "IP address of the FTP server",
+            },
+            {
+                "name": "port",
+                "type": "int",
+                "default": 21,
+                "required": False,
+                "help": "FTP port",
             },
             {
                 "name": "username",
@@ -404,14 +439,14 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "Username to brute force",
             },
             {
-                "name": "wordlist",
+                "name": "passwords",
                 "type": "str",
                 "default": None,
                 "required": True,
                 "help": "Path to the password wordlist file",
             },
         ],
-        "example": "matcha run ftp-brute-force --target-ip 192.168.1.10 --wordlist passwords.txt",
+        "example": "matcha run ftp-brute-force --host 192.168.1.10 --passwords passwords.txt",
     },
     "http-dos": {
         "description": "Perform HTTP DoS attack by sending malformed or resource-intensive "
@@ -426,14 +461,14 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "URL of the target web server",
             },
             {
-                "name": "threads",
+                "name": "num_connections",
                 "type": "int",
                 "default": 10,
                 "required": False,
-                "help": "Number of concurrent threads",
+                "help": "Number of concurrent connections",
             },
         ],
-        "example": "matcha run http-dos --target-url http://example.com --threads 20",
+        "example": "matcha run http-dos --target-url http://example.com --num-connections 20",
     },
     "http-flood": {
         "description": "Perform HTTP flood attack by sending a high volume of HTTP "
@@ -441,7 +476,7 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
         "category": "Application-layer",
         "parameters": [
             {
-                "name": "target_url",
+                "name": "url",
                 "type": "str",
                 "default": None,
                 "required": True,
@@ -462,7 +497,7 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "Number of concurrent threads",
             },
         ],
-        "example": "matcha run http-flood --target-url http://example.com --count 5000",
+        "example": "matcha run http-flood --url http://example.com --count 5000",
     },
     "rdp-brute-force": {
         "description": "Perform RDP brute force attack by trying common credentials "
@@ -470,11 +505,18 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
         "category": "Application-layer",
         "parameters": [
             {
-                "name": "target_ip",
+                "name": "host",
                 "type": "str",
                 "default": None,
                 "required": True,
                 "help": "IP address of the RDP server",
+            },
+            {
+                "name": "port",
+                "type": "int",
+                "default": 3389,
+                "required": False,
+                "help": "RDP port",
             },
             {
                 "name": "username",
@@ -484,14 +526,14 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "Username to brute force",
             },
             {
-                "name": "wordlist",
+                "name": "passwords",
                 "type": "str",
                 "default": None,
                 "required": True,
                 "help": "Path to the password wordlist file",
             },
         ],
-        "example": "matcha run rdp-brute-force --target-ip 192.168.1.10 --wordlist passwords.txt",
+        "example": "matcha run rdp-brute-force --host 192.168.1.10 --passwords passwords.txt",
     },
     "slowloris": {
         "description": "Perform Slowloris attack by opening many connections to the "
@@ -499,28 +541,21 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
         "category": "Application-layer",
         "parameters": [
             {
-                "name": "target_ip",
+                "name": "target_url",
                 "type": "str",
                 "default": None,
                 "required": True,
-                "help": "IP address of the target web server",
-            },
-            {
-                "name": "target_port",
-                "type": "int",
-                "default": 80,
-                "required": False,
-                "help": "Target HTTP port",
+                "help": "URL of the target web server (e.g. http://target)",
             },
             {
                 "name": "sockets",
                 "type": "int",
-                "default": 200,
+                "default": 150,
                 "required": False,
                 "help": "Number of sockets to open",
             },
         ],
-        "example": "matcha run slowloris --target-ip 192.168.1.10 --sockets 500",
+        "example": "matcha run slowloris --target-url http://192.168.1.10 --sockets 500",
     },
     "sql-injection": {
         "description": "Perform SQL injection attack by injecting malicious SQL "
@@ -535,14 +570,14 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "URL of the vulnerable web page",
             },
             {
-                "name": "parameter",
+                "name": "control_name",
                 "type": "str",
-                "default": None,
-                "required": True,
+                "default": "username",
+                "required": False,
                 "help": "Vulnerable query parameter name",
             },
         ],
-        "example": "matcha run sql-injection --target-url http://example.com/search --parameter q",
+        "example": "matcha run sql-injection --target-url http://example.com/login",
     },
     "ssh-brute-force": {
         "description": "Perform SSH brute force attack by trying common credentials "
@@ -557,6 +592,13 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "IP address of the SSH server",
             },
             {
+                "name": "target_port",
+                "type": "int",
+                "default": 22,
+                "required": False,
+                "help": "SSH port",
+            },
+            {
                 "name": "username",
                 "type": "str",
                 "default": "root",
@@ -564,14 +606,14 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "Username to brute force",
             },
             {
-                "name": "wordlist",
+                "name": "passwords",
                 "type": "str",
                 "default": None,
                 "required": True,
                 "help": "Path to the password wordlist file",
             },
         ],
-        "example": "matcha run ssh-brute-force --target-ip 192.168.1.10 --wordlist passwords.txt",
+        "example": "matcha run ssh-brute-force --target-ip 192.168.1.10 --passwords passwords.txt",
     },
     "ssl-strip": {
         "description": "Perform SSL Strip attack by downgrading HTTPS connections to "
@@ -579,28 +621,14 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
         "category": "Application-layer",
         "parameters": [
             {
-                "name": "target_ip",
+                "name": "interface",
                 "type": "str",
-                "default": None,
-                "required": True,
-                "help": "IP address of the target host",
-            },
-            {
-                "name": "gateway_ip",
-                "type": "str",
-                "default": None,
-                "required": True,
-                "help": "IP address of the network gateway",
-            },
-            {
-                "name": "listen_port",
-                "type": "int",
-                "default": 10000,
+                "default": "eth0",
                 "required": False,
-                "help": "Port for the SSL stripping proxy",
+                "help": "Network interface to intercept traffic on",
             },
         ],
-        "example": "matcha run ssl-strip --target-ip 192.168.1.10 --gateway-ip 192.168.1.1",
+        "example": "matcha run ssl-strip --interface eth0",
     },
     "vlan-hopping": {
         "description": "Perform VLAN hopping attack to gain access to traffic on "
@@ -615,14 +643,28 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "Network interface to use",
             },
             {
-                "name": "target_vlan",
+                "name": "outer_vlan",
                 "type": "int",
+                "default": 10,
+                "required": False,
+                "help": "Outer (native) VLAN ID",
+            },
+            {
+                "name": "inner_vlan",
+                "type": "int",
+                "default": 20,
+                "required": False,
+                "help": "Inner (target) VLAN ID to hop to",
+            },
+            {
+                "name": "target_ip",
+                "type": "str",
                 "default": None,
-                "required": True,
-                "help": "VLAN ID to hop to",
+                "required": False,
+                "help": "Optional target IP on the inner VLAN",
             },
         ],
-        "example": "matcha run vlan-hopping --interface eth0 --target-vlan 100",
+        "example": "matcha run vlan-hopping --interface eth0 --inner-vlan 20",
     },
     "xss": {
         "description": "Perform XSS vulnerability testing by injecting JavaScript "
@@ -630,21 +672,21 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
         "category": "Application-layer",
         "parameters": [
             {
-                "name": "target_url",
+                "name": "url",
                 "type": "str",
                 "default": None,
                 "required": True,
                 "help": "URL of the target web page",
             },
             {
-                "name": "parameter",
+                "name": "param",
                 "type": "str",
                 "default": None,
                 "required": True,
                 "help": "Vulnerable query parameter name",
             },
         ],
-        "example": "matcha run xss --target-url http://example.com/search --parameter q",
+        "example": "matcha run xss --url http://example.com/search --param q",
     },
     "xxe": {
         "description": "Perform XML External Entity attack by injecting malicious XML "
@@ -652,21 +694,14 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
         "category": "Application-layer",
         "parameters": [
             {
-                "name": "target_url",
+                "name": "url",
                 "type": "str",
                 "default": None,
                 "required": True,
                 "help": "URL of the XML-accepting endpoint",
             },
-            {
-                "name": "payload_file",
-                "type": "str",
-                "default": None,
-                "required": False,
-                "help": "Path to a custom XXE payload file",
-            },
         ],
-        "example": "matcha run xxe --target-url http://example.com/api/xml",
+        "example": "matcha run xxe --url http://example.com/api/xml",
     },
     # --- Replay ---
     "pcap-replay": {
@@ -689,7 +724,7 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "Network interface to replay traffic on",
             },
             {
-                "name": "speed",
+                "name": "rate",
                 "type": "float",
                 "default": 1.0,
                 "required": False,

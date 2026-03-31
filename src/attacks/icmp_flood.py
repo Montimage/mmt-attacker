@@ -73,7 +73,7 @@ class IcmpFlood(AttackBase):
 
             attack = attack_module.ICMPFloodAttack(
                 target_ip=args.target,
-                packet_count=args.count,
+                count=args.count,
                 rate=args.rate,
                 packet_size=args.size,
                 spoof_ip=args.spoof,

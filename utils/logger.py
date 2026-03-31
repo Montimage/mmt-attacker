@@ -200,6 +200,7 @@ def _configure_logger(logger: logging.Logger, name: str) -> None:
         logger.removeHandler(handler)
 
     logger.setLevel(_log_level)
+    logger.propagate = False
 
     if _log_to_console:
         console = logging.StreamHandler(sys.stderr)

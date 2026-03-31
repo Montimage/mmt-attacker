@@ -125,6 +125,9 @@ class SSHBruteForceAttack:
         self.target_port = target_port
 
         self.username = username
+        if isinstance(passwords, str):
+            with open(passwords) as _f:
+                passwords = [line.strip() for line in _f if line.strip()]
         self.passwords = passwords or []
         self.delay = max(0, delay)  # Ensure non-negative delay
         self.timeout = max(1, timeout)  # Ensure positive timeout

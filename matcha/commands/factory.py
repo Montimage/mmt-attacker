@@ -85,21 +85,19 @@ def _validate_network(value: str) -> str | None:
 
 # Maps parameter name patterns to their semantic validator.
 # Checked in order — first match wins.
+# Suffix-based validators — checked when no exact-name match.
 _PARAM_VALIDATORS = [
-    # Exact name matches first
-    ("target_prefix", _validate_network),
-    # Suffix-based patterns
     ("_ip", _validate_ip),
     ("_port", _validate_port),
     ("_url", _validate_url),
     ("_file", _validate_file_path),
-    ("wordlist", _validate_file_path),
 ]
 
-# Params matched by exact name (not suffix)
+# Params matched by exact name (takes precedence over suffix patterns).
 _EXACT_NAME_VALIDATORS: dict[str, Any] = {
     "target_prefix": _validate_network,
     "wordlist": _validate_file_path,
+    "passwords": _validate_file_path,
 }
 
 

