@@ -39,11 +39,25 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "IP address of the network gateway",
             },
             {
+                "name": "interface",
+                "type": "str",
+                "default": "eth0",
+                "required": False,
+                "help": "Network interface to use",
+            },
+            {
                 "name": "interval",
                 "type": "float",
                 "default": 1.0,
                 "required": False,
                 "help": "Seconds between spoofed ARP packets",
+            },
+            {
+                "name": "count",
+                "type": "int",
+                "default": 50,
+                "required": False,
+                "help": "Number of ARP packet pairs to send (0 for infinite)",
             },
         ],
         "example": "matcha run arp-spoof --target-ip 192.168.1.10 --gateway-ip 192.168.1.1",
@@ -143,12 +157,12 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
             {
                 "name": "count",
                 "type": "int",
-                "default": 1000,
+                "default": 500,
                 "required": False,
                 "help": "Number of ICMP packets to send",
             },
             {
-                "name": "size",
+                "name": "packet_size",
                 "type": "int",
                 "default": 64,
                 "required": False,
@@ -172,7 +186,7 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
             {
                 "name": "count",
                 "type": "int",
-                "default": 10000,
+                "default": 500,
                 "required": False,
                 "help": "Number of frames to send",
             },
@@ -199,11 +213,18 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "IP address of the network gateway",
             },
             {
-                "name": "forward",
-                "type": "bool",
-                "default": True,
+                "name": "interface",
+                "type": "str",
+                "default": "eth0",
                 "required": False,
-                "help": "Enable IP forwarding to relay intercepted traffic",
+                "help": "Network interface to use",
+            },
+            {
+                "name": "capture_file",
+                "type": "str",
+                "default": None,
+                "required": False,
+                "help": "Optional path to write captured packets",
             },
         ],
         "example": "matcha run mitm --target-ip 192.168.1.10 --gateway-ip 192.168.1.1",
@@ -549,14 +570,14 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "URL of the vulnerable web page",
             },
             {
-                "name": "parameter",
+                "name": "control_name",
                 "type": "str",
-                "default": None,
-                "required": True,
+                "default": "username",
+                "required": False,
                 "help": "Vulnerable query parameter name",
             },
         ],
-        "example": "matcha run sql-injection --target-url http://example.com/search --parameter q",
+        "example": "matcha run sql-injection --target-url http://example.com/login",
     },
     "ssh-brute-force": {
         "description": "Perform SSH brute force attack by trying common credentials "
@@ -651,21 +672,21 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
         "category": "Application-layer",
         "parameters": [
             {
-                "name": "target_url",
+                "name": "url",
                 "type": "str",
                 "default": None,
                 "required": True,
                 "help": "URL of the target web page",
             },
             {
-                "name": "parameter",
+                "name": "param",
                 "type": "str",
                 "default": None,
                 "required": True,
                 "help": "Vulnerable query parameter name",
             },
         ],
-        "example": "matcha run xss --target-url http://example.com/search --parameter q",
+        "example": "matcha run xss --url http://example.com/search --param q",
     },
     "xxe": {
         "description": "Perform XML External Entity attack by injecting malicious XML "
@@ -673,21 +694,14 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
         "category": "Application-layer",
         "parameters": [
             {
-                "name": "target_url",
+                "name": "url",
                 "type": "str",
                 "default": None,
                 "required": True,
                 "help": "URL of the XML-accepting endpoint",
             },
-            {
-                "name": "payload_file",
-                "type": "str",
-                "default": None,
-                "required": False,
-                "help": "Path to a custom XXE payload file",
-            },
         ],
-        "example": "matcha run xxe --target-url http://example.com/api/xml",
+        "example": "matcha run xxe --url http://example.com/api/xml",
     },
     # --- Replay ---
     "pcap-replay": {
