@@ -162,6 +162,15 @@ ALL_ATTACKS = [
     "xxe",
 ]
 
+# Attacks that have at least one required parameter — running without args
+# must exit 2 (validation error).  Attacks with all-optional params are
+# excluded because they execute immediately and exit 0.
+ATTACKS_WITH_REQUIRED_PARAMS = [
+    a
+    for a in ALL_ATTACKS
+    if a not in ("credential-harvester", "ssl-strip", "bgp-hijacking")
+]
+
 
 class TestAttackCommands:
     @pytest.mark.parametrize("attack", ALL_ATTACKS)
@@ -170,7 +179,7 @@ class TestAttackCommands:
         result = run_matcha(attack, "--help")
         assert result.returncode == 0, f"{attack} --help failed: {result.stderr}"
 
-    @pytest.mark.parametrize("attack", ALL_ATTACKS)
+    @pytest.mark.parametrize("attack", ATTACKS_WITH_REQUIRED_PARAMS)
     def test_missing_args_exits_two(self, attack):
         """``matcha <attack>`` without required args exits 2."""
         result = run_matcha(attack)
