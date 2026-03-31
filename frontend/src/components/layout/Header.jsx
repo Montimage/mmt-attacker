@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Menu, X, Github, Search, Grid, Terminal } from 'lucide-react'
+import { Menu, X, Github, Search, Grid, Terminal, BookOpen } from 'lucide-react'
 import { useState } from 'react'
 
 function Header() {
@@ -56,6 +56,18 @@ function Header() {
             >
               <Grid className="w-4 h-4" />
               <span>Attacks</span>
+            </Link>
+
+            <Link
+              to="/docs"
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
+                isActive('/docs')
+                  ? 'bg-green-600 text-white shadow-custom-md'
+                  : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+              }`}
+            >
+              <BookOpen className="w-4 h-4" />
+              <span>Docs</span>
             </Link>
 
             <button
@@ -138,6 +150,19 @@ function Header() {
               >
                 <Grid className="w-4 h-4" />
                 <span>Attacks</span>
+              </Link>
+
+              <Link
+                to="/docs"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center space-x-3 px-4 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 ${
+                  isActive('/docs')
+                    ? 'bg-green-600 text-white'
+                    : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                }`}
+              >
+                <BookOpen className="w-4 h-4" />
+                <span>Docs</span>
               </Link>
 
               <div className="px-4 py-2">
