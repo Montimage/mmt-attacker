@@ -57,7 +57,7 @@ const formatParameter = (param, value) => {
  * @param {Object} parameterValues - Current parameter values
  * @returns {string} - Complete matcha CLI command
  */
-export const generatePythonCommand = (attackId, scenario, parameterValues = {}) => {
+export const generateCommand = (attackId, scenario, parameterValues = {}) => {
   // Start with base command
   let command = `matcha ${attackId}`
 
@@ -99,7 +99,7 @@ export const generatePythonCommand = (attackId, scenario, parameterValues = {}) 
  * Generate example command with placeholder values
  * @param {string} attackId - Attack identifier
  * @param {Object} scenario - Scenario object with parameters
- * @returns {string} - Example Python command with placeholders
+ * @returns {string} - Example matcha CLI command with placeholders
  */
 export const generateExampleCommand = (attackId, scenario) => {
   const exampleValues = {}
@@ -140,7 +140,7 @@ export const generateExampleCommand = (attackId, scenario) => {
     })
   }
 
-  return generatePythonCommand(attackId, scenario, exampleValues)
+  return generateCommand(attackId, scenario, exampleValues)
 }
 
 /**

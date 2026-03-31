@@ -4,13 +4,13 @@
  */
 
 import React, { useState } from 'react'
-import { generatePythonCommand, getParameterMapping } from '../../utils/commandGenerator'
+import { generateCommand, getParameterMapping } from '../../utils/commandGenerator'
 
 const CommandDisplay = ({ attackId, scenario, parameterValues }) => {
   const [copied, setCopied] = useState(false)
 
   // Generate the command
-  const command = generatePythonCommand(attackId, scenario, parameterValues)
+  const command = generateCommand(attackId, scenario, parameterValues)
 
   // Get parameter mapping for reference
   const paramMapping = getParameterMapping(scenario)
