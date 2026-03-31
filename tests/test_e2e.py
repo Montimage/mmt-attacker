@@ -166,7 +166,7 @@ ALL_ATTACKS = [
 # must exit 2 (validation error).  Attacks with all-optional params are
 # excluded because they execute immediately and exit 0.
 ATTACKS_WITH_REQUIRED_PARAMS = [
-    a for a in ALL_ATTACKS if a not in ("credential-harvester", "ssl-strip")
+    a for a in ALL_ATTACKS if a not in ("credential-harvester", "ssl-strip", "bgp-hijacking")
 ]
 
 
