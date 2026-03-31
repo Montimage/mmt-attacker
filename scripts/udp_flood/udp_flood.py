@@ -97,8 +97,8 @@ class UDPFloodAttack:
     def __init__(
         self,
         target_ip: str,
-        ports=None,
-        packet_count: int = 1000,
+        target_port=None,
+        count: int = 1000,
         rate: int = 100,
         payload_size: int = 512,
         spoof_ip: bool = True,
@@ -110,7 +110,7 @@ class UDPFloodAttack:
 
         Args:
             target_ip (str): IP address of the target
-            ports (List[int]): List of target ports
+            target_port (int or List[int]): Target port(s)
             packet_count (int, optional): Number of packets to send. Defaults to 1000.
             rate (int, optional): Number of packets to send per second. Defaults to 100.
             payload_size (int, optional): Size of packet payload in bytes. Defaults to 512.
@@ -132,7 +132,8 @@ class UDPFloodAttack:
         # Set random ports flag
         self.random_ports = random_ports
 
-        # Normalize ports: accept int, str, or list
+        # Normalize target_port: accept int, str, or list
+        ports = target_port
         if ports is None:
             ports = [80]
         elif isinstance(ports, (int, str)):
@@ -153,7 +154,7 @@ class UDPFloodAttack:
             self.ports = []  # Will use random ports
 
         # Set other parameters
-        self.packet_count = max(1, packet_count)
+        self.packet_count = max(1, count)
         self.rate = max(1, min(rate, 10000))
         self.payload_size = max(0, min(payload_size, 65507))  # Max UDP payload size
         self.spoof_ip = spoof_ip
@@ -177,7 +178,7 @@ class UDPFloodAttack:
         else:
             logger.info("Ports: Random")
         if self.verbose:
-            logger.info(f"Packet count: {packet_count}, Rate: {rate} packets/second")
+            logger.info(f"Packet count: {count}, Rate: {rate} packets/second")
             logger.info(f"Payload size: {payload_size} bytes")
             logger.info(f"IP spoofing: {'Enabled' if spoof_ip else 'Disabled'}")
 

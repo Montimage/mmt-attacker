@@ -7,7 +7,7 @@ constructor parameter definitions, and one-line descriptions.  Used by
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any
 
 # ---------------------------------------------------------------------------
@@ -119,6 +119,7 @@ _register(
             ParamDef("gateway_ip", "str", True, None, "IP address of the network gateway"),
             ParamDef("interface", "str", False, "eth0", "Network interface to use"),
             ParamDef("interval", "float", False, 1.0, "Seconds between spoofed ARP packets"),
+            ParamDef("count", "int", False, 50, "Number of ARP packet pairs to send (0 for infinite)"),
         ],
     )
 )
@@ -184,7 +185,7 @@ _register(
         class_name="ICMPFloodAttack",
         params=[
             ParamDef("target_ip", "str", True, None, "IP address of the target host"),
-            ParamDef("packet_count", "int", False, 1000, "Number of ICMP packets to send"),
+            ParamDef("count", "int", False, 500, "Number of ICMP packets to send"),
             ParamDef("packet_size", "int", False, 64, "Payload size in bytes"),
         ],
     )
@@ -199,7 +200,7 @@ _register(
         class_name="MACFloodingAttack",
         params=[
             ParamDef("interface", "str", True, None, "Network interface to use"),
-            ParamDef("count", "int", False, 10000, "Number of frames to send"),
+            ParamDef("count", "int", False, 500, "Number of frames to send"),
         ],
     )
 )
@@ -246,7 +247,7 @@ _register(
         class_name="PingOfDeathAttack",
         params=[
             ParamDef("target_ip", "str", True, None, "IP address of the target host"),
-            ParamDef("packet_count", "int", False, 100, "Number of oversized packets to send"),
+            ParamDef("count", "int", False, 100, "Number of oversized packets to send"),
         ],
     )
 )
@@ -292,8 +293,8 @@ _register(
         class_name="UDPFloodAttack",
         params=[
             ParamDef("target_ip", "str", True, None, "IP address of the target host"),
-            ParamDef("ports", "int", False, 80, "Target UDP port"),
-            ParamDef("packet_count", "int", False, 1000, "Number of UDP packets to send"),
+            ParamDef("target_port", "int", False, 80, "Target UDP port"),
+            ParamDef("count", "int", False, 1000, "Number of UDP packets to send"),
         ],
     )
 )

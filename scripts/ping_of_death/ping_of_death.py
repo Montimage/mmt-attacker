@@ -114,7 +114,7 @@ class PingOfDeathAttack:
     def __init__(
         self,
         target_ip: str,
-        packet_count: int = 1,
+        count: int = 1,
         payload_size: int = 65500,
         fragment_size: int = 1400,
         interval: float = 0.1,
@@ -132,7 +132,7 @@ class PingOfDeathAttack:
             verbose (bool): Whether to enable verbose output (default: False)
         """
         self.target_ip = target_ip
-        self.packet_count = max(1, packet_count)  # Ensure at least 1 packet
+        self.packet_count = max(1, count)  # Ensure at least 1 packet
         self.payload_size = min(max(1, payload_size), 65535)  # Limit size to valid range
         self.fragment_size = min(max(576, fragment_size), 1500)  # Reasonable fragment size range
         self.interval = max(0, interval)  # Non-negative interval
@@ -150,7 +150,7 @@ class PingOfDeathAttack:
         logger.info(f"Initialized Ping of Death attack against {target_ip}")
         if self.verbose:
             logger.info(
-                f"Parameters: {packet_count} packets, {payload_size} bytes payload, "
+                f"Parameters: {count} packets, {payload_size} bytes payload, "
                 f"{fragment_size} bytes fragment size, {interval} seconds interval"
             )
 
@@ -325,7 +325,7 @@ def start_ping_of_death_attack(
         # Create and execute the attack
         attack = PingOfDeathAttack(
             target_ip=target_ip,
-            packet_count=packet_count,
+            count=packet_count,
             payload_size=payload_size,
             fragment_size=fragment_size,
             interval=interval,

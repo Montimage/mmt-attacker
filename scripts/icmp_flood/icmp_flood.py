@@ -92,7 +92,7 @@ class ICMPFloodAttack:
     def __init__(
         self,
         target_ip: str,
-        packet_count: int = 1000,
+        count: int = 1000,
         rate: int = 100,
         packet_size: int = 64,
         spoof_ip: bool = True,
@@ -103,7 +103,7 @@ class ICMPFloodAttack:
 
         Args:
             target_ip (str): IP address of the target
-            packet_count (int, optional): Number of packets to send. Defaults to 1000.
+            count (int, optional): Number of packets to send. Defaults to 1000.
             rate (int, optional): Number of packets to send per second. Defaults to 100.
             packet_size (int, optional): Size of ICMP packet in bytes. Defaults to 64.
             spoof_ip (bool, optional): Whether to use random source IPs. Defaults to True.
@@ -118,7 +118,7 @@ class ICMPFloodAttack:
         except ValueError:
             raise ValueError(f"Invalid target IP address: {target_ip}")
 
-        self.packet_count = max(1, packet_count)
+        self.packet_count = max(1, count)
         self.rate = max(1, min(rate, 10000))
         self.packet_size = max(8, min(packet_size, 65500))  # ICMP min 8 bytes
         self.spoof_ip = spoof_ip
@@ -134,7 +134,7 @@ class ICMPFloodAttack:
         logger.info("Initialized ICMP flood attack simulation")
         logger.info(f"Target: {target_ip}")
         if self.verbose:
-            logger.info(f"Packet count: {packet_count}, Rate: {rate} packets/second")
+            logger.info(f"Packet count: {count}, Rate: {rate} packets/second")
             logger.info(f"Packet size: {packet_size} bytes")
             logger.info(f"IP spoofing: {'Enabled' if spoof_ip else 'Disabled'}")
 
@@ -327,7 +327,7 @@ def main() -> None:
 
         attack = ICMPFloodAttack(
             target_ip=args.target_ip,
-            packet_count=args.packet_count,
+            count=args.packet_count,
             rate=args.rate,
             packet_size=args.packet_size,
             spoof_ip=args.spoof_ip,

