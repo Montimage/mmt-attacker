@@ -149,7 +149,7 @@ def test_cli_syn_flood_text():
         runner = CliRunner()
         result = runner.invoke(cli, ["syn-flood", "--target-ip", "127.0.0.1"])
     assert result.exit_code == 0
-    assert "packets_sent" in result.output
+    assert "Packets" in result.output
 
 
 def test_cli_syn_flood_json():

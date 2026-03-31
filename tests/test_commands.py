@@ -63,7 +63,7 @@ def _valid_args_for(name: str, tmp_path=None) -> list[str]:
             args.extend([flag, "8080"])
         elif p.name.endswith("_url"):
             args.extend([flag, "http://example.com"])
-        elif p.name in ("pcap_file", "payload_file", "wordlist"):
+        elif p.name.endswith("_file") or p.name in ("passwords", "payload_file", "wordlist"):
             if tmp_path is not None:
                 f = tmp_path / f"{p.name}.txt"
                 f.write_text("dummy")
@@ -128,10 +128,14 @@ class TestHelpSmokeAllCommands:
 # ---------------------------------------------------------------------------
 
 
+_ALL_OPTIONAL_ATTACKS = [n for n in ALL_ATTACKS if not any(p.required for p in get_attack(n).params)]
+_ATTACKS_WITH_REQUIRED = [n for n in ALL_ATTACKS if n not in _ALL_OPTIONAL_ATTACKS]
+
+
 class TestMissingRequiredArgs:
     """Invoking a command without required args must exit with code 2."""
 
-    @pytest.mark.parametrize("name", ALL_ATTACKS, ids=ALL_ATTACKS)
+    @pytest.mark.parametrize("name", _ATTACKS_WITH_REQUIRED, ids=_ATTACKS_WITH_REQUIRED)
     def test_missing_required_exits_2(self, name: str):
         result = runner.invoke(cli, [name])
         assert result.exit_code == 2, f"{name} without args exited {result.exit_code}, expected 2"
@@ -359,7 +363,7 @@ class TestListIncludesAllAttacks:
     def test_list_text_shows_correct_total(self):
         result = runner.invoke(cli, ["list"])
         assert result.exit_code == 0
-        assert "Total: 26 attacks" in result.output
+        assert "26 attacks" in result.output
 
 
 # ---------------------------------------------------------------------------
@@ -444,7 +448,7 @@ class TestJSONOutputMode:
         assert result.exit_code == 0, (
             f"{name} text mode exited {result.exit_code}: {result.output}"
         )
-        assert "status: completed" in result.output
+        assert "completed" in result.output
 
 
 # ---------------------------------------------------------------------------

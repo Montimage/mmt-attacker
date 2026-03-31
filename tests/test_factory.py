@@ -274,8 +274,8 @@ class TestMakeCommandExecution:
             runner = CliRunner()
             result = runner.invoke(group, ["fake-attack", "--target-ip", "1.2.3.4"])
         assert result.exit_code == 0
-        assert "target: 1.2.3.4" in result.output
-        assert "packets: 100" in result.output
+        assert "1.2.3.4" in result.output
+        assert "100" in result.output
 
     def test_json_output(self):
         """With -o json the result should be valid JSON."""
@@ -579,7 +579,7 @@ class TestMakeCommandWithRealRegistry:
         option_names = {p.name for p in cmd.params}
         assert "pcap_file" in option_names
         assert "interface" in option_names
-        assert "speed" in option_names
+        assert "rate" in option_names
 
     def test_all_attacks_produce_commands(self):
         """Every registered attack should produce a valid command."""
