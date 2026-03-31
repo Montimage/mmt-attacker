@@ -50,8 +50,8 @@ def cli(ctx, verbose, output, no_color):
 
     # Configure logging: messages go to stderr so stdout stays clean for
     # structured output.
-    import matcha.output as _out
     import matcha.logger as _ul
+    import matcha.output as _out
 
     _ul._USE_COLOR = not color_disabled and sys.stderr.isatty()
     _out._COLOR = not color_disabled and sys.stdout.isatty()
