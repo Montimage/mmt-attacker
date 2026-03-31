@@ -302,18 +302,12 @@ class SYNFloodAttack:
         Args:
             stats (Dict[str, Any]): Statistics from _get_statistics()
         """
-        logger.info("=" * 50)
-        logger.info("SYN Flood Attack Summary")
-        logger.info("=" * 50)
-        logger.info(f"Target: {stats['target_ip']}")
-        logger.info(f"Ports: {', '.join(map(str, stats['ports']))}")
-        logger.info(f"Packets sent: {stats['packets_sent']}")
-        logger.info(f"Duration: {stats['duration_seconds']:.2f} seconds")
-        logger.info(f"Configured rate: {stats['configured_rate']} packets/second")
-        logger.info(f"Actual rate: {stats['actual_rate']:.2f} packets/second")
-        logger.info(f"Rate efficiency: {stats['rate_efficiency']:.2f}%")
-        logger.info(f"Estimated traffic: {stats['estimated_traffic_bytes'] / 1024:.2f} KB")
-        logger.info("=" * 50)
+        logger.info(
+            "SYN Flood complete — target=%s  packets=%s  duration=%.2fs",
+            stats["target_ip"],
+            stats["packets_sent"],
+            stats["duration_seconds"],
+        )
 
 
 def parse_port_list(port_str: str) -> list[int]:
@@ -434,12 +428,7 @@ def main() -> None:
     Main entry point for the SYN flood attack simulation.
     """
     # Display ethical notice
-    print("=" * 80)
-    print("WARNING: This tool is for AUTHORIZED SECURITY TESTING ONLY")
-    print("Using this tool against systems without permission is ILLEGAL")
-    print("The authors assume NO LIABILITY for misuse of this software")
-    print("=" * 80)
-    print()
+    logger.warning("AUTHORIZED SECURITY TESTING ONLY — unauthorized use is illegal")
 
     try:
         # Parse command-line arguments

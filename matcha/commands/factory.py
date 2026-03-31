@@ -251,7 +251,7 @@ def make_command(entry: AttackEntry) -> click.Command:
 
         # Format output --------------------------------------------------
         fmt = ctx.obj.get("output", "text") if ctx.obj else "text"
-        format_output(result, fmt=fmt)
+        format_output(result, fmt=fmt, entry=entry)
 
     cmd = click.Command(
         name=entry.name,

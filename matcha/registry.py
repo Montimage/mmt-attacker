@@ -163,7 +163,11 @@ _register(
         params=[
             ParamDef("target_ip", "str", True, None, "IP address of the victim to flood"),
             ParamDef(
-                "dns_servers", "str", False, "8.8.8.8", "Open DNS resolver to use for amplification"
+                "dns_servers",
+                "str",
+                False,
+                "8.8.8.8",
+                "Open DNS resolver to use for amplification",
             ),
             ParamDef("domain", "str", False, "example.com", "Domain to query"),
             ParamDef("query_count", "int", False, 1000, "Number of DNS queries to send"),
@@ -211,7 +215,9 @@ _register(
             ParamDef("target_ip", "str", True, None, "IP address of the target host"),
             ParamDef("gateway_ip", "str", True, None, "IP address of the network gateway"),
             ParamDef("interface", "str", False, "eth0", "Network interface to use"),
-            ParamDef("capture_file", "str", False, None, "Optional path to write captured packets"),
+            ParamDef(
+                "capture_file", "str", False, None, "Optional path to write captured packets"
+            ),
         ],
     )
 )
@@ -302,7 +308,9 @@ _register(
         module_path="scripts.credential_harvester.credential_harvester",
         class_name="CredentialHarvester",
         params=[
-            ParamDef("template", "str", False, "login-form", "Template name or URL of page to clone"),
+            ParamDef(
+                "template", "str", False, "login-form", "Template name or URL of page to clone"
+            ),
             ParamDef("port", "int", False, 8080, "Port to serve the cloned page on"),
         ],
     )
@@ -391,7 +399,13 @@ _register(
         module_path="scripts.slowloris.slowloris",
         class_name="SlowlorisAttack",
         params=[
-            ParamDef("target_url", "str", True, None, "URL of the target web server (e.g. http://target)"),
+            ParamDef(
+                "target_url",
+                "str",
+                True,
+                None,
+                "URL of the target web server (e.g. http://target)",
+            ),
             ParamDef("sockets", "int", False, 150, "Number of sockets to open"),
         ],
     )
@@ -435,7 +449,9 @@ _register(
         module_path="scripts.ssl_strip.ssl_strip",
         class_name="SSLStripAttack",
         params=[
-            ParamDef("interface", "str", False, "eth0", "Network interface to intercept traffic on"),
+            ParamDef(
+                "interface", "str", False, "eth0", "Network interface to intercept traffic on"
+            ),
         ],
     )
 )
