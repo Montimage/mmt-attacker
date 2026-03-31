@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-03-31
+
+### Features
+
+- Rich terminal output with coloured logs and attack verdict panels ([188515e](https://github.com/montimage/mmt-attacker/commit/188515e)) ([#49](https://github.com/montimage/mmt-attacker/pull/49))
+- Modernise website UI with cybersecurity-themed design ([9698e0d](https://github.com/montimage/mmt-attacker/commit/9698e0d))
+- Add Docs page and navigation link to frontend ([28566ee](https://github.com/montimage/mmt-attacker/commit/28566ee))
+- Rebuild landing page with light-only theme ([6392c78](https://github.com/montimage/mmt-attacker/commit/6392c78))
+- Update CLI commands from `python src/cli.py` to `matcha` ([cb00515](https://github.com/montimage/mmt-attacker/commit/cb00515))
+- Add target container and docker-compose for two-container demo ([b8596b9](https://github.com/montimage/mmt-attacker/commit/b8596b9)) ([#44](https://github.com/montimage/mmt-attacker/pull/44))
+- Add CLI-only Docker container ([6370f66](https://github.com/montimage/mmt-attacker/commit/6370f66)) ([#43](https://github.com/montimage/mmt-attacker/pull/43))
+
+### Bug Fixes
+
+- Resolve playbook test failures found during end-to-end run ([372fe50](https://github.com/montimage/mmt-attacker/commit/372fe50))
+- Rewrite simulation engine to match real matcha CLI output ([aaa65aa](https://github.com/montimage/mmt-attacker/commit/aaa65aa))
+- Align all website CLI commands with `matcha --help` ([8a7c018](https://github.com/montimage/mmt-attacker/commit/8a7c018))
+- Correct invalid Tailwind class and sticky offset after header resize ([85e09ab](https://github.com/montimage/mmt-attacker/commit/85e09ab))
+- Rename `generatePythonCommand` to `generateCommand` ([4fc71b7](https://github.com/montimage/mmt-attacker/commit/4fc71b7)) ([#48](https://github.com/montimage/mmt-attacker/pull/48))
+- Resolve 15 attack failures found during end-to-end playbook run ([b5762cf](https://github.com/montimage/mmt-attacker/commit/b5762cf)) ([#46](https://github.com/montimage/mmt-attacker/pull/46))
+
+### Documentation
+
+- Rewrite playbook and deployment docs for two-container Docker workflow ([b89bdf8](https://github.com/montimage/mmt-attacker/commit/b89bdf8)) ([#45](https://github.com/montimage/mmt-attacker/pull/45))
+
+### Other Changes
+
+- Update playbook runner results from end-to-end run ([2679243](https://github.com/montimage/mmt-attacker/commit/2679243))
+- Add playbook runner results and credential harvester templates ([348f9ba](https://github.com/montimage/mmt-attacker/commit/348f9ba))
+- Remove automated PyPI publishing — publish manually with twine ([aef1390](https://github.com/montimage/mmt-attacker/commit/aef1390))
+
+**Full Changelog**: https://github.com/montimage/mmt-attacker/compare/v0.1.0...v0.2.0
+
 ## [0.1.0] - 2026-03-30
 
 ### Features

@@ -34,7 +34,7 @@ Paste any error messages or logs here
 
 - OS: [e.g., Ubuntu 22.04, macOS 14.0]
 - Python version: [e.g., 3.10]
-- MMT-Attacker version: [e.g., 0.1.0]
+- MMT-Attacker version: [e.g., 0.2.0]
 - Installation method: [pip install -e . / pip install]
 
 ## Additional Context
