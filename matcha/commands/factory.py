@@ -100,6 +100,7 @@ _PARAM_VALIDATORS = [
 _EXACT_NAME_VALIDATORS: dict[str, Any] = {
     "target_prefix": _validate_network,
     "wordlist": _validate_file_path,
+    "passwords": _validate_file_path,
 }
 
 

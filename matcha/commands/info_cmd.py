@@ -105,21 +105,28 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "IP address of the victim to flood",
             },
             {
-                "name": "dns_server",
+                "name": "dns_servers",
                 "type": "str",
                 "default": "8.8.8.8",
                 "required": False,
                 "help": "Open DNS resolver to use for amplification",
             },
             {
-                "name": "count",
+                "name": "domain",
+                "type": "str",
+                "default": "example.com",
+                "required": False,
+                "help": "Domain to query",
+            },
+            {
+                "name": "query_count",
                 "type": "int",
                 "default": 1000,
                 "required": False,
                 "help": "Number of DNS queries to send",
             },
         ],
-        "example": "matcha run dns-amplification --target-ip 192.168.1.10 --dns-server 8.8.8.8",
+        "example": "matcha run dns-amplification --target-ip 192.168.1.10 --dns-servers 8.8.8.8",
     },
     "icmp-flood": {
         "description": "Perform ICMP flood attack (Ping Flood) by sending a large "
@@ -346,21 +353,21 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
         "category": "Application-layer",
         "parameters": [
             {
-                "name": "target_url",
+                "name": "template",
                 "type": "str",
-                "default": None,
-                "required": True,
-                "help": "URL of the login page to clone",
+                "default": "login-form",
+                "required": False,
+                "help": "Template name or URL of page to clone",
             },
             {
-                "name": "listen_port",
+                "name": "port",
                 "type": "int",
                 "default": 8080,
                 "required": False,
                 "help": "Port to serve the cloned page on",
             },
         ],
-        "example": "matcha run credential-harvester --target-url https://example.com/login",
+        "example": "matcha run credential-harvester --template https://example.com/login",
     },
     "directory-traversal": {
         "description": "Perform directory traversal attack to access files outside "
@@ -390,11 +397,18 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
         "category": "Application-layer",
         "parameters": [
             {
-                "name": "target_ip",
+                "name": "host",
                 "type": "str",
                 "default": None,
                 "required": True,
                 "help": "IP address of the FTP server",
+            },
+            {
+                "name": "port",
+                "type": "int",
+                "default": 21,
+                "required": False,
+                "help": "FTP port",
             },
             {
                 "name": "username",
@@ -404,14 +418,14 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "Username to brute force",
             },
             {
-                "name": "wordlist",
+                "name": "passwords",
                 "type": "str",
                 "default": None,
                 "required": True,
                 "help": "Path to the password wordlist file",
             },
         ],
-        "example": "matcha run ftp-brute-force --target-ip 192.168.1.10 --wordlist passwords.txt",
+        "example": "matcha run ftp-brute-force --host 192.168.1.10 --passwords passwords.txt",
     },
     "http-dos": {
         "description": "Perform HTTP DoS attack by sending malformed or resource-intensive "
@@ -470,11 +484,18 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
         "category": "Application-layer",
         "parameters": [
             {
-                "name": "target_ip",
+                "name": "host",
                 "type": "str",
                 "default": None,
                 "required": True,
                 "help": "IP address of the RDP server",
+            },
+            {
+                "name": "port",
+                "type": "int",
+                "default": 3389,
+                "required": False,
+                "help": "RDP port",
             },
             {
                 "name": "username",
@@ -484,14 +505,14 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "Username to brute force",
             },
             {
-                "name": "wordlist",
+                "name": "passwords",
                 "type": "str",
                 "default": None,
                 "required": True,
                 "help": "Path to the password wordlist file",
             },
         ],
-        "example": "matcha run rdp-brute-force --target-ip 192.168.1.10 --wordlist passwords.txt",
+        "example": "matcha run rdp-brute-force --host 192.168.1.10 --passwords passwords.txt",
     },
     "slowloris": {
         "description": "Perform Slowloris attack by opening many connections to the "
@@ -499,28 +520,21 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
         "category": "Application-layer",
         "parameters": [
             {
-                "name": "target_ip",
+                "name": "target_url",
                 "type": "str",
                 "default": None,
                 "required": True,
-                "help": "IP address of the target web server",
-            },
-            {
-                "name": "target_port",
-                "type": "int",
-                "default": 80,
-                "required": False,
-                "help": "Target HTTP port",
+                "help": "URL of the target web server (e.g. http://target)",
             },
             {
                 "name": "sockets",
                 "type": "int",
-                "default": 200,
+                "default": 150,
                 "required": False,
                 "help": "Number of sockets to open",
             },
         ],
-        "example": "matcha run slowloris --target-ip 192.168.1.10 --sockets 500",
+        "example": "matcha run slowloris --target-url http://192.168.1.10 --sockets 500",
     },
     "sql-injection": {
         "description": "Perform SQL injection attack by injecting malicious SQL "
@@ -557,6 +571,13 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "IP address of the SSH server",
             },
             {
+                "name": "target_port",
+                "type": "int",
+                "default": 22,
+                "required": False,
+                "help": "SSH port",
+            },
+            {
                 "name": "username",
                 "type": "str",
                 "default": "root",
@@ -564,14 +585,14 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "Username to brute force",
             },
             {
-                "name": "wordlist",
+                "name": "passwords",
                 "type": "str",
                 "default": None,
                 "required": True,
                 "help": "Path to the password wordlist file",
             },
         ],
-        "example": "matcha run ssh-brute-force --target-ip 192.168.1.10 --wordlist passwords.txt",
+        "example": "matcha run ssh-brute-force --target-ip 192.168.1.10 --passwords passwords.txt",
     },
     "ssl-strip": {
         "description": "Perform SSL Strip attack by downgrading HTTPS connections to "

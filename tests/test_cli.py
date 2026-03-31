@@ -272,6 +272,12 @@ APPLICATION_ATTACKS = [
     "xxe",
 ]
 
+# Attacks whose every param has a default — they execute immediately when
+# invoked bare and exit 0, so they must be excluded from the exit-2 check.
+_APP_ALL_OPTIONAL = {"credential-harvester", "ssl-strip"}
+
+APPLICATION_ATTACKS_WITH_REQUIRED = [a for a in APPLICATION_ATTACKS if a not in _APP_ALL_OPTIONAL]
+
 
 def test_all_application_attacks_registered_as_subcommands():
     """Every application-layer attack must appear as a CLI subcommand."""
@@ -293,7 +299,7 @@ def test_application_attack_help_exits_zero():
 def test_application_attacks_missing_required_args():
     """Application attacks with required args should exit 2 when called bare."""
     runner = CliRunner()
-    for name in APPLICATION_ATTACKS:
+    for name in APPLICATION_ATTACKS_WITH_REQUIRED:
         result = runner.invoke(cli, [name])
         assert result.exit_code == 2, (
             f"{name} should exit 2 without required args, got {result.exit_code}"
@@ -331,7 +337,7 @@ def test_pcap_replay_shows_expected_options():
     runner = CliRunner()
     result = runner.invoke(cli, ["pcap-replay", "--help"])
     assert result.exit_code == 0
-    for flag in ["--pcap-file", "--interface", "--speed"]:
+    for flag in ["--pcap-file", "--interface", "--rate"]:
         assert flag in result.output, f"{flag} not found in pcap-replay help"
 
 
