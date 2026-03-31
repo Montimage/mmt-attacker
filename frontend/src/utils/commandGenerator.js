@@ -52,7 +52,7 @@ const formatParameter = (param, value) => {
 
 /**
  * Generate matcha CLI command for executing an attack
- * @param {string} attackId - Attack identifier (e.g., 'arp-spoofing')
+ * @param {string} attackId - Attack identifier (e.g., 'arp-spoof')
  * @param {Object} scenario - Scenario object with parameters
  * @param {Object} parameterValues - Current parameter values
  * @returns {string} - Complete matcha CLI command

@@ -638,7 +638,7 @@ export const simulateAttack = async (attackId, scenarioId, parameters) => {
 
   // Route to appropriate simulator
   switch (attackId) {
-    case 'arp-spoofing':
+    case 'arp-spoof':
       return simulateArpSpoofing(scenarioId, parameters)
     case 'syn-flood':
       return simulateSynFlood(scenarioId, parameters)
