@@ -214,14 +214,14 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
         "category": "Network-layer",
         "parameters": [
             {
-                "name": "target_ip",
+                "name": "victim_ip",
                 "type": "str",
                 "default": None,
                 "required": True,
                 "help": "IP address of the victim to flood",
             },
             {
-                "name": "ntp_server",
+                "name": "ntp_servers",
                 "type": "str",
                 "default": None,
                 "required": True,
@@ -235,7 +235,7 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "Number of NTP requests to send",
             },
         ],
-        "example": "matcha run ntp-amplification --target-ip 192.168.1.10 --ntp-server 10.0.0.1",
+        "example": "matcha run ntp-amplification --victim-ip 192.168.1.10 --ntp-servers 10.0.0.1",
     },
     "ping-of-death": {
         "description": "Perform Ping of Death attack by sending oversized ICMP packets "
@@ -265,7 +265,7 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
         "category": "Network-layer",
         "parameters": [
             {
-                "name": "target_ip",
+                "name": "victim_ip",
                 "type": "str",
                 "default": None,
                 "required": True,
@@ -286,7 +286,7 @@ _ATTACK_DETAILS: dict[str, dict[str, Any]] = {
                 "help": "Number of ICMP packets to send",
             },
         ],
-        "example": "matcha run smurf-attack --target-ip 192.168.1.10 --broadcast-ip 192.168.1.255",
+        "example": "matcha run smurf-attack --victim-ip 192.168.1.10 --broadcast-ip 192.168.1.255",
     },
     "syn-flood": {
         "description": "Perform SYN flood attack by sending a large number of TCP SYN "
