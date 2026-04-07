@@ -1,6 +1,6 @@
 /**
  * Command Generator Utility
- * Generates matcha CLI commands for MMT-Attacker from attack parameters
+ * Generates mag CLI commands for MMT-Attacker from attack parameters
  */
 
 /**
@@ -51,15 +51,15 @@ const formatParameter = (param, value) => {
 }
 
 /**
- * Generate matcha CLI command for executing an attack
+ * Generate mag CLI command for executing an attack
  * @param {string} attackId - Attack identifier (e.g., 'arp-spoof')
  * @param {Object} scenario - Scenario object with parameters
  * @param {Object} parameterValues - Current parameter values
- * @returns {string} - Complete matcha CLI command
+ * @returns {string} - Complete mag CLI command
  */
 export const generateCommand = (attackId, scenario, parameterValues = {}) => {
   // Start with base command
-  let command = `matcha ${attackId}`
+  let command = `mag ${attackId}`
 
   // Process each parameter
   const args = []
@@ -99,7 +99,7 @@ export const generateCommand = (attackId, scenario, parameterValues = {}) => {
  * Generate example command with placeholder values
  * @param {string} attackId - Attack identifier
  * @param {Object} scenario - Scenario object with parameters
- * @returns {string} - Example matcha CLI command with placeholders
+ * @returns {string} - Example mag CLI command with placeholders
  */
 export const generateExampleCommand = (attackId, scenario) => {
   const exampleValues = {}

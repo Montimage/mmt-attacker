@@ -8,5 +8,5 @@
   "timestamp": "2026-03-31T11:23:24",
   "duration_seconds": 0.3863,
   "packets_sent": 10,
-  "command": "docker compose exec attacker matcha vlan-hopping --interface eth0 --outer-vlan 10 --inner-vlan 20 --target-ip 172.20.0.2"
+  "command": "docker compose exec attacker mag vlan-hopping --interface eth0 --outer-vlan 10 --inner-vlan 20 --target-ip 172.20.0.2"
 }

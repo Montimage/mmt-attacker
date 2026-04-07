@@ -18,5 +18,5 @@
   "requires_rebuild": false,
   "requires_target_restart": false,
   "confidence": "high",
-  "notes": "The registry (matcha/registry.py line 190) already had count default=500 from a prior fix attempt. The remaining issue was that the PLAYBOOK.md command explicitly passed --count 1000, overriding the registry default. No Docker rebuild is needed; the fix takes effect on the next scenario run."
+  "notes": "The registry (mag/registry.py line 190) already had count default=500 from a prior fix attempt. The remaining issue was that the PLAYBOOK.md command explicitly passed --count 1000, overriding the registry default. No Docker rebuild is needed; the fix takes effect on the next scenario run."
 }

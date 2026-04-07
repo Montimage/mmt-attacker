@@ -5,12 +5,12 @@
   "root_cause_category": "cli-flag-mismatch",
   "files_changed": [
     {
-      "path": "matcha/registry.py",
+      "path": "mag/registry.py",
       "description": "Added 'aliases=(\"--dns-server\",)' to the dns_servers ParamDef for the dns-amplification attack, and added 'aliases' field (tuple[str, ...]) to the ParamDef dataclass",
       "lines_changed": "26-27, 170-176"
     },
     {
-      "path": "matcha/commands/factory.py",
+      "path": "mag/commands/factory.py",
       "description": "Updated _make_option to unpack pdef.aliases into param_decls so any registered aliases become accepted CLI options",
       "lines_changed": "189"
     }

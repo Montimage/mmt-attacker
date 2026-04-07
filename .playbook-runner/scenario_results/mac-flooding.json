@@ -9,8 +9,8 @@
   "has_output": true,
   "timed_out": false,
   "warnings": [
-    "--rate option not supported by matcha mac-flooding; flag removed",
+    "--rate option not supported by mag mac-flooding; flag removed",
     "count reduced from 2000 to 500 to complete within 30s timeout (tool sends at ~100 pkt/s; 2000 frames requires ~20s but timed out at 30s likely due to network overhead)"
   ],
-  "note": "Attack completed successfully. Sent 500 MAC flooding frames in 21.97s at ~22.8 pkt/s on eth0. matcha mac-flooding does not support --rate flag."
+  "note": "Attack completed successfully. Sent 500 MAC flooding frames in 21.97s at ~22.8 pkt/s on eth0. mag mac-flooding does not support --rate flag."
 }

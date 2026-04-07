@@ -5,7 +5,7 @@
   "root_cause_category": "cli-flag-mismatch",
   "files_changed": [
     {
-      "path": "matcha/registry.py",
+      "path": "mag/registry.py",
       "description": "Added aliases=(\"--query-domain\",) to the 'domain' ParamDef in the dns-amplification registry entry so the CLI accepts --query-domain as an alternative to --domain",
       "lines_changed": "176"
     }
@@ -13,5 +13,5 @@
   "requires_rebuild": false,
   "requires_target_restart": false,
   "confidence": "high",
-  "notes": "registry.py is pure Python metadata consumed at runtime by the CLI factory; no Docker image rebuild is required — the fix takes effect immediately on the next matcha invocation."
+  "notes": "registry.py is pure Python metadata consumed at runtime by the CLI factory; no Docker image rebuild is required — the fix takes effect immediately on the next mag invocation."
 }

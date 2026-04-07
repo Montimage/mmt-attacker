@@ -5,7 +5,7 @@
   "root_cause_category": "cli-flag-mismatch",
   "files_changed": [
     {
-      "path": "matcha/registry.py",
+      "path": "mag/registry.py",
       "description": "Added aliases=(\"--victim\",) to the victim_ip ParamDef for smurf-attack so --victim is accepted as a synonym for --victim-ip",
       "lines_changed": "266"
     }

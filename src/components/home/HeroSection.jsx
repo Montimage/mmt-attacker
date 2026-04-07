@@ -73,7 +73,7 @@ function HeroSection() {
               {
                 Icon: Terminal,
                 label: 'Real CLI Commands',
-                desc: 'Generate exact matcha CLI commands from your chosen parameters.',
+                desc: 'Generate exact mag CLI commands from your chosen parameters.',
               },
               {
                 Icon: Zap,

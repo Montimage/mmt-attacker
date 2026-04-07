@@ -1,7 +1,7 @@
 {
   "name": "smurf-attack",
   "section": "Network-Layer",
-  "command": "docker compose exec attacker matcha smurf-attack --victim-ip 172.20.0.2 --broadcast-ip 172.20.0.255 --count 10",
+  "command": "docker compose exec attacker mag smurf-attack --victim-ip 172.20.0.2 --broadcast-ip 172.20.0.255 --count 10",
   "status": "PASS",
   "exit_code": 0,
   "elapsed_s": 20.75,

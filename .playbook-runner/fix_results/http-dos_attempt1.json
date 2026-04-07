@@ -5,7 +5,7 @@
   "root_cause_category": "cli-flag-mismatch",
   "files_changed": [
     {
-      "path": "matcha/registry.py",
+      "path": "mag/registry.py",
       "description": "Added aliases=(\"--threads\",) to the num_connections ParamDef for http-dos so the playbook's --threads flag is accepted as an alias",
       "lines_changed": "362"
     }

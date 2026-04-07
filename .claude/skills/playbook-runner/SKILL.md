@@ -111,12 +111,12 @@ Parse `docs/PLAYBOOK.md` directly in the main agent. This is lightweight (one fi
 
 1. Split on H3 headings (`### `). Each heading is a scenario name.
 2. Within each section, find fenced bash blocks (` ```bash ... ``` `).
-3. Extract every line matching `docker compose exec attacker matcha` — these are runnable commands.
+3. Extract every line matching `docker compose exec attacker mag` — these are runnable commands.
 4. If a section has setup commands before the main attack (e.g., creating a wordlist), record them as `pre_commands`.
 5. For each scenario record:
    - `name`: from the H3 heading (lowercased, spaces → hyphens)
    - `section`: top-level H2 section it falls under
-   - `command`: the extracted `docker compose exec attacker matcha ...` line
+   - `command`: the extracted `docker compose exec attacker mag ...` line
    - `pre_commands`: list of setup commands (may be empty)
    - `is_simulation`: true if the section text mentions "simulation", "no real", "educational simulation", or the note says the target service isn't present
    - `timeout_s`: 60 for brute-force attacks (SSH, FTP, RDP), 30 for everything else

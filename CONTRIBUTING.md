@@ -128,7 +128,7 @@ test: add unit tests for ARP spoof module
 1. Create a module in `src/attacks/` inheriting from `AttackBase`
 2. Implement `add_arguments()`, `validate()`, and `run()`
 3. Register in `src/attacks/__init__.py`
-4. Add CLI wiring in `matcha/registry.py`
+4. Add CLI wiring in `mag/registry.py`
 5. Add tests in `tests/`
 6. Document in `docs/PLAYBOOK.md`
 

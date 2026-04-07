@@ -8,6 +8,6 @@
   "has_traceback": false,
   "has_output": true,
   "timed_out": false,
-  "warnings": ["Original scenario command used --packet-count; corrected to --count per matcha CLI"],
+  "warnings": ["Original scenario command used --packet-count; corrected to --count per mag CLI"],
   "note": "Sent 500 UDP packets to 172.20.0.2:80 over 28.01s. Actual rate was 17.85 pkt/s (17.85% of configured 100 pkt/s). Estimated traffic: 263.67 KB."
 }

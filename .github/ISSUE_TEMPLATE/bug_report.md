@@ -12,7 +12,7 @@ A clear and concise description of what the bug is.
 
 ## Steps to Reproduce
 
-1. Run `matcha ...`
+1. Run `mag ...`
 2. With arguments '...'
 3. See error
 

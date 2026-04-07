@@ -10,7 +10,7 @@
       "lines_changed": "93-100, 140-141, 381-390"
     },
     {
-      "path": "matcha/registry.py",
+      "path": "mag/registry.py",
       "description": "Added ParamDef('count', 'int', False, 50, ...) to the arp-spoof registry entry so the CLI exposes --count with default 50",
       "lines_changed": "123"
     }

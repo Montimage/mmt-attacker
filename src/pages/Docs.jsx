@@ -200,7 +200,7 @@ function Docs() {
       <div className="mb-10">
         <h1 className="text-4xl md:text-5xl font-bold text-black mb-3">Documentation</h1>
         <p className="text-lg text-gray-600 max-w-3xl">
-          Everything you need to install, configure, and use <code className="font-mono text-green-700 bg-green-50 px-1.5 py-0.5 rounded border border-green-200">matcha</code> — the MAG (Montimage Attack Generator) CLI.
+          Everything you need to install, configure, and use <code className="font-mono text-green-700 bg-green-50 px-1.5 py-0.5 rounded border border-green-200">mag</code> — the MAG (Montimage Attack Generator) CLI.
         </p>
       </div>
 
@@ -240,7 +240,7 @@ function Docs() {
               <p className="text-gray-700 leading-relaxed mb-4">
                 <strong>MAG (Montimage Attack Generator)</strong> is an open-source network attack simulation toolkit built by{' '}
                 <a href="https://www.montimage.eu" target="_blank" rel="noopener noreferrer" className="text-green-700 hover:underline font-medium">Montimage</a>.
-                It provides a single CLI tool called <code className="font-mono bg-gray-100 px-1 rounded">matcha</code> that
+                It provides a single CLI tool called <code className="font-mono bg-gray-100 px-1 rounded">mag</code> that
                 lets security professionals, researchers, and students simulate <strong>26 different attacks</strong> across
                 three categories — all in isolated, authorized lab environments.
               </p>
@@ -311,18 +311,18 @@ pip install -e .`} />
 
             <Subsection title="Option 4 — Docker">
               <p className="text-sm text-gray-600 mb-2">
-                Run matcha in an isolated container without any local Python setup.
+                Run mag in an isolated container without any local Python setup.
               </p>
-              <CodeBlock code={`docker build -t matcha .
-docker run --rm --cap-add NET_ADMIN --cap-add NET_RAW matcha --help`} />
+              <CodeBlock code={`docker build -t mag .
+docker run --rm --cap-add NET_ADMIN --cap-add NET_RAW mag --help`} />
               <NoteCard type="info">
                 See the <button onClick={() => scrollTo('docker')} className="underline text-blue-700 hover:text-blue-900 font-medium">Docker Lab</button> section for a full two-container attacker/target environment.
               </NoteCard>
             </Subsection>
 
             <Subsection title="Verify the installation">
-              <CodeBlock code={`matcha --version
-matcha list`} />
+              <CodeBlock code={`mag --version
+mag list`} />
             </Subsection>
           </Section>
 
@@ -336,15 +336,15 @@ matcha list`} />
 
             <Subsection title="List all attacks">
               <CodeBlock code={`# Human-readable table
-matcha list
+mag list
 
 # Machine-readable JSON
-matcha list -o json`} />
+mag list -o json`} />
             </Subsection>
 
             <Subsection title="Inspect a specific attack">
-              <CodeBlock code={`matcha info syn-flood
-matcha info ssh-brute-force`} />
+              <CodeBlock code={`mag info syn-flood
+mag info ssh-brute-force`} />
             </Subsection>
 
             <Subsection title="Run your first attack (SYN flood example)">
@@ -353,18 +353,18 @@ matcha info ssh-brute-force`} />
                 The target must be reachable from your machine and on an isolated network.
               </NoteCard>
               <CodeBlock code={`# Basic SYN flood — 500 packets to a local test server
-sudo matcha syn-flood --target-ip 192.168.56.10 --target-port 80 --count 500
+sudo mag syn-flood --target-ip 192.168.56.10 --target-port 80 --count 500
 
 # Verbose output with debug logging
-sudo matcha -v syn-flood --target-ip 192.168.56.10 --target-port 80 --count 500
+sudo mag -v syn-flood --target-ip 192.168.56.10 --target-port 80 --count 500
 
 # JSON output (useful for scripting / logging)
-sudo matcha -o json syn-flood --target-ip 192.168.56.10 --target-port 80 --count 500`} />
+sudo mag -o json syn-flood --target-ip 192.168.56.10 --target-port 80 --count 500`} />
             </Subsection>
 
             <Subsection title="PCAP replay">
               <CodeBlock code={`# Replay a capture file at 2× original speed
-sudo matcha pcap-replay --pcap-file capture.pcap --interface eth0 --rate 2.0`} />
+sudo mag pcap-replay --pcap-file capture.pcap --interface eth0 --rate 2.0`} />
             </Subsection>
           </Section>
 
@@ -405,24 +405,24 @@ sudo matcha pcap-replay --pcap-file capture.pcap --interface eth0 --rate 2.0`} /
               <div className="space-y-4">
                 {[
                   {
-                    cmd: 'matcha list',
+                    cmd: 'mag list',
                     desc: 'Print all registered attacks grouped by category.',
-                    example: 'matcha list\nmatcha list -o json',
+                    example: 'mag list\nmag list -o json',
                   },
                   {
-                    cmd: 'matcha info <attack>',
+                    cmd: 'mag info <attack>',
                     desc: 'Show detailed metadata for a single attack: description, category, and all accepted parameters.',
-                    example: 'matcha info syn-flood\nmatcha info pcap-replay -o json',
+                    example: 'mag info syn-flood\nmag info pcap-replay -o json',
                   },
                   {
-                    cmd: 'matcha completions <shell>',
+                    cmd: 'mag completions <shell>',
                     desc: 'Generate a shell completion script. Supported shells: bash, zsh, fish.',
-                    example: 'matcha completions bash >> ~/.bash_completion\nmatcha completions zsh >> ~/.zsh_completion',
+                    example: 'mag completions bash >> ~/.bash_completion\nmag completions zsh >> ~/.zsh_completion',
                   },
                   {
-                    cmd: 'matcha <attack> [OPTIONS]',
+                    cmd: 'mag <attack> [OPTIONS]',
                     desc: 'Execute the named attack. Each attack exposes its own set of options — use --help on any attack for the full parameter list.',
-                    example: 'matcha syn-flood --help\nmatcha ssh-brute-force --help',
+                    example: 'mag syn-flood --help\nmag ssh-brute-force --help',
                   },
                 ].map(({ cmd, desc, example }) => (
                   <Card key={cmd} className="!p-4">
@@ -441,7 +441,7 @@ sudo matcha pcap-replay --pcap-file capture.pcap --interface eth0 --rate 2.0`} /
           <Section id="attacks" icon={Shield} title="Attack Catalogue">
             <p className="text-gray-700 mb-6">
               All 26 attacks are listed below with their CLI command and required parameters.
-              Run <code className="font-mono bg-gray-100 px-1 rounded text-sm">matcha &lt;attack&gt; --help</code> for the full parameter list of any attack.
+              Run <code className="font-mono bg-gray-100 px-1 rounded text-sm">mag &lt;attack&gt; --help</code> for the full parameter list of any attack.
             </p>
 
             {/* Network layer */}
@@ -559,7 +559,7 @@ sudo matcha pcap-replay --pcap-file capture.pcap --interface eth0 --rate 2.0`} /
           <Section id="docker" icon={Container} title="Docker Lab">
             <p className="text-gray-700 mb-4">
               The repository ships a <code className="font-mono bg-gray-100 px-1 rounded text-sm">docker-compose.yml</code> that
-              spins up a ready-made two-container lab: an <strong>attacker</strong> container with matcha pre-installed and
+              spins up a ready-made two-container lab: an <strong>attacker</strong> container with mag pre-installed and
               a <strong>target</strong> container running nginx, OpenSSH, and vsftpd.
             </p>
 
@@ -580,17 +580,17 @@ docker compose ps`} />
               <CodeBlock code={`# Open a shell in the attacker container
 docker compose exec attacker bash
 
-# Then run any matcha attack — the target hostname resolves automatically
-matcha syn-flood --target-ip target --target-port 80 --count 200
-matcha ssh-brute-force --target-ip target --username admin --passwords /wordlists/common.txt`} />
+# Then run any mag attack — the target hostname resolves automatically
+mag syn-flood --target-ip target --target-port 80 --count 200
+mag ssh-brute-force --target-ip target --username admin --passwords /wordlists/common.txt`} />
             </Subsection>
 
             <Subsection title="Standalone Docker (no Compose)">
               <CodeBlock code={`# Build just the attacker image
-docker build -t matcha .
+docker build -t mag .
 
 # Run an attack directly
-docker run --rm --cap-add NET_ADMIN --cap-add NET_RAW matcha \\
+docker run --rm --cap-add NET_ADMIN --cap-add NET_RAW mag \\
   syn-flood --target-ip 192.168.1.10 --target-port 80 --count 100`} />
               <NoteCard type="warning">
                 The <code className="font-mono">NET_ADMIN</code> and <code className="font-mono">NET_RAW</code> capabilities
@@ -610,13 +610,13 @@ docker compose down --rmi all`} />
           {/* ================================================================ */}
           <Section id="completions" icon={Package} title="Shell Completions">
             <p className="text-gray-700 mb-4">
-              matcha can generate tab-completion scripts for Bash, Zsh, and Fish so you can auto-complete
+              mag can generate tab-completion scripts for Bash, Zsh, and Fish so you can auto-complete
               attack names and flags without memorising them.
             </p>
 
             <Subsection title="Bash">
               <CodeBlock code={`# Generate and persist the completion script
-matcha completions bash >> ~/.bash_completion
+mag completions bash >> ~/.bash_completion
 
 # Reload your shell (or open a new terminal)
 source ~/.bash_completion`} />
@@ -627,7 +627,7 @@ source ~/.bash_completion`} />
 mkdir -p ~/.zsh/completions
 
 # Write the completion script
-matcha completions zsh >> ~/.zsh/completions/_matcha
+mag completions zsh >> ~/.zsh/completions/_mag
 
 # Add to your ~/.zshrc if not already present
 echo 'fpath=(~/.zsh/completions $fpath)' >> ~/.zshrc
@@ -638,11 +638,11 @@ source ~/.zshrc`} />
             </Subsection>
 
             <Subsection title="Fish">
-              <CodeBlock code={`matcha completions fish > ~/.config/fish/completions/matcha.fish`} />
+              <CodeBlock code={`mag completions fish > ~/.config/fish/completions/mag.fish`} />
             </Subsection>
 
             <NoteCard type="tip">
-              After installing completions, type <code className="font-mono">matcha </code> and press <kbd className="bg-gray-100 border border-gray-300 rounded px-1.5 py-0.5 text-xs font-mono">Tab</kbd> to see all available attack commands.
+              After installing completions, type <code className="font-mono">mag </code> and press <kbd className="bg-gray-100 border border-gray-300 rounded px-1.5 py-0.5 text-xs font-mono">Tab</kbd> to see all available attack commands.
             </NoteCard>
           </Section>
 

@@ -59,7 +59,7 @@ The main agent provides a JSON payload:
   "scenario": {
     "name": "syn-flood",
     "section": "Network-Layer",
-    "command": "docker compose exec attacker matcha syn-flood --target-ip $TARGET_IP --count 100",
+    "command": "docker compose exec attacker mag syn-flood --target-ip $TARGET_IP --count 100",
     "pre_commands": [],
     "is_simulation": false,
     "timeout_s": 30

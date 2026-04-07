@@ -5,7 +5,7 @@
   "root_cause_category": "cli-flag-mismatch",
   "files_changed": [
     {
-      "path": "matcha/registry.py",
+      "path": "mag/registry.py",
       "description": "Added aliases=(\"--prefix\",) to the target_prefix ParamDef in the bgp-hijacking entry so Click accepts --prefix as an alias for --target-prefix",
       "lines_changed": "138"
     }
@@ -13,5 +13,5 @@
   "requires_rebuild": false,
   "requires_target_restart": false,
   "confidence": "high",
-  "notes": "The factory (_make_option in matcha/commands/factory.py) already spreads pdef.aliases into Click param_decls, so no factory change is needed. requires_rebuild is false because registry.py is loaded at runtime — no Docker image rebuild is required."
+  "notes": "The factory (_make_option in mag/commands/factory.py) already spreads pdef.aliases into Click param_decls, so no factory change is needed. requires_rebuild is false because registry.py is loaded at runtime — no Docker image rebuild is required."
 }

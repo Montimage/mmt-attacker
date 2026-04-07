@@ -11,5 +11,5 @@
   "warnings": [
     "Target returned HTTP 404 for http://target/login.php — probes ran anyway per tool behavior"
   ],
-  "note": "Tool exited 0 and produced full structured output. Target URL returned 404 for all payloads (0/5 successful attacks), but the matcha tool completed its probe cycle cleanly."
+  "note": "Tool exited 0 and produced full structured output. Target URL returned 404 for all payloads (0/5 successful attacks), but the mag tool completed its probe cycle cleanly."
 }

@@ -17,7 +17,7 @@ Read the `stdout`, `stderr`, and `exit_code` from the failure report. Map the er
 | `AttributeError` / `TypeError` in attack module | Bug in attack code | Fix the source file in `src/attacks/` |
 | `PermissionError` on socket/interface | Missing capability | Verify `cap_add` in `docker-compose.yml` |
 | `Connection refused` on target port | Target service down | Note: the builder agent should `docker compose restart target`; flag this case clearly |
-| `unrecognized arguments` / `No such option` | CLI flag mismatch | Align `matcha/registry.py` param definitions with the attack class `__init__` |
+| `unrecognized arguments` / `No such option` | CLI flag mismatch | Align `mag/registry.py` param definitions with the attack class `__init__` |
 | Timeout with no output | Missing `--count` default or infinite loop | Add a count default or break condition in the attack source |
 | Non-zero exit, no traceback | Attack code explicit `sys.exit(1)` or assertion | Read the source and fix the condition |
 
@@ -28,7 +28,7 @@ Always read the file you intend to modify before editing it. Never edit blind.
 
 Key source locations:
 - Attack implementations: `src/attacks/<name>.py`
-- CLI registration: `matcha/registry.py`
+- CLI registration: `mag/registry.py`
 - Dependencies: `pyproject.toml` (primary) or `requirements.txt`
 - Docker capabilities: `docker-compose.yml` under `cap_add`
 

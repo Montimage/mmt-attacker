@@ -91,7 +91,7 @@ function Header() {
 
             <div className="flex items-center space-x-1 ml-2 px-3 py-1.5 rounded-lg bg-gray-100 border border-gray-200">
               <Terminal className="w-3.5 h-3.5 text-green-600" />
-              <code className="text-xs text-green-700 font-mono font-semibold">matcha</code>
+              <code className="text-xs text-green-700 font-mono font-semibold">mag</code>
             </div>
           </nav>
 

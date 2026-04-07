@@ -1,7 +1,7 @@
 {
   "name": "arp-spoof",
   "section": "Network-Layer",
-  "command": "docker compose exec attacker matcha arp-spoof --target-ip 172.20.0.2 --gateway-ip 172.20.0.1 --count 20",
+  "command": "docker compose exec attacker mag arp-spoof --target-ip 172.20.0.2 --gateway-ip 172.20.0.1 --count 20",
   "status": "PASS",
   "exit_code": 0,
   "elapsed_s": 20.981,

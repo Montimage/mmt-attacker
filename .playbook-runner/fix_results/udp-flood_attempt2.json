@@ -5,7 +5,7 @@
   "root_cause_category": "cli-flag-mismatch",
   "files_changed": [
     {
-      "path": "matcha/registry.py",
+      "path": "mag/registry.py",
       "description": "Renamed ParamDef 'packet_count' to 'count' in the udp-flood AttackEntry so the generated CLI flag is --count instead of --packet-count",
       "lines_changed": "300"
     },

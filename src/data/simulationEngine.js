@@ -1,6 +1,6 @@
 /**
  * MMT-Attacker Simulation Engine
- * Log messages and metrics match the real matcha CLI output format.
+ * Log messages and metrics match the real mag CLI output format.
  */
 
 import { getAttackById } from './attacksData'

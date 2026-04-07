@@ -1,7 +1,7 @@
 {
   "name": "icmp-flood",
   "section": "Network-Layer",
-  "command": "docker compose exec attacker matcha icmp-flood --target-ip 172.20.0.2 --count 500",
+  "command": "docker compose exec attacker mag icmp-flood --target-ip 172.20.0.2 --count 500",
   "status": "PASS",
   "exit_code": 0,
   "elapsed_s": 19.605,

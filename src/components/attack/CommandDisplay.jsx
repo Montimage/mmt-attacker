@@ -1,6 +1,6 @@
 /**
  * CommandDisplay Component
- * Displays generated matcha CLI command with copy functionality
+ * Displays generated mag CLI command with copy functionality
  */
 
 import React, { useState } from 'react'
@@ -73,7 +73,7 @@ const CommandDisplay = ({ attackId, scenario, parameterValues }) => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <p>
-            Install with <code className="bg-gray-100 px-1 rounded font-mono text-xs">pip install mmt-attacker</code> then run this command directly in your terminal. The <code className="bg-gray-100 px-1 rounded font-mono text-xs">matcha</code> command is available after installation.
+            Install with <code className="bg-gray-100 px-1 rounded font-mono text-xs">pip install mmt-attacker</code> then run this command directly in your terminal. The <code className="bg-gray-100 px-1 rounded font-mono text-xs">mag</code> command is available after installation.
           </p>
         </div>
       </div>

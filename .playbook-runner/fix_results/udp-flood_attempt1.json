@@ -5,7 +5,7 @@
   "root_cause_category": "cli-flag-mismatch",
   "files_changed": [
     {
-      "path": "matcha/registry.py",
+      "path": "mag/registry.py",
       "description": "Renamed ParamDef 'ports' to 'target_port' in the udp-flood registration so the CLI generates --target-port instead of --ports",
       "lines_changed": "297"
     },

@@ -15,7 +15,7 @@
       "lines_changed": "25"
     },
     {
-      "path": "matcha/registry.py",
+      "path": "mag/registry.py",
       "description": "Updated mac-flooding registry entry: count default raised to 2000, rate param added with default 500",
       "lines_changed": "205-206"
     }
@@ -23,5 +23,5 @@
   "requires_rebuild": false,
   "requires_target_restart": false,
   "confidence": "high",
-  "notes": "The root problem is that the playbook hardcodes --count 5000 which at 100 pkt/s takes ~50s. By both raising the rate to 500 pkt/s and reducing the count to 2000, the attack now takes approximately 4s (2000 / 500 = 4s) to complete. No Docker rebuild is needed since all files are pure Python loaded at runtime. The rate parameter is now also exposed in the registry so it can be set via the matcha CLI."
+  "notes": "The root problem is that the playbook hardcodes --count 5000 which at 100 pkt/s takes ~50s. By both raising the rate to 500 pkt/s and reducing the count to 2000, the attack now takes approximately 4s (2000 / 500 = 4s) to complete. No Docker rebuild is needed since all files are pure Python loaded at runtime. The rate parameter is now also exposed in the registry so it can be set via the mag CLI."
 }
