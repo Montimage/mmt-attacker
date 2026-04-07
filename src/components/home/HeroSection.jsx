@@ -29,6 +29,12 @@ const CATEGORY_META = {
 
 const MAX_SHOWN = 6
 
+const MagKeyword = () => (
+  <code className="font-bold text-green-500 bg-green-950 border border-green-700 px-2 py-0.5 rounded text-[0.95em] not-italic">
+    mag
+  </code>
+)
+
 function HeroSection() {
   const { isDark } = useTheme()
   const categories = getCategories()
@@ -66,14 +72,14 @@ function HeroSection() {
             </h1>
 
             <p className="text-lg text-gray-400 mb-6 leading-relaxed">
-              Run authorized network attacks from the <code className="text-green-400 bg-gray-800 px-1.5 py-0.5 rounded text-sm">mag</code> CLI — from your terminal, an AI agent, or any automated pentest pipeline. The web interface lets you explore and simulate attacks to understand how they work.
+              Run authorized network attacks from the <MagKeyword /> CLI — from your terminal, an AI agent, or any automated pentest pipeline. The web interface lets you explore and simulate attacks to understand how they work.
             </p>
 
             {/* Two-audience callouts */}
             <div className="flex flex-col sm:flex-row gap-3 mb-8">
               <div className="flex-1 bg-gray-900 border border-green-800 rounded-xl px-4 py-3">
                 <div className="text-green-400 font-semibold text-sm mb-1.5">Pentesters & AI agents</div>
-                <div className="text-gray-400 text-sm leading-relaxed">Drive attacks with the <code className="text-green-400 bg-gray-800 px-1 py-0.5 rounded text-xs">mag</code> CLI — integrate into red-team scripts, agentic workflows, or CI/CD security pipelines.</div>
+                <div className="text-gray-400 text-sm leading-relaxed">Drive attacks with the <MagKeyword /> CLI — integrate into red-team scripts, agentic workflows, or CI/CD security pipelines.</div>
               </div>
               <div className="flex-1 bg-gray-900 border border-gray-700 rounded-xl px-4 py-3">
                 <div className="text-gray-200 font-semibold text-sm mb-1.5">Learners & researchers</div>
@@ -220,7 +226,7 @@ function HeroSection() {
           </div>
           <h2 className="text-2xl font-bold text-gray-100 mb-3">Get the mag CLI</h2>
           <p className="text-gray-400 text-sm mb-6">
-            The web interface is open to everyone. The <code className="text-green-400 bg-gray-800 px-1 py-0.5 rounded">mag</code> CLI — usable by humans and AI agents alike — is distributed privately to prevent misuse. Email us with your name, org, and intended use (course, research, pentest engagement, or agentic workflow).
+            The web interface is open to everyone. The <MagKeyword /> CLI — usable by humans and AI agents alike — is distributed privately to prevent misuse. Email us with your name, org, and intended use (course, research, pentest engagement, or agentic workflow).
           </p>
           <a
             href="mailto:contact@montimage.eu?subject=mag CLI access request"
