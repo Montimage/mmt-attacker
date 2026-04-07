@@ -1,5 +1,6 @@
 import { ArrowRight, Terminal, ChevronRight, Lock, Network, Globe, Key, Repeat, Zap } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { getCategories, getAttacksByCategory, getAllAttacks } from '../../data/attacksData'
 
 const TERMINAL_LINES = [
   { type: 'cmd',    text: '$ mag syn-flood --target-ip 192.168.56.10 --target-port 80 --count 500' },
@@ -12,45 +13,37 @@ const TERMINAL_LINES = [
 ]
 
 const STEPS = [
-  { n: '01', label: 'Pick an attack', desc: 'Browse 26 techniques across 5 categories.' },
+  { n: '01', label: 'Pick an attack', desc: 'Browse techniques across multiple categories.' },
   { n: '02', label: 'Configure parameters', desc: 'Fill the form — IP, port, count, interface.' },
   { n: '03', label: 'Copy & run', desc: 'Get the exact mag command. Paste into your terminal.' },
 ]
 
-const ATTACK_LAYERS = [
-  {
-    Icon: Network,
-    label: 'Network',
-    count: 10,
-    attacks: ['SYN Flood', 'ARP Spoof', 'UDP Flood', 'ICMP Flood', 'DHCP Starvation', 'MAC Flooding', '+4 more'],
-  },
-  {
-    Icon: Globe,
-    label: 'Application',
-    count: 10,
-    attacks: ['HTTP DoS', 'Slowloris', 'SQL Injection', 'XSS', 'Directory Traversal', 'SSL Strip', '+4 more'],
-  },
-  {
-    Icon: Zap,
-    label: 'Amplification',
-    count: 2,
-    attacks: ['DNS Amplification', 'NTP Amplification'],
-  },
-  {
-    Icon: Key,
-    label: 'Credential',
-    count: 4,
-    attacks: ['SSH Brute Force', 'FTP Brute Force', 'RDP Brute Force', 'Credential Harvester'],
-  },
-  {
-    Icon: Repeat,
-    label: 'Replay',
-    count: 2,
-    attacks: ['MITM', 'PCAP Replay'],
-  },
-]
+const CATEGORY_META = {
+  'Network-Layer':    { Icon: Network, label: 'Network' },
+  'Application-Layer':{ Icon: Globe,   label: 'Application' },
+  'Amplification':    { Icon: Zap,     label: 'Amplification' },
+  'Credential':       { Icon: Key,     label: 'Credential' },
+  'Other':            { Icon: Repeat,  label: 'Other' },
+}
+
+const MAX_SHOWN = 6
 
 function HeroSection() {
+  const categories = getCategories()
+  const allAttacks = getAllAttacks()
+  const totalScenarios = allAttacks.reduce((sum, a) => sum + (a.scenarios?.length ?? 0), 0)
+
+  const attackLayers = categories.map(cat => {
+    const attacks = getAttacksByCategory(cat)
+    const meta = CATEGORY_META[cat] ?? { Icon: Network, label: cat }
+    const shown = attacks.slice(0, MAX_SHOWN).map(a => a.name)
+    const remaining = attacks.length - shown.length
+    return {
+      ...meta,
+      attacks: remaining > 0 ? [...shown, `+${remaining} more`] : shown,
+    }
+  })
+
   return (
     <div className="bg-gray-950">
 
@@ -66,7 +59,7 @@ function HeroSection() {
             </div>
 
             <h1 className="text-4xl md:text-5xl font-bold text-gray-100 mb-4 leading-tight tracking-tight">
-              26 network attacks.<br />
+              Network attack simulation.<br />
               Browser to terminal<br />
               <span className="text-green-400">in 30 seconds.</span>
             </h1>
@@ -92,9 +85,13 @@ function HeroSection() {
               </Link>
             </div>
 
-            {/* Stats */}
+            {/* Stats — derived from data */}
             <div className="flex gap-8 mt-10 pt-8 border-t border-gray-800">
-              {[['26', 'attack types'], ['50+', 'scenarios'], ['5', 'categories']].map(([n, label]) => (
+              {[
+                [allAttacks.length,  'attack types'],
+                [totalScenarios,     'scenarios'],
+                [categories.length,  'categories'],
+              ].map(([n, label]) => (
                 <div key={label}>
                   <div className="text-2xl font-bold text-gray-100">{n}</div>
                   <div className="text-xs text-gray-500 mt-0.5">{label}</div>
@@ -105,14 +102,12 @@ function HeroSection() {
 
           {/* Right: terminal preview */}
           <div className="bg-gray-900 border border-gray-700 rounded-2xl overflow-hidden shadow-custom-xl">
-            {/* Terminal chrome */}
             <div className="flex items-center gap-1.5 px-4 py-3 border-b border-gray-700 bg-gray-800">
               <span className="w-3 h-3 rounded-full bg-red-500/70" />
               <span className="w-3 h-3 rounded-full bg-yellow-500/70" />
               <span className="w-3 h-3 rounded-full bg-green-500/70" />
               <span className="ml-3 text-xs text-gray-500 font-mono">mag · attacker container</span>
             </div>
-            {/* Terminal body */}
             <div className="p-5 font-mono text-xs leading-relaxed space-y-1.5">
               {TERMINAL_LINES.map((line, i) => (
                 <div key={i} className={
@@ -166,7 +161,7 @@ function HeroSection() {
             </Link>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-            {ATTACK_LAYERS.map(({ Icon, label, count, attacks }) => (
+            {attackLayers.map(({ Icon, label, attacks }) => (
               <div
                 key={label}
                 className="bg-gray-900 border border-gray-700 rounded-xl p-4 hover:border-green-600 transition-colors"
@@ -175,10 +170,7 @@ function HeroSection() {
                   <div className="w-7 h-7 rounded-md bg-green-950 border border-green-800 flex items-center justify-center flex-shrink-0">
                     <Icon className="w-3.5 h-3.5 text-green-400" />
                   </div>
-                  <div>
-                    <span className="text-xs font-bold text-gray-100">{label}</span>
-                    <span className="ml-1.5 text-xs text-gray-500">·{count}</span>
-                  </div>
+                  <span className="text-xs font-bold text-gray-100">{label}</span>
                 </div>
                 <ul className="space-y-1">
                   {attacks.map(a => (
