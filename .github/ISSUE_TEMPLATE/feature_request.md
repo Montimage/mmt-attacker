@@ -1,30 +1,34 @@
 ---
 name: Feature Request
-about: Suggest an idea for this project
+about: Suggest a new feature or improvement for MAG
 title: '[FEATURE] '
 labels: enhancement
 assignees: ''
 ---
 
+## Component
+
+- [ ] Web interface (this repo)
+- [ ] mag CLI tool (private)
+
 ## Problem Statement
 
-A clear and concise description of what the problem is.
-Ex. I'm always frustrated when [...]
+A clear and concise description of what the problem is or what is missing.
 
 ## Proposed Solution
 
-A clear and concise description of what you want to happen.
+What you would like to happen.
 
 ## Alternatives Considered
 
-A clear and concise description of any alternative solutions or features you've considered.
+Any alternative solutions or workarounds you've considered.
 
 ## Use Cases
 
-Describe specific use cases where this feature would be beneficial:
+Describe specific scenarios where this feature would be useful:
 
-1. Use case 1
-2. Use case 2
+1.
+2.
 
 ## Additional Context
 

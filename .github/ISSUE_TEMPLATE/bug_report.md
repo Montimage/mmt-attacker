@@ -1,6 +1,6 @@
 ---
 name: Bug Report
-about: Report a bug to help us improve
+about: Report a bug in the MAG web interface or mag CLI tool
 title: '[BUG] '
 labels: bug
 assignees: ''
@@ -10,15 +10,20 @@ assignees: ''
 
 A clear and concise description of what the bug is.
 
+## Component
+
+- [ ] Web interface (this repo)
+- [ ] mag CLI tool (private)
+
 ## Steps to Reproduce
 
-1. Run `mag ...`
-2. With arguments '...'
+1. Go to / Run `mag ...`
+2. With parameters / arguments '...'
 3. See error
 
 ## Expected Behavior
 
-A clear and concise description of what you expected to happen.
+What you expected to happen.
 
 ## Actual Behavior
 
@@ -33,9 +38,9 @@ Paste any error messages or logs here
 ## Environment
 
 - OS: [e.g., Ubuntu 22.04, macOS 14.0]
-- Python version: [e.g., 3.10]
-- MMT-Attacker version: [e.g., 0.2.1]
-- Installation method: [pip install -e . / pip install]
+- Browser (if web UI): [e.g., Chrome 123, Firefox 124]
+- mag version (if CLI): [e.g., 0.2.1]
+- Docker version (if CLI): [e.g., 27.0.0]
 
 ## Additional Context
 

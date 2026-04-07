@@ -140,6 +140,14 @@ yarn-error.log
 frontend/dist/
 frontend/.vite/
 
+# Build output
+dist/
+
 # Local tooling
 .gitissue/
 .gstack/
+.claude/
+.playbook-runner/
+
+# Backup files
+README.backup.md
