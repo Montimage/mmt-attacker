@@ -4,11 +4,12 @@
 [![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite)](https://vitejs.dev)
 [![Live](https://img.shields.io/badge/demo-mag.montimage.eu-green)](https://mag.montimage.eu)
 
-# 26 network attacks. Browser to terminal in 30 seconds.
+# A pentesting toolkit for humans & AI agents.
 
-**MAG** (Montimage Attack Generator) is a visual attack configurator + CLI toolkit for security training, red-team demos, and authorized penetration testing. Pick an attack, set your parameters, get the exact `mag` command to run.
+**MAG** (Montimage Attack Generator) is a network attack platform with two purposes:
 
-No boilerplate. No guessing flags. No spinning up infra from scratch.
+- **Pentesters & AI agents** — run authorized attacks from the `mag` CLI, from your terminal, an AI agent, or any automated pentest pipeline.
+- **Learners & researchers** — simulate and study attacks in the browser to understand how they work, no install required.
 
 > **CLI access**: Free but private (dual-use risk). [Request access →](#access)
 
@@ -143,6 +144,20 @@ Email **contact@montimage.eu** with subject `mag CLI access request`.
 Include: name, organization, intended use (research / training / pentest engagement).
 
 Access is granted to security researchers, educators, and authorized pentesters.
+
+---
+
+## Bug Reports & Feature Requests
+
+Found a bug or have an idea for a new attack or feature? Open an issue on this repository:
+
+- **Bug report** — unexpected behaviour, broken simulation, CLI flag mismatch
+- **Feature request** — new attack type, agent integration improvement, UI enhancement
+- **mag CLI issue** — wrong output, missing parameter, Docker problem
+
+[Open an issue →](https://github.com/Montimage/mmt-attacker/issues)
+
+We use this tracker for both the web interface and the `mag` CLI tool.
 
 ---
 
