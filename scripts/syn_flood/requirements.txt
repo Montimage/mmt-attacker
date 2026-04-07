@@ -1,2 +1,0 @@
-scapy>=2.4.5
-ipaddress>=1.0.23

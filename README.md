@@ -1,348 +1,342 @@
+# MMT-Attacker Web Interface
+
 <p align="center">
-  <img src="frontend/public/logo.svg" alt="MMT-Attacker Logo" width="200"/>
+  <img src="public/logo.svg" alt="MMT-Attacker Logo" width="200"/>
 </p>
 
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![PyPI](https://img.shields.io/pypi/v/mmt-attacker.svg)](https://pypi.org/project/mmt-attacker/)
-[![CI](https://github.com/Montimage/mmt-attacker/actions/workflows/ci.yml/badge.svg)](https://github.com/Montimage/mmt-attacker/actions/workflows/ci.yml)
+Interactive web interface for demonstrating cybersecurity attacks from the MMT-Attacker playbook. Built with React, Vite, and Tailwind CSS.
 
-# Network attack simulation for security education
+## 🚀 Features
 
-A unified `matcha` CLI for running network-layer, application-layer, and replay attacks in controlled lab environments — built to teach how attacks work, not just that they exist.
+- **10 Attack Types** with detailed simulations:
+  - Network Layer: ARP Spoofing, SYN Flood, Ping of Death
+  - Application Layer: HTTP DoS, Slowloris, Credential Harvester
+  - Amplification: DNS Amplification
+  - Credential: SSH Brute Force, SQL Injection
+  - Other: PCAP Replay
 
-[**Get Started**](#quick-start) | [**Playbook**](docs/PLAYBOOK.md) | [**Web Demo**](frontend/README.md)
+- **20 Attack Scenarios** (2 per attack type)
+- **Interactive Simulations** with realistic output
+- **Educational Content** with theory, diagrams, and explanations
+- **Responsive Design** for desktop, tablet, and mobile
+- **Real-time Validation** of attack parameters
+- **Animated Results** with terminal-style output
 
----
+## 📋 Prerequisites
 
-## How It Works
+- Node.js 18+
+- npm 9+
 
-```mermaid
-graph LR
-    Install["pip install -e ."] --> CLI["matcha &lt;attack&gt;"]
-    CLI --> Registry["Attack Registry"]
-    Registry --> Validate["Validate args"]
-    Validate --> Execute["Execute attack"]
-    Execute --> Target["Lab Target"]
-    Execute --> Log["Structured logs"]
-```
-
-Each attack inherits from `AttackBase`, which enforces argument parsing, input validation, and structured logging. The registry auto-discovers modules — adding a new attack requires only a class and a one-line registration.
-
-## Attack Coverage
-
-| Layer | Attacks |
-|---|---|
-| **Network** | [ARP Spoofing](docs/PLAYBOOK.md#arp-spoofing), BGP Hijacking, DHCP Starvation, [DNS Amplification](docs/PLAYBOOK.md#dns-amplification), ICMP Flood, MAC Flooding, MITM, NTP Amplification, [Ping of Death](docs/PLAYBOOK.md#ping-of-death), Smurf, [SYN Flood](docs/PLAYBOOK.md#syn-flood), UDP Flood |
-| **Application** | [Credential Harvester](docs/PLAYBOOK.md#credential-harvester), Directory Traversal, FTP Brute Force, [HTTP DoS](docs/PLAYBOOK.md#http-dos), HTTP Flood, RDP Brute Force, [Slowloris](docs/PLAYBOOK.md#slowloris), [SQL Injection](docs/PLAYBOOK.md#sql-injection), [SSH Brute Force](docs/PLAYBOOK.md#ssh-brute-force), SSL Strip, VLAN Hopping, XSS, XXE |
-| **Replay** | [PCAP Replay](docs/PLAYBOOK.md#pcap-replay) |
-
-## Key Features
-
-| Feature | What you get |
-|---|---|
-| Single CLI | All attacks through `matcha` — one interface for the entire curriculum |
-| PCAP replay | Replay captured traffic with speed control and interface selection |
-| Built-in validation | IP, port, interface, and parameter checks before execution |
-| Structured logging | Every attack logs events for post-analysis and review |
-| Pluggable architecture | Add an attack by subclassing `AttackBase` and registering it |
-| Web demo | React-based interactive walkthroughs with Mermaid flow diagrams |
-| Shell completions | Tab-completion for bash, zsh, and fish |
-
-## Quick Start
-
-**Prerequisites:** Python 3.8+ and root/sudo privileges (required for raw socket attacks)
-
-**pip:**
+## 🛠️ Installation
 
 ```bash
-pip install mmt-attacker
+# Navigate to frontend directory
+cd frontend
+
+# Install dependencies
+npm install
 ```
 
-**One-line install** (Linux / macOS — installs system deps automatically):
+## 💻 Development
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/Montimage/mmt-attacker/main/install.sh | bash
-```
-
-Or with wget:
-
-```bash
-wget -qO- https://raw.githubusercontent.com/Montimage/mmt-attacker/main/install.sh | bash
-```
-
-**Docker — two-container lab** (recommended, no host setup required):
-
-```bash
-git clone https://github.com/Montimage/mmt-attacker.git
-cd mmt-attacker
-docker compose up --build -d
-docker compose exec attacker matcha syn-flood --target-ip target --target-port 80 --count 200
-docker compose down
-```
-
-Starts an isolated lab with an **attacker** container (matcha CLI) and a
-**target** container (nginx + SSH + FTP). Attacks stay contained to the `lab`
-bridge network.
-
-**Docker — CLI-only** (run against your own lab target):
-
-```bash
-docker build -t matcha .
-docker run --rm --cap-add NET_ADMIN --cap-add NET_RAW matcha --help
-```
-
-See [docs/DEMO.md](docs/DEMO.md) for the full two-container guide.
-See [docs/DOCKER.md](docs/DOCKER.md) for the CLI-only Docker guide (PCAP replay, JSON output, etc.).
-
-**From source:**
-
-```bash
-git clone https://github.com/Montimage/mmt-attacker.git
-cd mmt-attacker
-pip install -e .
-```
-
-Verify:
-
-```bash
-matcha --help
-```
-
-List all available attacks:
-
-```bash
-matcha list
-```
-
-Launch an attack (in a controlled lab environment):
-
-```bash
-matcha http-dos --target-url http://example.com --threads 10
-```
-
-### Shell Completions
-
-```bash
-# bash (~/.bashrc)
-eval "$(_MATCHA_COMPLETE=bash_source matcha)"
-```
-
-```bash
-# zsh (~/.zshrc)
-eval "$(_MATCHA_COMPLETE=zsh_source matcha)"
-```
-
-```bash
-# fish (~/.config/fish/config.fish)
-_MATCHA_COMPLETE=fish_source matcha | source
-```
-
-Or print the activation command:
-
-```bash
-matcha completions bash   # or zsh / fish
-```
-
-## Usage Examples
-
-### PCAP Replay
-
-```bash
-matcha pcap-replay \
-    --pcap-file capture.pcap \
-    --interface eth0 \
-    --speed 2.0
-```
-
-### ARP Spoofing
-
-```bash
-matcha arp-spoof \
-    --target-ip 192.168.1.100 \
-    --gateway-ip 192.168.1.1
-```
-
-### HTTP DoS
-
-```bash
-matcha http-dos \
-    --target-url http://example.com \
-    --threads 10
-```
-
-### Attack Info
-
-```bash
-matcha info arp-spoof
-```
-
-## Web Interface
-
-Install frontend dependencies:
-
-```bash
-cd frontend && npm install
-```
-
-Start the dev server:
-
-```bash
+# Start development server
 npm run dev
+
+# Server will start on http://localhost:3000
 ```
 
-Opens at `http://localhost:3000` — interactive attack walkthroughs, Mermaid flow diagrams, command generation with validation, and simulated execution results.
+The app will automatically reload when you make changes to the source code.
 
-## Educational Use
-
-MMT-Attacker is built for security courses, CTF preparation, and lab-based research. The web demo explains each attack's mechanism without executing real traffic. The CLI is for hands-on practice in isolated, authorized environments.
-
-Use cases:
-- University network security courses
-- Cybersecurity workshop labs
-- IDS/IPS detection research (generate known attack traffic)
-- Personal study in a home lab
-
-## Security Warning
-
-This tool is for **authorized security testing and education only**. Before use:
-
-- Obtain written authorization from the system owner
-- Test only in controlled, isolated environments
-- Follow responsible disclosure practices
-- Comply with all applicable laws
-
-Unauthorized use may be illegal. See [PLAYBOOK](docs/PLAYBOOK.md) for detailed ethical guidelines.
-
-## Roadmap
-
-- [x] GUI interface
-- [x] Cloud deployment (Netlify)
-- [x] CLI tool (`matcha`)
-- [x] Shell completions
-- [x] CI/CD pipeline
-- [ ] Additional attack vectors
-- [ ] Enhanced reporting
-- [x] Docker containerization (CLI-only image)
-- [x] Two-container attack simulation demo (attacker + target via docker compose)
-- [ ] API integration
-
-## Get Started
+## 🏗️ Build
 
 ```bash
-pip install -e .
+# Create production build
+npm run build
+
+# Preview production build
+npm run preview
 ```
 
-[**Read the Playbook**](docs/PLAYBOOK.md) | [**Try the Web Demo**](frontend/README.md) | [**Contributing**](CONTRIBUTING.md) | Apache 2.0 Licensed
+The optimized build will be output to the `dist/` directory.
 
----
+## ☁️ Deployment
 
-<details>
-<summary>Project Structure</summary>
+### Netlify Deployment
+
+This project is configured for easy deployment on Netlify with zero-config setup.
+
+#### Option 1: Deploy via Netlify CLI
+
+```bash
+# Install Netlify CLI globally
+npm install -g netlify-cli
+
+# Login to Netlify
+netlify login
+
+# Deploy to production
+netlify deploy --prod
+```
+
+#### Option 2: Deploy via Git Integration
+
+1. Push your code to GitHub, GitLab, or Bitbucket
+2. Go to [Netlify](https://app.netlify.com)
+3. Click "Add new site" → "Import an existing project"
+4. Connect your repository
+5. Netlify will auto-detect the configuration from `netlify.toml`
+6. Click "Deploy site"
+
+#### Option 3: Manual Deploy
+
+```bash
+# Build the project
+npm run build
+
+# Drag and drop the `dist/` folder to Netlify's deploy interface
+# Or use the Netlify CLI:
+netlify deploy --prod --dir=dist
+```
+
+### Configuration
+
+The project includes:
+- `netlify.toml` - Netlify configuration with build settings, redirects, and headers
+- `public/_redirects` - SPA routing redirects (backup for netlify.toml)
+
+#### Build Settings (from netlify.toml)
+- **Base directory**: `frontend/`
+- **Build command**: `npm run build`
+- **Publish directory**: `dist/`
+- **Node version**: 20
+
+#### Environment Variables
+
+No environment variables are required for the demo version. For production with backend integration, add:
+- `VITE_API_URL` - Backend API endpoint
+
+### Custom Domain
+
+After deployment:
+1. Go to Site settings → Domain management
+2. Add your custom domain
+3. Configure DNS records as instructed by Netlify
+
+### Performance Optimizations
+
+The deployment includes:
+- Static asset caching (1 year)
+- HTML caching disabled for updates
+- Security headers (XSS, frame options, etc.)
+- Gzip/Brotli compression (automatic)
+- CDN distribution (automatic)
+
+## 📁 Project Structure
 
 ```
-mmt-attacker/
-├── matcha/                        # CLI package
-│   ├── cli.py                    # Click-based CLI entry point
-│   ├── commands/                 # CLI commands
-│   │   └── completions_cmd.py   # Shell completion support
-│   └── attacks/                  # Attack implementations (auto-discovered)
+frontend/
 ├── src/
-│   ├── attacks/                  # Attack implementations
-│   │   ├── base.py              # Base attack class (AttackBase)
-│   │   ├── arp_spoof.py         # ARP spoofing
-│   │   ├── syn_flood.py         # SYN flood
-│   │   ├── dns_amplification.py # DNS amplification
-│   │   ├── http_dos.py          # HTTP DoS
-│   │   ├── slowloris.py         # Slowloris
-│   │   ├── ssh_brute_force.py   # SSH brute force
-│   │   ├── sql_injection.py     # SQL injection
-│   │   ├── pcap_replay.py       # PCAP replay
-│   │   ├── ping_of_death.py     # Ping of Death
-│   │   └── credential_harvester.py
-│   └── utils/                   # Validators, network utils, logger
-├── frontend/                     # React + Vite web demo
-├── docs/                         # Documentation + playbook
-├── pyproject.toml               # Package config (matcha entry point)
-└── README.md
+│   ├── components/
+│   │   ├── layout/          # Header, Footer, Sidebar
+│   │   ├── common/          # Reusable components (Button, Card, Input, etc.)
+│   │   ├── attack/          # Attack-specific components
+│   │   └── home/            # Home page components
+│   ├── pages/
+│   │   ├── Home.jsx         # Landing page
+│   │   └── attacks/         # Attack page templates
+│   ├── data/
+│   │   ├── attacksData.js         # All attack definitions
+│   │   └── simulationEngine.js   # Simulation logic
+│   ├── utils/
+│   │   └── parameterValidator.js  # Input validation
+│   ├── hooks/
+│   │   └── useAttackSimulation.js # Simulation state management
+│   ├── App.jsx              # Main app component
+│   ├── main.jsx            # App entry point
+│   └── index.css           # Global styles
+├── public/                  # Static assets
+├── index.html              # HTML template
+├── vite.config.js         # Vite configuration
+├── tailwind.config.js     # Tailwind CSS configuration
+└── package.json           # Dependencies and scripts
 ```
 
-</details>
+## 🎨 Technology Stack
 
-<details>
-<summary>Adding New Attacks</summary>
+- **Framework**: React 19
+- **Build Tool**: Vite 7
+- **Styling**: Tailwind CSS 4
+- **Icons**: Lucide React
+- **Diagrams**: Mermaid
+- **Routing**: React Router DOM
 
-1. Create a new module in `src/attacks/`
-2. Inherit from `AttackBase`
-3. Implement `add_arguments()`, `validate()`, and `run()`
-4. Register in `src/attacks/__init__.py`
+## 🎯 Key Components
 
-```python
-from .base import AttackBase
-from argparse import ArgumentParser
-import logging
+### Layout Components
+- **Header**: Navigation and branding
+- **Sidebar**: Attack category navigation
+- **Footer**: Legal disclaimer and contact info
 
-logger = logging.getLogger(__name__)
+### Common Components
+- **Button**: Primary, secondary, outline variants
+- **Card**: Container with shadow and border
+- **Input/Select/Checkbox**: Form controls with validation
+- **Terminal**: Black terminal-style output display
+- **Alert**: Info, warning, success, error messages
+- **Badge**: Category and status indicators
 
-class NewAttack(AttackBase):
-    name = "new-attack"
-    description = "Description of the new attack type"
+### Attack Components
+- **AttackTheory**: Collapsible theory section
+- **AttackFlow**: Mermaid diagram renderer
+- **AttackParameters**: Dynamic form generator
+- **AttackScenario**: Tab navigation and scenario execution
+- **AttackResults**: Terminal output and metrics
+- **AttackExplanation**: Educational interpretation
 
-    def add_arguments(self, parser: ArgumentParser) -> None:
-        parser.add_argument('--target', required=True, help='Target IP or hostname')
-        parser.add_argument('--port', type=int, default=80, help='Target port')
+## 🎨 Design System
 
-    def validate(self, args) -> bool:
-        if not self.validator.validate_ip(args.target):
-            logger.error(f"Invalid target: {args.target}")
-            return False
-        return True
+### Colors
+- **Primary Green**: `#14532d` (green-900)
+- **Medium Green**: `#15803d` (green-700)
+- **Light Green**: `#16a34a` (green-600)
+- **Grayscale**: Full gray palette from 50-900
+- **Black**: `#000000`
+- **White**: `#ffffff`
 
-    def run(self, args) -> None:
-        logger.info(f"Starting {self.name} against {args.target}:{args.port}")
-        # Attack logic here
-```
+### Typography
+- **Headings**: Bold, black color
+- **Body**: Regular weight, gray-700
+- **Links**: Green-900 with hover effects
 
-Register it:
+### Shadows
+- **custom**: `0 2px 8px rgba(0, 0, 0, 0.1)`
+- **custom-md**: `0 4px 12px rgba(0, 0, 0, 0.15)`
+- **custom-lg**: `0 8px 24px rgba(0, 0, 0, 0.2)`
 
-```python
-from .new_attack import NewAttack
+## 🔄 Adding New Attacks
 
-ATTACKS = {
-    # ... existing attacks ...
-    "new-attack": NewAttack,
+To add a new attack type:
+
+1. **Define Attack Data** in `src/data/attacksData.js`:
+```javascript
+'new-attack': {
+  id: 'new-attack',
+  name: 'New Attack',
+  category: 'Network-Layer',
+  description: 'Attack description',
+  theory: { description, mechanism, impact },
+  keyFeatures: [...],
+  mermaidDiagram: '...',
+  scenarios: [{ id, name, parameters, ... }],
+  safetyConsiderations: [...]
 }
 ```
 
-</details>
+2. **Add Simulation Logic** in `src/data/simulationEngine.js`:
+```javascript
+const simulateNewAttack = (scenarioId, params) => {
+  // Generate timeline, metrics, explanation
+  return { success, timeline, metrics, explanation }
+}
+```
 
-<details>
-<summary>Contributing</summary>
+3. **Route Automatically Created** - The template handles all attacks dynamically!
 
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
+## 🧪 Simulation Engine
 
-Code requirements:
-- PEP 8 style
-- Include tests
-- Update docs as needed
-- Maintain backward compatibility
+The simulation engine (`simulationEngine.js`) generates realistic attack outputs based on user inputs:
 
-</details>
+- **Timeline Events**: Sequential messages with timing
+- **Metrics**: Attack statistics and measurements
+- **Explanations**: Educational interpretation of results
+- **Parameter Influence**: Outputs vary based on inputs
+- **Random Variations**: Realistic unpredictability
 
-<details>
-<summary>Support</summary>
+Example simulation result:
+```javascript
+{
+  success: true,
+  timeline: [
+    { time: 0, message: 'Initializing...', type: 'info' },
+    { time: 1000, message: 'Sending packets...', type: 'progress' },
+    { time: 2000, message: 'Attack successful', type: 'success' }
+  ],
+  metrics: {
+    packetsSent: 1250,
+    successRate: '95%',
+    duration: '2.5s'
+  },
+  explanation: {
+    happening: 'Detailed explanation...',
+    highlights: ['Key point 1', 'Key point 2'],
+    interpretation: 'Overall analysis...'
+  }
+}
+```
 
-1. Check the [documentation](docs/)
-2. Search [existing issues](https://github.com/montimage/mmt-attacker/issues)
-3. Email [developer@montimage.eu](mailto:developer@montimage.eu)
-4. Create a new issue if needed
+## 📝 Parameter Validation
 
-</details>
+The validator (`parameterValidator.js`) supports:
+
+- **IPv4/IPv6 addresses**
+- **Port numbers** (1-65535)
+- **URLs** (HTTP/HTTPS)
+- **File paths**
+- **JSON strings**
+- **Email addresses**
+- **Hostnames**
+- **MAC addresses**
+- **Number ranges**
+
+## 🔒 Legal & Safety
+
+**⚠️ IMPORTANT**: This is an educational tool.
+
+- Obtain proper authorization before testing
+- Use only in controlled environments
+- Follow responsible disclosure practices
+- Comply with all applicable laws
+- Accept full responsibility for use
+
+Improper use may be illegal and result in criminal charges.
+
+## 🐛 Known Issues
+
+- None currently
+
+## 🚧 Planned Features
+
+- Real backend integration for actual attacks
+- User authentication and session management
+- Attack history and logging
+- Export results to PDF/JSON
+- Advanced attack configurations
+- Video tutorials and walkthroughs
+
+## 📄 License
+
+Copyright (c) 2025 Montimage. All rights reserved.
+
+This software is proprietary. Unauthorized use is strictly prohibited.
+
+## 📞 Contact
+
+**Montimage**
+- Website: https://www.montimage.eu
+- Email: contact@montimage.eu
+- GitHub: https://github.com/montimage/mmt-attacker
+- Issues: https://github.com/montimage/mmt-attacker/issues
+
+## 🙏 Acknowledgments
+
+Built with:
+- React - UI framework
+- Vite - Build tool
+- Tailwind CSS - Styling
+- Lucide - Icons
+- Mermaid - Diagrams
 
 ---
 
-Built by [Montimage](https://montimage.eu)
+For the complete playbook and CLI tool, see: [MMT-Attacker Main Repository](https://github.com/montimage/mmt-attacker)
