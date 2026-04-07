@@ -25,13 +25,28 @@
 
   html {
     scroll-behavior: smooth;
+    color-scheme: dark;
+  }
+
+  html:not(.dark) {
+    color-scheme: light;
   }
 
   body {
-    @apply antialiased bg-gray-950 text-gray-100;
+    @apply antialiased;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
       'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
       sans-serif;
+  }
+
+  /* Dark mode colors (default) */
+  .dark body {
+    @apply bg-gray-950 text-gray-100;
+  }
+
+  /* Light mode colors */
+  html:not(.dark) body {
+    @apply bg-gray-50 text-gray-900;
   }
 
   code, pre {
@@ -62,6 +77,76 @@
   /* Terminal style */
   .terminal {
     @apply bg-gray-950 text-green-400 font-mono p-4 rounded-xl border border-gray-700 shadow-custom-md overflow-auto;
+  }
+}
+
+/* ============================================================
+   Light-mode overrides
+   When .dark is NOT on <html>, remap dark-palette classes to
+   their light equivalents without touching any component JSX.
+   ============================================================ */
+@layer utilities {
+  /* Backgrounds */
+  html:not(.dark) .bg-gray-950 { background-color: rgb(249 250 251); } /* gray-50 */
+  html:not(.dark) .bg-gray-900 { background-color: rgb(255 255 255); } /* white */
+  html:not(.dark) .bg-gray-800 { background-color: rgb(243 244 246); } /* gray-100 */
+  html:not(.dark) .bg-gray-700 { background-color: rgb(229 231 235); } /* gray-200 */
+
+  /* Borders */
+  html:not(.dark) .border-gray-700 { border-color: rgb(229 231 235); } /* gray-200 */
+  html:not(.dark) .border-gray-600 { border-color: rgb(209 213 219); } /* gray-300 */
+
+  /* Text */
+  html:not(.dark) .text-gray-100 { color: rgb(17 24 39);   } /* gray-900 */
+  html:not(.dark) .text-gray-200 { color: rgb(31 41 55);   } /* gray-800 */
+  html:not(.dark) .text-gray-300 { color: rgb(55 65 81);   } /* gray-700 */
+  html:not(.dark) .text-gray-400 { color: rgb(75 85 99);   } /* gray-600 */
+
+  /* Green accents — slightly deeper in light mode */
+  html:not(.dark) .text-green-400 { color: rgb(22 163 74);  } /* green-600 */
+  html:not(.dark) .text-green-500 { color: rgb(21 128 61);  } /* green-700 */
+  html:not(.dark) .hover\:text-green-400:hover { color: rgb(22 163 74); }
+  html:not(.dark) .hover\:text-green-300:hover { color: rgb(21 128 61); }
+
+  html:not(.dark) .border-green-500 { border-color: rgb(22 163 74); }
+  html:not(.dark) .border-green-600 { border-color: rgb(21 128 61); }
+  html:not(.dark) .border-green-700 { border-color: rgb(21 128 61); }
+  html:not(.dark) .border-green-800 { border-color: rgb(20 83 45);  }
+
+  html:not(.dark) .bg-green-950 { background-color: rgb(240 253 244); } /* green-50 */
+  html:not(.dark) .bg-green-900 { background-color: rgb(220 252 231); } /* green-100 */
+
+  /* Amber warning boxes */
+  html:not(.dark) .bg-amber-950  { background-color: rgb(255 251 235); } /* amber-50 */
+  html:not(.dark) .border-amber-700 { border-color: rgb(217 119 6);   } /* amber-600 */
+  html:not(.dark) .text-amber-300 { color: rgb(146 64 14);  } /* amber-800 */
+  html:not(.dark) .text-amber-400 { color: rgb(120 53 15);  } /* amber-900 */
+
+  /* Hover backgrounds */
+  html:not(.dark) .hover\:bg-gray-800:hover { background-color: rgb(243 244 246); }
+  html:not(.dark) .hover\:bg-gray-700:hover { background-color: rgb(229 231 235); }
+
+  /* Input/form focus rings */
+  html:not(.dark) .focus\:border-green-500:focus { border-color: rgb(22 163 74); }
+
+  /* Scrollbar hint */
+  html:not(.dark) { background-color: rgb(249 250 251); }
+
+  /* Component class overrides for light mode */
+  html:not(.dark) .card {
+    background-color: rgb(255 255 255);
+    border-color: rgb(229 231 235);
+  }
+
+  html:not(.dark) .btn-secondary {
+    background-color: rgb(255 255 255);
+    color: rgb(17 24 39);
+    border-color: rgb(209 213 219);
+  }
+
+  html:not(.dark) .terminal {
+    background-color: rgb(17 24 39);
+    border-color: rgb(55 65 81);
   }
 }
 

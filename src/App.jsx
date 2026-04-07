@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { ThemeProvider } from './context/ThemeContext'
 import Layout from './components/layout/Layout'
 import Home from './pages/Home'
 import Browse from './pages/Browse'
@@ -10,6 +11,7 @@ import AttackPageTemplate from './pages/attacks/AttackPageTemplate'
 
 function App() {
   return (
+    <ThemeProvider>
     <Router>
       <Layout>
         <Routes>
@@ -23,6 +25,7 @@ function App() {
         </Routes>
       </Layout>
     </Router>
+    </ThemeProvider>
   )
 }
 

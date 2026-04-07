@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Menu, X, Github, Search, Grid, Terminal, BookOpen } from 'lucide-react'
+import { Menu, X, Github, Search, Grid, Terminal, BookOpen, Sun, Moon } from 'lucide-react'
 import { useState } from 'react'
+import { useTheme } from '../../context/ThemeContext'
 
 function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -8,6 +9,7 @@ function Header() {
   const [searchQuery, setSearchQuery] = useState('')
   const location = useLocation()
   const navigate = useNavigate()
+  const { isDark, toggleTheme } = useTheme()
 
   const isActive = (path) => location.pathname === path
 
@@ -93,20 +95,39 @@ function Header() {
               <Terminal className="w-3.5 h-3.5 text-green-500" />
               <code className="text-xs text-green-400 font-mono font-semibold">mag</code>
             </div>
+
+            {/* Theme toggle */}
+            <button
+              onClick={toggleTheme}
+              className="ml-1 p-2 rounded-lg text-gray-400 hover:text-gray-100 hover:bg-gray-800 transition-all duration-200"
+              aria-label="Toggle theme"
+              title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
           </nav>
 
-          {/* Mobile menu button */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg text-gray-400 hover:text-gray-100 hover:bg-gray-800 transition-all duration-200"
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? (
-              <X className="w-5 h-5" />
-            ) : (
-              <Menu className="w-5 h-5" />
-            )}
-          </button>
+          {/* Mobile: theme toggle + menu button */}
+          <div className="md:hidden flex items-center space-x-1">
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg text-gray-400 hover:text-gray-100 hover:bg-gray-800 transition-all duration-200"
+              aria-label="Toggle theme"
+            >
+              {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-lg text-gray-400 hover:text-gray-100 hover:bg-gray-800 transition-all duration-200"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Search Bar (Desktop) */}
