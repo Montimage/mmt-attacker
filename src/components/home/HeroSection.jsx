@@ -9,16 +9,16 @@ function HeroSection() {
         <div className="flex justify-center mb-6">
           <img
             src="/logo.svg"
-            alt="MMT-Attacker Logo"
+            alt="MAG Logo"
             className="w-20 h-20 md:w-24 md:h-24 object-contain"
           />
         </div>
 
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 tracking-tight">
-          MMT-Attacker
+          MAG
         </h1>
         <p className="text-xl md:text-2xl font-semibold text-green-600 mb-4">
-          Cybersecurity Attack Simulation Platform
+          Montimage Attack Generator
         </p>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-10">
           Explore 26 real-world attack techniques through interactive simulations,

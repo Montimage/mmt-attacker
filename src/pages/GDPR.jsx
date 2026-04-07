@@ -29,7 +29,7 @@ function GDPR() {
         <h2 className="text-2xl font-bold text-black mb-4">Our Commitment to GDPR</h2>
         <p className="text-gray-700 leading-relaxed mb-4">
           Montimage EURL is committed to ensuring compliance with the General Data Protection Regulation
-          (GDPR) (EU) 2016/679. As the data controller for the MMT-Attacker demonstration platform, we
+          (GDPR) (EU) 2016/679. As the data controller for the MAG demonstration platform, we
           take our data protection responsibilities seriously and have implemented appropriate technical
           and organizational measures to protect your personal data.
         </p>

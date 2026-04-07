@@ -142,3 +142,4 @@ frontend/.vite/
 
 # Local tooling
 .gitissue/
+.gstack/

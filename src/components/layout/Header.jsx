@@ -31,15 +31,15 @@ function Header() {
           >
             <img
               src="/logo.svg"
-              alt="MMT-Attacker Logo"
+              alt="MAG Logo"
               className="h-9 w-auto object-contain group-hover:opacity-80 transition-opacity duration-200"
             />
             <div className="flex flex-col">
               <span className="text-lg font-bold text-gray-900 group-hover:text-green-600 transition-colors">
-                MMT-Attacker
+                MAG
               </span>
               <span className="text-xs font-medium text-gray-500 hidden sm:block">
-                Demo Platform
+                Montimage Attack Generator
               </span>
             </div>
           </Link>

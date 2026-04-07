@@ -200,7 +200,7 @@ function Docs() {
       <div className="mb-10">
         <h1 className="text-4xl md:text-5xl font-bold text-black mb-3">Documentation</h1>
         <p className="text-lg text-gray-600 max-w-3xl">
-          Everything you need to install, configure, and use <code className="font-mono text-green-700 bg-green-50 px-1.5 py-0.5 rounded border border-green-200">matcha</code> — the MMT-Attacker CLI.
+          Everything you need to install, configure, and use <code className="font-mono text-green-700 bg-green-50 px-1.5 py-0.5 rounded border border-green-200">matcha</code> — the MAG (Montimage Attack Generator) CLI.
         </p>
       </div>
 
@@ -238,7 +238,7 @@ function Docs() {
           <Section id="overview" icon={BookOpen} title="Overview">
             <Card className="mb-6">
               <p className="text-gray-700 leading-relaxed mb-4">
-                <strong>MMT-Attacker</strong> is an open-source network attack simulation toolkit built by{' '}
+                <strong>MAG (Montimage Attack Generator)</strong> is an open-source network attack simulation toolkit built by{' '}
                 <a href="https://www.montimage.eu" target="_blank" rel="noopener noreferrer" className="text-green-700 hover:underline font-medium">Montimage</a>.
                 It provides a single CLI tool called <code className="font-mono bg-gray-100 px-1 rounded">matcha</code> that
                 lets security professionals, researchers, and students simulate <strong>26 different attacks</strong> across
@@ -269,7 +269,7 @@ function Docs() {
             </div>
 
             <NoteCard type="warning">
-              <strong>Authorized use only.</strong> MMT-Attacker is designed strictly for use on networks and systems
+              <strong>Authorized use only.</strong> MAG (Montimage Attack Generator) is designed strictly for use on networks and systems
               you own or have explicit written permission to test. Unauthorized use is illegal and unethical.
             </NoteCard>
           </Section>
@@ -655,7 +655,7 @@ source ~/.zshrc`} />
               <div>
                 <h3 className="font-bold text-red-800 mb-2">Ethical &amp; Legal Reminder</h3>
                 <p className="text-sm text-red-700 leading-relaxed">
-                  MMT-Attacker is an educational and research tool. Always obtain <strong>explicit written
+                  MAG (Montimage Attack Generator) is an educational and research tool. Always obtain <strong>explicit written
                   authorization</strong> before running any attack against systems or networks you do not own.
                   Unauthorized use may violate local and international laws. Montimage accepts no liability
                   for misuse of this software.

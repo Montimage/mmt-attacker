@@ -32,7 +32,7 @@ function Privacy() {
         <p className="text-gray-700 leading-relaxed">
           Montimage EURL ("we," "our," or "us") is committed to protecting your privacy. This Privacy
           Policy explains how we collect, use, disclose, and safeguard your information when you use
-          the MMT-Attacker demonstration platform (the "Service"). Please read this privacy policy
+          the MAG demonstration platform (the "Service"). Please read this privacy policy
           carefully. If you do not agree with the terms of this privacy policy, please do not access
           the Service.
         </p>
@@ -65,7 +65,7 @@ function Privacy() {
           <div>
             <h3 className="font-bold text-black mb-2">2. Simulation Data</h3>
             <p>
-              The MMT-Attacker platform operates as a demonstration tool with simulated attacks. All
+              The MAG platform operates as a demonstration tool with simulated attacks. All
               attack parameters you input and simulation results are:
             </p>
             <ul className="list-disc list-inside ml-4 space-y-1 mt-2">

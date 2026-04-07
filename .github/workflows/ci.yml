@@ -8,53 +8,43 @@ on:
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
 
 jobs:
-  lint:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v8.0.0
-      - uses: astral-sh/ruff-action@v3.6.1
-        with:
-          args: check
-      - uses: astral-sh/ruff-action@v3.6.1
-        with:
-          args: format --check
 
-  test:
-    needs: lint
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.12", "3.13"]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-node@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          node-version: "20"
+          cache: "npm"
+
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e ".[dev]"
-      - name: Run unit tests
-        run: pytest -m "not e2e" -v
+        run: npm ci
 
-  e2e:
-    needs: lint
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-        python-version: ["3.12", "3.13"]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Build
+        run: npm run build
+
+      - uses: actions/upload-pages-artifact@v3
+        if: github.ref == 'refs/heads/main'
         with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install package
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e ".[dev]"
-      - name: Run e2e tests
-        run: pytest -m e2e -v
+          path: dist/
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

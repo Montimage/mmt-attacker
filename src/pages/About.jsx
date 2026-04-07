@@ -18,11 +18,11 @@ function About() {
         <div className="flex justify-center mb-6">
           <img
             src="/logo.svg"
-            alt="MMT-Attacker Logo"
+            alt="MAG Logo"
             className="w-24 h-24 object-contain"
           />
         </div>
-        <h1 className="text-4xl md:text-5xl font-bold text-black mb-4">About MMT-Attacker</h1>
+        <h1 className="text-4xl md:text-5xl font-bold text-black mb-4">About MAG</h1>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
           A comprehensive cybersecurity training platform developed by Montimage
         </p>
@@ -86,7 +86,7 @@ function About() {
 
         <div className="space-y-4 text-gray-700 leading-relaxed">
           <p className="text-lg font-semibold text-black">
-            MMT-Attacker was developed with a clear mission: to provide comprehensive, hands-on
+            MAG (Montimage Attack Generator) was developed with a clear mission: to provide comprehensive, hands-on
             cybersecurity training in a safe and controlled environment.
           </p>
 
@@ -98,7 +98,7 @@ function About() {
               practicing these techniques in production environments is dangerous and often illegal.
             </p>
             <p>
-              MMT-Attacker bridges this gap by providing a fully simulated attack demonstration
+              MAG bridges this gap by providing a fully simulated attack demonstration
               platform where users can:
             </p>
           </div>
