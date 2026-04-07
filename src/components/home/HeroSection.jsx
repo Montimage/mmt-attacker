@@ -1,4 +1,4 @@
-import { AlertTriangle, ArrowRight, Shield, Target, GraduationCap, Zap, Terminal, BookOpen, Users } from 'lucide-react'
+import { ArrowRight, Shield, Target, GraduationCap, Zap, Terminal, BookOpen, Users } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 function HeroSection() {
@@ -121,29 +121,6 @@ function HeroSection() {
                 <p className="text-xs text-gray-500 leading-relaxed">{desc}</p>
               </div>
             ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Legal Warning */}
-      <div className="border-t-2 border-gray-100 bg-amber-50 py-8">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-start gap-4">
-            <div className="bg-amber-100 border border-amber-300 rounded-lg p-2 flex-shrink-0">
-              <AlertTriangle className="w-6 h-6 text-amber-600" />
-            </div>
-            <div>
-              <h3 className="font-bold text-amber-900 mb-2">Legal Warning — Educational Use Only</h3>
-              <p className="text-sm text-amber-800 mb-2 font-semibold">
-                This tool is for <span className="text-green-700">EDUCATIONAL AND TESTING PURPOSES ONLY</span>.
-                Improper use may be illegal and result in criminal charges.
-              </p>
-              <ul className="text-sm text-amber-700 space-y-0.5 list-disc list-inside">
-                <li>Obtain proper authorization before testing any system</li>
-                <li>Use only in controlled, authorized environments</li>
-                <li>Comply with all applicable laws and regulations</li>
-              </ul>
-            </div>
           </div>
         </div>
       </div>
