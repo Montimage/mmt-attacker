@@ -4,7 +4,7 @@ import ScrollToTop from '../common/ScrollToTop'
 
 function Layout({ children }) {
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-gray-950">
       <Header />
 
       {/* Main content */}

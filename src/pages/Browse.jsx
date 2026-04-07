@@ -74,34 +74,34 @@ function Browse() {
   }, [filteredCategories])
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-950">
       {/* Header Section */}
-      <div className="bg-white border-b-2 border-gray-200 py-10">
+      <div className="bg-gray-900 border-b-2 border-gray-700 py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-100 mb-2">
             Browse Attacks
           </h1>
-          <p className="text-gray-500 max-w-3xl">
+          <p className="text-gray-400 max-w-3xl">
             Explore our comprehensive collection of attack simulations. Search, filter, and discover different types of cybersecurity attacks.
           </p>
         </div>
       </div>
 
       {/* Search and Filter Bar */}
-      <div className="sticky top-16 z-40 bg-white border-b border-gray-200 shadow-custom-md">
+      <div className="sticky top-16 z-40 bg-gray-900 border-b border-gray-700 shadow-custom-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <div className="flex flex-col lg:flex-row gap-3 items-start lg:items-center justify-between">
             {/* Search Box */}
             <div className="relative flex-1 w-full lg:max-w-md">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="w-4 h-4 text-gray-400" />
+                <Search className="w-4 h-4 text-gray-500" />
               </div>
               <input
                 type="text"
                 placeholder="Search attacks..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all bg-white"
+                className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-600 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all bg-gray-800 text-gray-100 placeholder-gray-500"
               />
             </div>
 
@@ -113,7 +113,7 @@ function Browse() {
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 transition-all bg-white"
+                  className="px-3 py-2 text-sm border border-gray-600 rounded-lg focus:outline-none focus:border-green-500 transition-all bg-gray-800 text-gray-100"
                 >
                   <option value="all">All Categories</option>
                   {categories.map(cat => (
@@ -125,13 +125,13 @@ function Browse() {
               </div>
 
               {/* View Mode Toggle */}
-              <div className="flex items-center space-x-1 bg-gray-100 rounded-lg p-1 border border-gray-200">
+              <div className="flex items-center space-x-1 bg-gray-800 rounded-lg p-1 border border-gray-600">
                 <button
                   onClick={() => setViewMode('grid')}
                   className={`p-1.5 rounded transition-all ${
                     viewMode === 'grid'
-                      ? 'bg-white border border-gray-300 shadow-custom text-green-600'
-                      : 'text-gray-500 hover:bg-gray-200'
+                      ? 'bg-gray-700 border border-gray-500 shadow-custom text-green-400'
+                      : 'text-gray-500 hover:bg-gray-700'
                   }`}
                   title="Grid view"
                 >
@@ -141,8 +141,8 @@ function Browse() {
                   onClick={() => setViewMode('list')}
                   className={`p-1.5 rounded transition-all ${
                     viewMode === 'list'
-                      ? 'bg-white border border-gray-300 shadow-custom text-green-600'
-                      : 'text-gray-500 hover:bg-gray-200'
+                      ? 'bg-gray-700 border border-gray-500 shadow-custom text-green-400'
+                      : 'text-gray-500 hover:bg-gray-700'
                   }`}
                   title="List view"
                 >
@@ -154,13 +154,13 @@ function Browse() {
               <div className="flex items-center space-x-2 text-sm">
                 <button
                   onClick={expandAll}
-                  className="px-3 py-2 bg-white border border-gray-300 rounded-lg hover:border-green-500 hover:text-green-700 transition-all text-sm text-gray-600"
+                  className="px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg hover:border-green-500 hover:text-green-400 transition-all text-sm text-gray-400"
                 >
                   Expand All
                 </button>
                 <button
                   onClick={collapseAll}
-                  className="px-3 py-2 bg-white border border-gray-300 rounded-lg hover:border-green-500 hover:text-green-700 transition-all text-sm text-gray-600"
+                  className="px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg hover:border-green-500 hover:text-green-400 transition-all text-sm text-gray-400"
                 >
                   Collapse All
                 </button>
@@ -170,7 +170,7 @@ function Browse() {
 
           {/* Results Count */}
           <div className="mt-2 text-xs text-gray-500">
-            Showing <span className="font-semibold text-gray-800">{totalAttacks}</span> attack{totalAttacks !== 1 ? 's' : ''}
+            Showing <span className="font-semibold text-gray-300">{totalAttacks}</span> attack{totalAttacks !== 1 ? 's' : ''}
             {searchQuery && <span> matching "{searchQuery}"</span>}
           </div>
         </div>
@@ -180,15 +180,15 @@ function Browse() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {filteredCategories.length === 0 ? (
           <div className="text-center py-16">
-            <Search className="w-14 h-14 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-bold text-gray-700 mb-2">No attacks found</h3>
+            <Search className="w-14 h-14 text-gray-600 mx-auto mb-4" />
+            <h3 className="text-lg font-bold text-gray-400 mb-2">No attacks found</h3>
             <p className="text-gray-500 mb-6 text-sm">Try adjusting your search or filter criteria</p>
             <button
               onClick={() => {
                 setSearchQuery('')
                 setSelectedCategory('all')
               }}
-              className="px-5 py-2.5 bg-white border border-gray-300 rounded-lg hover:border-green-500 hover:text-green-700 transition-all text-sm font-medium"
+              className="px-5 py-2.5 bg-gray-800 border border-gray-600 rounded-lg hover:border-green-500 hover:text-green-400 transition-all text-sm font-medium text-gray-300"
             >
               Clear All Filters
             </button>
@@ -199,24 +199,24 @@ function Browse() {
               const isExpanded = expandedCategories[category]
 
               return (
-                <div key={category} className="bg-white border border-gray-200 rounded-xl shadow-custom-md overflow-hidden">
+                <div key={category} className="bg-gray-900 border border-gray-700 rounded-xl shadow-custom-md overflow-hidden">
                   {/* Category Header */}
                   <button
                     onClick={() => toggleCategory(category)}
-                    className="w-full flex items-center justify-between px-6 py-4 bg-white hover:bg-gray-50 transition-colors border-b border-gray-100"
+                    className="w-full flex items-center justify-between px-6 py-4 bg-gray-900 hover:bg-gray-800 transition-colors border-b border-gray-700"
                   >
                     <div className="flex items-center space-x-3">
-                      <h2 className="text-xl font-bold text-slate-800">
+                      <h2 className="text-xl font-bold text-gray-100">
                         {categoryDisplayNames[category] || category}
                       </h2>
-                      <span className="text-xs font-semibold text-green-700 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full">
+                      <span className="text-xs font-semibold text-green-400 bg-green-950 border border-green-700 px-2.5 py-1 rounded-full">
                         {attacks.length}
                       </span>
                     </div>
                     {isExpanded ? (
-                      <ChevronDown className="w-5 h-5 text-gray-400" />
+                      <ChevronDown className="w-5 h-5 text-gray-500" />
                     ) : (
-                      <ChevronRight className="w-5 h-5 text-gray-400" />
+                      <ChevronRight className="w-5 h-5 text-gray-500" />
                     )}
                   </button>
 
@@ -235,17 +235,17 @@ function Browse() {
                             <Link
                               key={attack.id}
                               to={`/attacks/${attack.id}`}
-                              className="flex items-center justify-between bg-white border border-gray-200 rounded-lg p-4 hover:border-green-400 hover:shadow-custom transition-all group"
+                              className="flex items-center justify-between bg-gray-800 border border-gray-700 rounded-lg p-4 hover:border-green-500 hover:shadow-custom transition-all group"
                             >
                               <div className="flex-1">
-                                <h3 className="text-base font-semibold text-slate-800 group-hover:text-green-700 mb-0.5">
+                                <h3 className="text-base font-semibold text-gray-100 group-hover:text-green-400 mb-0.5">
                                   {attack.name}
                                 </h3>
-                                <p className="text-sm text-gray-500 line-clamp-1">
+                                <p className="text-sm text-gray-400 line-clamp-1">
                                   {attack.description}
                                 </p>
                               </div>
-                              <div className="ml-4 text-xs text-gray-400 whitespace-nowrap">
+                              <div className="ml-4 text-xs text-gray-500 whitespace-nowrap">
                                 {attack.scenarios.length} scenario{attack.scenarios.length !== 1 ? 's' : ''}
                               </div>
                             </Link>

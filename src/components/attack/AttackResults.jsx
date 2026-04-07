@@ -19,11 +19,11 @@ function AttackResults({ results, isRunning }) {
   return (
     <div className="space-y-6">
       {/* Terminal Output */}
-      <div className="bg-white border-2 border-gray-200 rounded-lg shadow-custom p-6">
-        <h3 className="text-xl font-bold text-black mb-4 flex items-center">
+      <div className="bg-gray-900 border-2 border-gray-700 rounded-lg shadow-custom p-6">
+        <h3 className="text-xl font-bold text-gray-100 mb-4 flex items-center">
           <span className="mr-2">Attack Output</span>
           {isRunning && (
-            <span className="text-sm font-normal text-gray-600">(Running...)</span>
+            <span className="text-sm font-normal text-gray-400">(Running...)</span>
           )}
         </h3>
 
@@ -40,27 +40,27 @@ function AttackResults({ results, isRunning }) {
 
       {/* Metrics */}
       {results?.metrics && (
-        <div ref={metricsRef} className="bg-white border-2 border-gray-200 rounded-lg shadow-custom p-6">
-          <h3 className="text-xl font-bold text-black mb-4">Attack Metrics</h3>
+        <div ref={metricsRef} className="bg-gray-900 border-2 border-gray-700 rounded-lg shadow-custom p-6">
+          <h3 className="text-xl font-bold text-gray-100 mb-4">Attack Metrics</h3>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {Object.entries(results.metrics).map(([key, value]) => (
               <div
                 key={key}
-                className="bg-gray-50 border-2 border-gray-200 rounded-lg p-4"
+                className="bg-gray-800 border-2 border-gray-700 rounded-lg p-4"
               >
                 <div className="text-sm font-semibold text-gray-500 uppercase mb-1">
                   {key.replace(/([A-Z])/g, ' $1').trim()}
                 </div>
-                <div className="text-lg font-bold text-black">
+                <div className="text-lg font-bold text-gray-100">
                   {typeof value === 'boolean' ? (
                     value ? (
-                      <span className="flex items-center text-green-900">
+                      <span className="flex items-center text-green-400">
                         <CheckCircle className="w-5 h-5 mr-1" />
                         Yes
                       </span>
                     ) : (
-                      <span className="flex items-center text-gray-600">
+                      <span className="flex items-center text-gray-400">
                         <XCircle className="w-5 h-5 mr-1" />
                         No
                       </span>
@@ -81,19 +81,19 @@ function AttackResults({ results, isRunning }) {
       {results && (
         <div className={`border-2 rounded-lg p-4 flex items-start space-x-3 ${
           results.success
-            ? 'bg-green-50 border-green-700'
-            : 'bg-gray-50 border-gray-600'
+            ? 'bg-green-950 border-green-600'
+            : 'bg-gray-900 border-gray-600'
         }`}>
           {results.success ? (
-            <CheckCircle className="w-6 h-6 text-green-900 flex-shrink-0 mt-0.5" />
+            <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-0.5" />
           ) : (
-            <AlertCircle className="w-6 h-6 text-gray-700 flex-shrink-0 mt-0.5" />
+            <AlertCircle className="w-6 h-6 text-gray-300 flex-shrink-0 mt-0.5" />
           )}
           <div>
-            <h4 className={`font-bold mb-1 ${results.success ? 'text-green-900' : 'text-gray-900'}`}>
+            <h4 className={`font-bold mb-1 ${results.success ? 'text-green-400' : 'text-gray-100'}`}>
               {results.success ? 'Simulation Completed Successfully' : 'Simulation Failed'}
             </h4>
-            <p className="text-sm text-gray-700">
+            <p className="text-sm text-gray-300">
               {results.success
                 ? 'The attack simulation has completed. Review the output and metrics above for detailed results.'
                 : results.error || 'An error occurred during the simulation.'}

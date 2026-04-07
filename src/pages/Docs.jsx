@@ -66,10 +66,10 @@ function Section({ id, icon: Icon, title, children }) {
   return (
     <section id={id} className="mb-12 scroll-mt-24">
       <div className="flex items-center space-x-3 mb-6">
-        <div className="flex items-center justify-center w-10 h-10 bg-black rounded-lg flex-shrink-0">
-          <Icon className="w-5 h-5 text-white" />
+        <div className="flex items-center justify-center w-10 h-10 bg-gray-700 rounded-lg flex-shrink-0">
+          <Icon className="w-5 h-5 text-gray-100" />
         </div>
-        <h2 className="text-2xl font-bold text-black">{title}</h2>
+        <h2 className="text-2xl font-bold text-gray-100">{title}</h2>
       </div>
       {children}
     </section>
@@ -79,8 +79,8 @@ function Section({ id, icon: Icon, title, children }) {
 function Subsection({ title, children }) {
   return (
     <div className="mb-8">
-      <h3 className="text-lg font-bold text-black mb-3 flex items-center space-x-2">
-        <ChevronRight className="w-4 h-4 text-green-600" />
+      <h3 className="text-lg font-bold text-gray-100 mb-3 flex items-center space-x-2">
+        <ChevronRight className="w-4 h-4 text-green-500" />
         <span>{title}</span>
       </h3>
       {children}
@@ -90,7 +90,7 @@ function Subsection({ title, children }) {
 
 function Card({ children, className = '' }) {
   return (
-    <div className={`bg-white border-2 border-gray-200 rounded-lg p-6 shadow-sm ${className}`}>
+    <div className={`bg-gray-900 border-2 border-gray-700 rounded-lg p-6 shadow-sm ${className}`}>
       {children}
     </div>
   )
@@ -98,10 +98,10 @@ function Card({ children, className = '' }) {
 
 function NoteCard({ type = 'info', children }) {
   const styles = {
-    info: 'bg-blue-50 border-blue-300 text-blue-800',
-    warning: 'bg-yellow-50 border-yellow-400 text-yellow-800',
-    danger: 'bg-red-50 border-red-400 text-red-800',
-    tip: 'bg-green-50 border-green-400 text-green-800',
+    info: 'bg-blue-950 border-blue-600 text-blue-300',
+    warning: 'bg-yellow-950 border-yellow-600 text-yellow-300',
+    danger: 'bg-red-950 border-red-600 text-red-300',
+    tip: 'bg-green-950 border-green-600 text-green-300',
   }
   const labels = { info: 'Note', warning: 'Warning', danger: 'Important', tip: 'Tip' }
 
@@ -190,7 +190,7 @@ function Docs() {
       {/* Back Button */}
       <Link
         to="/"
-        className="inline-flex items-center space-x-2 text-gray-600 hover:text-green-900 mb-6 transition-colors"
+        className="inline-flex items-center space-x-2 text-gray-400 hover:text-green-400 mb-6 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         <span className="font-medium">Back to Home</span>
@@ -198,9 +198,9 @@ function Docs() {
 
       {/* Page header */}
       <div className="mb-10">
-        <h1 className="text-4xl md:text-5xl font-bold text-black mb-3">Documentation</h1>
-        <p className="text-lg text-gray-600 max-w-3xl">
-          Everything you need to install, configure, and use <code className="font-mono text-green-700 bg-green-50 px-1.5 py-0.5 rounded border border-green-200">mag</code> — the MAG (Montimage Attack Generator) CLI.
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-100 mb-3">Documentation</h1>
+        <p className="text-lg text-gray-400 max-w-3xl">
+          Everything you need to install, configure, and use <code className="font-mono text-green-400 bg-green-950 px-1.5 py-0.5 rounded border border-green-800">mag</code> — the MAG (Montimage Attack Generator) CLI.
         </p>
       </div>
 
@@ -216,8 +216,8 @@ function Docs() {
                 onClick={() => scrollTo(id)}
                 className={`w-full flex items-center space-x-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                   activeSection === id
-                    ? 'bg-black text-white'
-                    : 'text-gray-600 hover:text-black hover:bg-gray-100'
+                    ? 'bg-gray-700 text-gray-100'
+                    : 'text-gray-400 hover:text-gray-100 hover:bg-gray-800'
                 }`}
               >
                 <Icon className="w-4 h-4 flex-shrink-0" />
@@ -237,14 +237,14 @@ function Docs() {
           {/* ================================================================ */}
           <Section id="overview" icon={BookOpen} title="Overview">
             <Card className="mb-6">
-              <p className="text-gray-700 leading-relaxed mb-4">
-                <strong>MAG (Montimage Attack Generator)</strong> is an open-source network attack simulation toolkit built by{' '}
-                <a href="https://www.montimage.eu" target="_blank" rel="noopener noreferrer" className="text-green-700 hover:underline font-medium">Montimage</a>.
-                It provides a single CLI tool called <code className="font-mono bg-gray-100 px-1 rounded">mag</code> that
-                lets security professionals, researchers, and students simulate <strong>26 different attacks</strong> across
+              <p className="text-gray-300 leading-relaxed mb-4">
+                <strong className="text-gray-100">MAG (Montimage Attack Generator)</strong> is an open-source network attack simulation toolkit built by{' '}
+                <a href="https://www.montimage.eu" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:underline font-medium">Montimage</a>.
+                It provides a single CLI tool called <code className="font-mono bg-gray-800 text-green-400 px-1 rounded">mag</code> that
+                lets security professionals, researchers, and students simulate <strong className="text-gray-100">26 different attacks</strong> across
                 three categories — all in isolated, authorized lab environments.
               </p>
-              <p className="text-gray-700 leading-relaxed">
+              <p className="text-gray-300 leading-relaxed">
                 The goal is to teach <em>how</em> attacks work, not just that they exist, so defenders can build
                 more effective countermeasures.
               </p>
@@ -252,19 +252,19 @@ function Docs() {
 
             <div className="grid md:grid-cols-3 gap-4 mb-6">
               <Card className="text-center">
-                <Network className="w-8 h-8 text-black mx-auto mb-2" />
-                <p className="text-2xl font-bold text-black">12</p>
-                <p className="text-sm text-gray-600 font-medium">Network-layer attacks</p>
+                <Network className="w-8 h-8 text-green-400 mx-auto mb-2" />
+                <p className="text-2xl font-bold text-gray-100">12</p>
+                <p className="text-sm text-gray-400 font-medium">Network-layer attacks</p>
               </Card>
               <Card className="text-center">
-                <Globe className="w-8 h-8 text-black mx-auto mb-2" />
-                <p className="text-2xl font-bold text-black">13</p>
-                <p className="text-sm text-gray-600 font-medium">Application-layer attacks</p>
+                <Globe className="w-8 h-8 text-green-400 mx-auto mb-2" />
+                <p className="text-2xl font-bold text-gray-100">13</p>
+                <p className="text-sm text-gray-400 font-medium">Application-layer attacks</p>
               </Card>
               <Card className="text-center">
-                <Repeat className="w-8 h-8 text-black mx-auto mb-2" />
-                <p className="text-2xl font-bold text-black">1</p>
-                <p className="text-sm text-gray-600 font-medium">Replay attack</p>
+                <Repeat className="w-8 h-8 text-green-400 mx-auto mb-2" />
+                <p className="text-2xl font-bold text-gray-100">1</p>
+                <p className="text-sm text-gray-400 font-medium">Replay attack</p>
               </Card>
             </div>
 
@@ -279,9 +279,9 @@ function Docs() {
           {/* ================================================================ */}
           <Section id="installation" icon={Download} title="Installation">
             <Subsection title="Requirements">
-              <ul className="list-disc list-inside text-gray-700 space-y-1 text-sm">
+              <ul className="list-disc list-inside text-gray-300 space-y-1 text-sm">
                 <li>Python 3.8 or later</li>
-                <li><code className="font-mono bg-gray-100 px-1 rounded">libpcap</code> (required by Scapy for raw socket support)</li>
+                <li><code className="font-mono bg-gray-800 px-1 rounded">libpcap</code> (required by Scapy for raw socket support)</li>
                 <li>Root / Administrator privileges for most attacks (raw sockets)</li>
               </ul>
             </Subsection>
@@ -295,7 +295,7 @@ function Docs() {
             </Subsection>
 
             <Subsection title="Option 2 — One-line installer (Linux / macOS)">
-              <p className="text-sm text-gray-600 mb-2">
+              <p className="text-sm text-gray-400 mb-2">
                 Automatically detects your OS and package manager, installs system dependencies, then installs from PyPI (falls back to GitHub source).
               </p>
               <CodeBlock code={`curl -sSL https://raw.githubusercontent.com/Montimage/mmt-attacker/main/install.sh | bash
@@ -310,7 +310,7 @@ pip install -e .`} />
             </Subsection>
 
             <Subsection title="Option 4 — Docker">
-              <p className="text-sm text-gray-600 mb-2">
+              <p className="text-sm text-gray-400 mb-2">
                 Run mag in an isolated container without any local Python setup.
               </p>
               <CodeBlock code={`docker build -t mag .
@@ -330,7 +330,7 @@ mag list`} />
           {/* QUICK START */}
           {/* ================================================================ */}
           <Section id="quickstart" icon={Zap} title="Quick Start">
-            <p className="text-gray-700 mb-4">
+            <p className="text-gray-300 mb-4">
               After installation, three commands get you oriented:
             </p>
 
@@ -376,10 +376,10 @@ sudo mag pcap-replay --pcap-file capture.pcap --interface eth0 --rate 2.0`} />
               <div className="overflow-x-auto">
                 <table className="w-full text-sm border-collapse">
                   <thead>
-                    <tr className="bg-gray-100 text-left">
-                      <th className="border border-gray-200 px-4 py-2 font-semibold text-black">Flag</th>
-                      <th className="border border-gray-200 px-4 py-2 font-semibold text-black">Description</th>
-                      <th className="border border-gray-200 px-4 py-2 font-semibold text-black">Default</th>
+                    <tr className="bg-gray-800 text-left">
+                      <th className="border border-gray-700 px-4 py-2 font-semibold text-gray-100">Flag</th>
+                      <th className="border border-gray-700 px-4 py-2 font-semibold text-gray-100">Description</th>
+                      <th className="border border-gray-700 px-4 py-2 font-semibold text-gray-100">Default</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -391,9 +391,9 @@ sudo mag pcap-replay --pcap-file capture.pcap --interface eth0 --rate 2.0`} />
                       ['--help', 'Show help message and exit', '—'],
                     ].map(([flag, desc, def_]) => (
                       <tr key={flag} className="hover:bg-gray-50">
-                        <td className="border border-gray-200 px-4 py-2 font-mono text-green-700 text-xs">{flag}</td>
-                        <td className="border border-gray-200 px-4 py-2 text-gray-700">{desc}</td>
-                        <td className="border border-gray-200 px-4 py-2 text-gray-500">{def_}</td>
+                        <td className="border border-gray-700 px-4 py-2 font-mono text-green-400 text-xs">{flag}</td>
+                        <td className="border border-gray-700 px-4 py-2 text-gray-300">{desc}</td>
+                        <td className="border border-gray-700 px-4 py-2 text-gray-500">{def_}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -426,8 +426,8 @@ sudo mag pcap-replay --pcap-file capture.pcap --interface eth0 --rate 2.0`} />
                   },
                 ].map(({ cmd, desc, example }) => (
                   <Card key={cmd} className="!p-4">
-                    <code className="text-sm font-mono text-green-700 font-bold">{cmd}</code>
-                    <p className="text-sm text-gray-700 mt-1 mb-2">{desc}</p>
+                    <code className="text-sm font-mono text-green-400 font-bold">{cmd}</code>
+                    <p className="text-sm text-gray-300 mt-1 mb-2">{desc}</p>
                     <CodeBlock code={example} />
                   </Card>
                 ))}
@@ -439,9 +439,9 @@ sudo mag pcap-replay --pcap-file capture.pcap --interface eth0 --rate 2.0`} />
           {/* ATTACK CATALOGUE */}
           {/* ================================================================ */}
           <Section id="attacks" icon={Shield} title="Attack Catalogue">
-            <p className="text-gray-700 mb-6">
+            <p className="text-gray-300 mb-6">
               All 26 attacks are listed below with their CLI command and required parameters.
-              Run <code className="font-mono bg-gray-100 px-1 rounded text-sm">mag &lt;attack&gt; --help</code> for the full parameter list of any attack.
+              Run <code className="font-mono bg-gray-800 px-1 rounded text-sm">mag &lt;attack&gt; --help</code> for the full parameter list of any attack.
             </p>
 
             {/* Network layer */}
@@ -457,20 +457,20 @@ sudo mag pcap-replay --pcap-file capture.pcap --interface eth0 --rate 2.0`} />
                 {expandedCategories.network ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
               </button>
               {expandedCategories.network && (
-                <div className="overflow-x-auto border border-t-0 border-gray-200 rounded-b-lg">
+                <div className="overflow-x-auto border border-t-0 border-gray-700 rounded-b-lg">
                   <table className="w-full text-sm border-collapse">
                     <thead>
                       <tr className="bg-gray-50 text-left">
-                        <th className="px-4 py-2 font-semibold text-black border-b border-gray-200">Command</th>
-                        <th className="px-4 py-2 font-semibold text-black border-b border-gray-200">Description</th>
-                        <th className="px-4 py-2 font-semibold text-black border-b border-gray-200 hidden md:table-cell">Key Parameters</th>
+                        <th className="px-4 py-2 font-semibold text-gray-100 border-b border-gray-700">Command</th>
+                        <th className="px-4 py-2 font-semibold text-gray-100 border-b border-gray-700">Description</th>
+                        <th className="px-4 py-2 font-semibold text-gray-100 border-b border-gray-700 hidden md:table-cell">Key Parameters</th>
                       </tr>
                     </thead>
                     <tbody>
                       {NETWORK_ATTACKS.map((a) => (
                         <tr key={a.cmd} className="hover:bg-gray-50 border-b border-gray-100 last:border-0">
-                          <td className="px-4 py-2.5 font-mono text-green-700 font-medium whitespace-nowrap">{a.cmd}</td>
-                          <td className="px-4 py-2.5 text-gray-700">{a.desc}</td>
+                          <td className="px-4 py-2.5 font-mono text-green-400 font-medium whitespace-nowrap">{a.cmd}</td>
+                          <td className="px-4 py-2.5 text-gray-300">{a.desc}</td>
                           <td className="px-4 py-2.5 font-mono text-xs text-gray-500 hidden md:table-cell whitespace-nowrap">{a.params}</td>
                         </tr>
                       ))}
@@ -493,20 +493,20 @@ sudo mag pcap-replay --pcap-file capture.pcap --interface eth0 --rate 2.0`} />
                 {expandedCategories.app ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
               </button>
               {expandedCategories.app && (
-                <div className="overflow-x-auto border border-t-0 border-gray-200 rounded-b-lg">
+                <div className="overflow-x-auto border border-t-0 border-gray-700 rounded-b-lg">
                   <table className="w-full text-sm border-collapse">
                     <thead>
                       <tr className="bg-gray-50 text-left">
-                        <th className="px-4 py-2 font-semibold text-black border-b border-gray-200">Command</th>
-                        <th className="px-4 py-2 font-semibold text-black border-b border-gray-200">Description</th>
-                        <th className="px-4 py-2 font-semibold text-black border-b border-gray-200 hidden md:table-cell">Key Parameters</th>
+                        <th className="px-4 py-2 font-semibold text-gray-100 border-b border-gray-700">Command</th>
+                        <th className="px-4 py-2 font-semibold text-gray-100 border-b border-gray-700">Description</th>
+                        <th className="px-4 py-2 font-semibold text-gray-100 border-b border-gray-700 hidden md:table-cell">Key Parameters</th>
                       </tr>
                     </thead>
                     <tbody>
                       {APP_ATTACKS.map((a) => (
                         <tr key={a.cmd} className="hover:bg-gray-50 border-b border-gray-100 last:border-0">
-                          <td className="px-4 py-2.5 font-mono text-green-700 font-medium whitespace-nowrap">{a.cmd}</td>
-                          <td className="px-4 py-2.5 text-gray-700">{a.desc}</td>
+                          <td className="px-4 py-2.5 font-mono text-green-400 font-medium whitespace-nowrap">{a.cmd}</td>
+                          <td className="px-4 py-2.5 text-gray-300">{a.desc}</td>
                           <td className="px-4 py-2.5 font-mono text-xs text-gray-500 hidden md:table-cell whitespace-nowrap">{a.params}</td>
                         </tr>
                       ))}
@@ -529,20 +529,20 @@ sudo mag pcap-replay --pcap-file capture.pcap --interface eth0 --rate 2.0`} />
                 {expandedCategories.replay ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
               </button>
               {expandedCategories.replay && (
-                <div className="overflow-x-auto border border-t-0 border-gray-200 rounded-b-lg">
+                <div className="overflow-x-auto border border-t-0 border-gray-700 rounded-b-lg">
                   <table className="w-full text-sm border-collapse">
                     <thead>
                       <tr className="bg-gray-50 text-left">
-                        <th className="px-4 py-2 font-semibold text-black border-b border-gray-200">Command</th>
-                        <th className="px-4 py-2 font-semibold text-black border-b border-gray-200">Description</th>
-                        <th className="px-4 py-2 font-semibold text-black border-b border-gray-200 hidden md:table-cell">Key Parameters</th>
+                        <th className="px-4 py-2 font-semibold text-gray-100 border-b border-gray-700">Command</th>
+                        <th className="px-4 py-2 font-semibold text-gray-100 border-b border-gray-700">Description</th>
+                        <th className="px-4 py-2 font-semibold text-gray-100 border-b border-gray-700 hidden md:table-cell">Key Parameters</th>
                       </tr>
                     </thead>
                     <tbody>
                       {REPLAY_ATTACKS.map((a) => (
                         <tr key={a.cmd} className="hover:bg-gray-50 border-b border-gray-100 last:border-0">
-                          <td className="px-4 py-2.5 font-mono text-green-700 font-medium whitespace-nowrap">{a.cmd}</td>
-                          <td className="px-4 py-2.5 text-gray-700">{a.desc}</td>
+                          <td className="px-4 py-2.5 font-mono text-green-400 font-medium whitespace-nowrap">{a.cmd}</td>
+                          <td className="px-4 py-2.5 text-gray-300">{a.desc}</td>
                           <td className="px-4 py-2.5 font-mono text-xs text-gray-500 hidden md:table-cell whitespace-nowrap">{a.params}</td>
                         </tr>
                       ))}
@@ -557,8 +557,8 @@ sudo mag pcap-replay --pcap-file capture.pcap --interface eth0 --rate 2.0`} />
           {/* DOCKER LAB */}
           {/* ================================================================ */}
           <Section id="docker" icon={Container} title="Docker Lab">
-            <p className="text-gray-700 mb-4">
-              The repository ships a <code className="font-mono bg-gray-100 px-1 rounded text-sm">docker-compose.yml</code> that
+            <p className="text-gray-300 mb-4">
+              The repository ships a <code className="font-mono bg-gray-800 px-1 rounded text-sm">docker-compose.yml</code> that
               spins up a ready-made two-container lab: an <strong>attacker</strong> container with mag pre-installed and
               a <strong>target</strong> container running nginx, OpenSSH, and vsftpd.
             </p>
@@ -609,7 +609,7 @@ docker compose down --rmi all`} />
           {/* SHELL COMPLETIONS */}
           {/* ================================================================ */}
           <Section id="completions" icon={Package} title="Shell Completions">
-            <p className="text-gray-700 mb-4">
+            <p className="text-gray-300 mb-4">
               mag can generate tab-completion scripts for Bash, Zsh, and Fish so you can auto-complete
               attack names and flags without memorising them.
             </p>
@@ -642,7 +642,7 @@ source ~/.zshrc`} />
             </Subsection>
 
             <NoteCard type="tip">
-              After installing completions, type <code className="font-mono">mag </code> and press <kbd className="bg-gray-100 border border-gray-300 rounded px-1.5 py-0.5 text-xs font-mono">Tab</kbd> to see all available attack commands.
+              After installing completions, type <code className="font-mono">mag </code> and press <kbd className="bg-gray-800 border border-gray-600 rounded px-1.5 py-0.5 text-xs font-mono">Tab</kbd> to see all available attack commands.
             </NoteCard>
           </Section>
 
@@ -667,7 +667,7 @@ source ~/.zshrc`} />
           {/* ================================================================ */}
           {/* Footer links */}
           {/* ================================================================ */}
-          <div className="flex flex-wrap gap-4 pt-6 border-t-2 border-gray-200">
+          <div className="flex flex-wrap gap-4 pt-6 border-t-2 border-gray-700">
             <a
               href="https://github.com/Montimage/mmt-attacker"
               target="_blank"
@@ -679,14 +679,14 @@ source ~/.zshrc`} />
             </a>
             <Link
               to="/browse"
-              className="inline-flex items-center space-x-2 bg-white border-2 border-gray-300 text-gray-700 px-5 py-2.5 rounded-lg font-semibold text-sm hover:border-black hover:text-black transition-colors"
+              className="inline-flex items-center space-x-2 bg-gray-900 border-2 border-gray-600 text-gray-300 px-5 py-2.5 rounded-lg font-semibold text-sm hover:border-black hover:text-gray-100 transition-colors"
             >
               <Shield className="w-4 h-4" />
               <span>Browse Attacks</span>
             </Link>
             <Link
               to="/about"
-              className="inline-flex items-center space-x-2 bg-white border-2 border-gray-300 text-gray-700 px-5 py-2.5 rounded-lg font-semibold text-sm hover:border-black hover:text-black transition-colors"
+              className="inline-flex items-center space-x-2 bg-gray-900 border-2 border-gray-600 text-gray-300 px-5 py-2.5 rounded-lg font-semibold text-sm hover:border-black hover:text-gray-100 transition-colors"
             >
               <BookOpen className="w-4 h-4" />
               <span>About</span>

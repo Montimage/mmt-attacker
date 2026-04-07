@@ -5,11 +5,11 @@ function Badge({
   ...props
 }) {
   const variants = {
-    default: 'bg-gray-100 text-gray-800 border-gray-400',
-    primary: 'bg-black text-white border-black',
-    secondary: 'bg-gray-700 text-white border-gray-800',
-    outline: 'bg-white text-gray-900 border-gray-400',
-    success: 'bg-white text-green-600 border-gray-400',
+    default: 'bg-gray-800 text-gray-200 border-gray-600',
+    primary: 'bg-green-700 text-white border-green-600',
+    secondary: 'bg-gray-700 text-gray-100 border-gray-600',
+    outline: 'bg-gray-900 text-gray-300 border-gray-600',
+    success: 'bg-green-950 text-green-400 border-green-700',
   }
 
   const classes = `inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full border ${variants[variant]} ${className}`

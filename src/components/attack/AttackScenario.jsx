@@ -63,10 +63,10 @@ function AttackScenario({ attackId, scenarios, onExecute, isExecuting, results }
   }
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl shadow-custom-md overflow-hidden">
+    <div className="bg-gray-900 border border-gray-700 rounded-xl shadow-custom-md overflow-hidden">
       {/* Scenario Tabs */}
       {scenarios.length > 1 && (
-        <div className="flex border-b border-gray-200 overflow-x-auto bg-gray-50">
+        <div className="flex border-b border-gray-700 overflow-x-auto bg-gray-900">
           {scenarios.map((scenario, index) => (
             <button
               key={scenario.id}
@@ -78,8 +78,8 @@ function AttackScenario({ attackId, scenarios, onExecute, isExecuting, results }
               }}
               className={`flex-1 px-6 py-3.5 font-medium text-sm transition-colors whitespace-nowrap ${
                 activeScenario === index
-                  ? 'bg-white text-green-700 border-b-2 border-green-600 shadow-sm'
-                  : 'text-gray-500 hover:bg-white hover:text-gray-900'
+                  ? 'bg-gray-900 text-green-400 border-b-2 border-green-600 shadow-sm'
+                  : 'text-gray-500 hover:bg-gray-900 hover:text-gray-100'
               }`}
             >
               {scenario.name}
@@ -92,21 +92,21 @@ function AttackScenario({ attackId, scenarios, onExecute, isExecuting, results }
       <div className="p-6">
         {/* Scenario Description */}
         <div className="mb-6">
-          <h3 className="text-xl font-bold text-black mb-2">{currentScenario.name}</h3>
+          <h3 className="text-xl font-bold text-gray-100 mb-2">{currentScenario.name}</h3>
           {currentScenario.description && (
-            <p className="text-gray-600">{currentScenario.description}</p>
+            <p className="text-gray-400">{currentScenario.description}</p>
           )}
         </div>
 
         {/* Sub-Tabs: Configure | CLI Command */}
         <div className="mb-6">
-          <div className="flex border-b border-gray-300">
+          <div className="flex border-b border-gray-600">
             <button
               onClick={() => setActiveTab('configure')}
               className={`px-6 py-3 font-medium text-sm transition-colors ${
                 activeTab === 'configure'
-                  ? 'text-green-700 border-b-2 border-green-700'
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'text-green-400 border-b-2 border-green-400'
+                  : 'text-gray-400 hover:text-gray-100'
               }`}
             >
               Configure
@@ -115,8 +115,8 @@ function AttackScenario({ attackId, scenarios, onExecute, isExecuting, results }
               onClick={() => setActiveTab('command')}
               className={`px-6 py-3 font-medium text-sm transition-colors ${
                 activeTab === 'command'
-                  ? 'text-green-700 border-b-2 border-green-700'
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'text-green-400 border-b-2 border-green-400'
+                  : 'text-gray-400 hover:text-gray-100'
               }`}
             >
               CLI Command
@@ -136,7 +136,7 @@ function AttackScenario({ attackId, scenarios, onExecute, isExecuting, results }
             />
 
             {/* Execute Button */}
-            <div className="mt-6 pt-6 border-t-2 border-gray-200">
+            <div className="mt-6 pt-6 border-t-2 border-gray-700">
               <div className="flex flex-wrap gap-3">
                 <Button
                   variant="primary"

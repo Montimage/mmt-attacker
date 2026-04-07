@@ -9,7 +9,7 @@ function Privacy() {
       {/* Back Button */}
       <Link
         to="/"
-        className="inline-flex items-center space-x-2 text-gray-600 hover:text-green-900 mb-6 transition-colors"
+        className="inline-flex items-center space-x-2 text-gray-400 hover:text-green-400 mb-6 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         <span className="font-medium">Back to Home</span>
@@ -18,18 +18,18 @@ function Privacy() {
       {/* Header */}
       <div className="text-center mb-12">
         <div className="flex justify-center mb-4">
-          <Shield className="w-16 h-16 text-black" />
+          <Shield className="w-16 h-16 text-gray-100" />
         </div>
-        <h1 className="text-4xl md:text-5xl font-bold text-black mb-4">Privacy Policy</h1>
-        <p className="text-lg text-gray-600">
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-100 mb-4">Privacy Policy</h1>
+        <p className="text-lg text-gray-400">
           Last Updated: {lastUpdated}
         </p>
       </div>
 
       {/* Introduction */}
-      <div className="bg-white border-2 border-gray-300 rounded-lg shadow-custom-md p-8 mb-6">
-        <h2 className="text-2xl font-bold text-black mb-4">Introduction</h2>
-        <p className="text-gray-700 leading-relaxed">
+      <div className="bg-gray-900 border-2 border-gray-700 rounded-lg shadow-custom-md p-8 mb-6">
+        <h2 className="text-2xl font-bold text-gray-100 mb-4">Introduction</h2>
+        <p className="text-gray-300 leading-relaxed">
           Montimage EURL ("we," "our," or "us") is committed to protecting your privacy. This Privacy
           Policy explains how we collect, use, disclose, and safeguard your information when you use
           the MAG demonstration platform (the "Service"). Please read this privacy policy
@@ -39,15 +39,15 @@ function Privacy() {
       </div>
 
       {/* Data Collection */}
-      <div className="bg-white border-2 border-gray-300 rounded-lg shadow-custom-md p-8 mb-6">
+      <div className="bg-gray-900 border-2 border-gray-700 rounded-lg shadow-custom-md p-8 mb-6">
         <div className="flex items-center space-x-3 mb-4">
-          <Database className="w-6 h-6 text-black" />
-          <h2 className="text-2xl font-bold text-black">Information We Collect</h2>
+          <Database className="w-6 h-6 text-gray-100" />
+          <h2 className="text-2xl font-bold text-gray-100">Information We Collect</h2>
         </div>
 
-        <div className="space-y-4 text-gray-700">
+        <div className="space-y-4 text-gray-300">
           <div>
-            <h3 className="font-bold text-black mb-2">1. Automatically Collected Information</h3>
+            <h3 className="font-bold text-gray-100 mb-2">1. Automatically Collected Information</h3>
             <p className="mb-2">
               When you access the Service, we may automatically collect certain information about your
               device, including:
@@ -63,7 +63,7 @@ function Privacy() {
           </div>
 
           <div>
-            <h3 className="font-bold text-black mb-2">2. Simulation Data</h3>
+            <h3 className="font-bold text-gray-100 mb-2">2. Simulation Data</h3>
             <p>
               The MAG platform operates as a demonstration tool with simulated attacks. All
               attack parameters you input and simulation results are:
@@ -77,7 +77,7 @@ function Privacy() {
           </div>
 
           <div>
-            <h3 className="font-bold text-black mb-2">3. Cookies and Tracking Technologies</h3>
+            <h3 className="font-bold text-gray-100 mb-2">3. Cookies and Tracking Technologies</h3>
             <p>
               We may use cookies and similar tracking technologies to monitor activity on our Service
               and store certain information. You can instruct your browser to refuse all cookies or to
@@ -88,13 +88,13 @@ function Privacy() {
       </div>
 
       {/* How We Use Information */}
-      <div className="bg-white border-2 border-gray-300 rounded-lg shadow-custom-md p-8 mb-6">
+      <div className="bg-gray-900 border-2 border-gray-700 rounded-lg shadow-custom-md p-8 mb-6">
         <div className="flex items-center space-x-3 mb-4">
-          <Eye className="w-6 h-6 text-black" />
-          <h2 className="text-2xl font-bold text-black">How We Use Your Information</h2>
+          <Eye className="w-6 h-6 text-gray-100" />
+          <h2 className="text-2xl font-bold text-gray-100">How We Use Your Information</h2>
         </div>
 
-        <div className="space-y-3 text-gray-700">
+        <div className="space-y-3 text-gray-300">
           <p>We use the collected information for the following purposes:</p>
           <ul className="list-disc list-inside ml-4 space-y-2">
             <li>
@@ -121,19 +121,19 @@ function Privacy() {
       </div>
 
       {/* Data Security */}
-      <div className="bg-white border-2 border-gray-300 rounded-lg shadow-custom-md p-8 mb-6">
+      <div className="bg-gray-900 border-2 border-gray-700 rounded-lg shadow-custom-md p-8 mb-6">
         <div className="flex items-center space-x-3 mb-4">
-          <Lock className="w-6 h-6 text-black" />
-          <h2 className="text-2xl font-bold text-black">Data Security</h2>
+          <Lock className="w-6 h-6 text-gray-100" />
+          <h2 className="text-2xl font-bold text-gray-100">Data Security</h2>
         </div>
 
-        <p className="text-gray-700 leading-relaxed">
+        <p className="text-gray-300 leading-relaxed">
           We implement appropriate technical and organizational security measures to protect your
           information against unauthorized access, alteration, disclosure, or destruction. These
           measures include:
         </p>
 
-        <ul className="list-disc list-inside ml-4 space-y-2 mt-4 text-gray-700">
+        <ul className="list-disc list-inside ml-4 space-y-2 mt-4 text-gray-300">
           <li>Encryption of data in transit using HTTPS/TLS protocols</li>
           <li>Regular security assessments and updates</li>
           <li>Access controls and authentication mechanisms</li>
@@ -151,10 +151,10 @@ function Privacy() {
       </div>
 
       {/* Third-Party Services */}
-      <div className="bg-white border-2 border-gray-300 rounded-lg shadow-custom-md p-8 mb-6">
-        <h2 className="text-2xl font-bold text-black mb-4">Third-Party Services</h2>
+      <div className="bg-gray-900 border-2 border-gray-700 rounded-lg shadow-custom-md p-8 mb-6">
+        <h2 className="text-2xl font-bold text-gray-100 mb-4">Third-Party Services</h2>
 
-        <div className="space-y-4 text-gray-700">
+        <div className="space-y-4 text-gray-300">
           <p>
             The Service may contain links to third-party websites or services that are not owned or
             controlled by Montimage. We have no control over, and assume no responsibility for, the
@@ -179,13 +179,13 @@ function Privacy() {
       </div>
 
       {/* Your Rights */}
-      <div className="bg-white border-2 border-gray-300 rounded-lg shadow-custom-md p-8 mb-6">
+      <div className="bg-gray-900 border-2 border-gray-700 rounded-lg shadow-custom-md p-8 mb-6">
         <div className="flex items-center space-x-3 mb-4">
-          <FileText className="w-6 h-6 text-black" />
-          <h2 className="text-2xl font-bold text-black">Your Privacy Rights</h2>
+          <FileText className="w-6 h-6 text-gray-100" />
+          <h2 className="text-2xl font-bold text-gray-100">Your Privacy Rights</h2>
         </div>
 
-        <div className="space-y-3 text-gray-700">
+        <div className="space-y-3 text-gray-300">
           <p>Depending on your location, you may have the following rights regarding your personal data:</p>
 
           <ul className="list-disc list-inside ml-4 space-y-2">
@@ -211,7 +211,7 @@ function Privacy() {
 
           <p className="mt-4">
             To exercise these rights, please contact us at{' '}
-            <a href="mailto:contact@montimage.eu" className="text-green-900 hover:text-green-800 font-medium">
+            <a href="mailto:contact@montimage.eu" className="text-green-400 hover:text-green-800 font-medium">
               contact@montimage.eu
             </a>
           </p>
@@ -219,9 +219,9 @@ function Privacy() {
       </div>
 
       {/* Children's Privacy */}
-      <div className="bg-white border-2 border-gray-300 rounded-lg shadow-custom-md p-8 mb-6">
-        <h2 className="text-2xl font-bold text-black mb-4">Children's Privacy</h2>
-        <p className="text-gray-700 leading-relaxed">
+      <div className="bg-gray-900 border-2 border-gray-700 rounded-lg shadow-custom-md p-8 mb-6">
+        <h2 className="text-2xl font-bold text-gray-100 mb-4">Children's Privacy</h2>
+        <p className="text-gray-300 leading-relaxed">
           The Service is not intended for use by children under the age of 18. We do not knowingly
           collect personal information from children under 18. If you are a parent or guardian and
           believe your child has provided us with personal information, please contact us. If we
@@ -231,9 +231,9 @@ function Privacy() {
       </div>
 
       {/* Changes to Policy */}
-      <div className="bg-white border-2 border-gray-300 rounded-lg shadow-custom-md p-8 mb-6">
-        <h2 className="text-2xl font-bold text-black mb-4">Changes to This Privacy Policy</h2>
-        <p className="text-gray-700 leading-relaxed">
+      <div className="bg-gray-900 border-2 border-gray-700 rounded-lg shadow-custom-md p-8 mb-6">
+        <h2 className="text-2xl font-bold text-gray-100 mb-4">Changes to This Privacy Policy</h2>
+        <p className="text-gray-300 leading-relaxed">
           We may update our Privacy Policy from time to time. We will notify you of any changes by
           posting the new Privacy Policy on this page and updating the "Last Updated" date. You are
           advised to review this Privacy Policy periodically for any changes. Changes to this Privacy
@@ -243,14 +243,14 @@ function Privacy() {
 
       {/* Contact */}
       <div className="bg-green-50 border-2 border-green-700 rounded-lg shadow-custom-md p-8 mb-8">
-        <h2 className="text-2xl font-bold text-black mb-4">Contact Us</h2>
-        <p className="text-gray-700 mb-4">
+        <h2 className="text-2xl font-bold text-gray-100 mb-4">Contact Us</h2>
+        <p className="text-gray-300 mb-4">
           If you have any questions about this Privacy Policy, please contact us:
         </p>
-        <div className="space-y-2 text-gray-700">
+        <div className="space-y-2 text-gray-300">
           <p>
             <strong>Email:</strong>{' '}
-            <a href="mailto:contact@montimage.eu" className="text-green-900 hover:text-green-800 font-medium">
+            <a href="mailto:contact@montimage.eu" className="text-green-400 hover:text-green-800 font-medium">
               contact@montimage.eu
             </a>
           </p>
@@ -263,7 +263,7 @@ function Privacy() {
               href="https://www.montimage.eu"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-green-900 hover:text-green-800 font-medium"
+              className="text-green-400 hover:text-green-800 font-medium"
             >
               www.montimage.eu
             </a>

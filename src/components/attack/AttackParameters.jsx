@@ -47,7 +47,7 @@ function AttackParameters({ parameters, values, onChange, errors = {} }) {
       case 'textarea':
         return (
           <div key={param.name} className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
               {param.label}
               {param.required && <span className="text-red-500 ml-1">*</span>}
             </label>
@@ -57,8 +57,8 @@ function AttackParameters({ parameters, values, onChange, errors = {} }) {
               onBlur={() => handleBlur(param)}
               placeholder={param.placeholder}
               rows={4}
-              className={`w-full px-4 py-2 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-200 transition-all ${
-                errors[param.name] ? 'border-red-300 focus:border-red-500' : 'border-gray-300 focus:border-green-700'
+              className={`w-full px-4 py-2 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-200 transition-all bg-gray-900 text-gray-100 ${
+                errors[param.name] ? 'border-red-300 focus:border-red-500' : 'border-gray-600 focus:border-green-400'
               }`}
             />
             {param.helpText && (
@@ -100,7 +100,7 @@ function AttackParameters({ parameters, values, onChange, errors = {} }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between mb-4">
-        <h4 className="text-lg font-semibold text-black">Parameters</h4>
+        <h4 className="text-lg font-semibold text-gray-100">Parameters</h4>
         <div className="flex items-center text-sm text-gray-500">
           <span className="text-red-500 mr-1">*</span>
           <span>Required field</span>

@@ -13,11 +13,11 @@ function Checkbox({
           type="checkbox"
           checked={checked}
           onChange={onChange}
-          className="w-5 h-5 mt-0.5 border-2 border-gray-300 rounded focus:ring-2 focus:ring-green-200 text-green-900 transition-colors"
+          className="w-5 h-5 mt-0.5 border-2 border-gray-600 rounded focus:ring-2 focus:ring-green-200 text-green-400 transition-colors"
           {...props}
         />
         {label && (
-          <label className="ml-3 text-sm font-medium text-gray-700 cursor-pointer select-none">
+          <label className="ml-3 text-sm font-medium text-gray-300 cursor-pointer select-none">
             {label}
           </label>
         )}

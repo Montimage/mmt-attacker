@@ -8,20 +8,20 @@ function Alert({
 }) {
   const variants = {
     info: {
-      containerClass: 'bg-gray-50 border-gray-400 text-gray-900 shadow-custom',
-      icon: <Info className="w-5 h-5 text-gray-700" />,
+      containerClass: 'bg-gray-900 border-gray-400 text-gray-100 shadow-custom',
+      icon: <Info className="w-5 h-5 text-gray-300" />,
     },
     warning: {
-      containerClass: 'bg-white border-gray-500 text-gray-900 shadow-custom-md',
-      icon: <AlertTriangle className="w-5 h-5 text-black" />,
+      containerClass: 'bg-gray-900 border-gray-500 text-gray-100 shadow-custom-md',
+      icon: <AlertTriangle className="w-5 h-5 text-gray-100" />,
     },
     success: {
-      containerClass: 'bg-white border-gray-400 text-gray-900 shadow-custom',
+      containerClass: 'bg-gray-900 border-gray-400 text-gray-100 shadow-custom',
       icon: <CheckCircle className="w-5 h-5 text-green-600" />,
     },
     error: {
-      containerClass: 'bg-white border-gray-500 text-gray-900 shadow-custom-md',
-      icon: <XCircle className="w-5 h-5 text-black" />,
+      containerClass: 'bg-gray-900 border-gray-500 text-gray-100 shadow-custom-md',
+      icon: <XCircle className="w-5 h-5 text-gray-100" />,
     },
   }
 
